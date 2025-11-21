@@ -23,7 +23,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     Optional<Application> findByApplicationNumber(String applicationNumber);
 
-    //List<Application> findByStatus(ApplicationStatus status);
+    //List<Application> findByApplicationStatus(ApplicationStatus applicationStatus);
 
     Optional<Application> findByPersonId(Long personId);
 
@@ -43,6 +43,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "LEFT JOIN FETCH a.spouses " +
             "LEFT JOIN FETCH a.children " +
             "LEFT JOIN FETCH a.siblings " +
+            "LEFT JOIN FETCH a.relatives " +
             "WHERE a.id = :id")
     Optional<Application> findByIdWithFamily(@Param("id") Long id);
 
@@ -53,9 +54,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     Optional<Application> findByIdWithBeneficiariesAndReferees(@Param("id") Long id);
 
     // Statistics queries
-    @Query("SELECT COUNT(a) FROM Application a WHERE a.status = :status")
-    Long countByStatus(@Param("status") ApplicationStatus status);
+    @Query("SELECT COUNT(a) FROM Application a WHERE a.applicationStatus = :applicationStatus")
+    Long countByApplicationStatus(@Param("applicationStatus") ApplicationStatus applicationStatus);
 
-    @Query("SELECT a.status, COUNT(a) FROM Application a GROUP BY a.status")
+    @Query("SELECT a.applicationStatus, COUNT(a) FROM Application a GROUP BY a.applicationStatus")
     List<Object[]> getApplicationStatusCounts();
 }

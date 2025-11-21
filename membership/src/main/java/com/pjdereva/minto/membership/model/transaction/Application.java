@@ -111,6 +111,11 @@ public class Application {
     private LocalDateTime appUpdatedAt;
 
     // Helper methods to maintain bidirectional relationships
+    public void addPerson(Person person) {
+        this.person = person;
+        person.setApplication(this);
+    }
+
     public void addParent(Parent parent) {
         parents.add(parent);
         parent.setApplication(this);

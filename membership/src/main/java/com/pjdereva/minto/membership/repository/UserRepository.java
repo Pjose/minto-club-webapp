@@ -25,10 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.accountLockedUntil < CURRENT_TIMESTAMP")
     List<User> findAccountsReadyForUnlock();
 
-    // Role-based queries
-    @Query("SELECT u FROM User u JOIN u.role r WHERE r.name = :roleName")
-    List<User> findByRoleName(@Param("roleName") String roleName);
-
     // Member users only
     @Query("SELECT u FROM User u WHERE u.member IS NOT NULL")
     List<User> findAllMemberUsers();
@@ -48,7 +44,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u " +
             "LEFT JOIN FETCH u.role r " +
             "WHERE u.email = :email")
-    Optional<User> findByEmailWithRolesAndPermissions(@Param("email") String email);
+    Optional<User> findByEmailWithRole(@Param("email") String email);
 
     // Active member users
     @Query("SELECT u FROM User u " +
@@ -60,7 +56,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Search
     @Query("SELECT u FROM User u " +
             "WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
-            "OR LOWER(U.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+            "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
             "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<User> searchUsers(@Param("searchTerm") String searchTerm);
 }

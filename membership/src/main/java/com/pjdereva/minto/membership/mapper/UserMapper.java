@@ -1,5 +1,6 @@
 package com.pjdereva.minto.membership.mapper;
 
+import com.pjdereva.minto.membership.dto.AddUserDTO;
 import com.pjdereva.minto.membership.dto.GetUserDTO;
 import com.pjdereva.minto.membership.dto.UserDto;
 import com.pjdereva.minto.membership.model.User;
@@ -14,6 +15,7 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    // For UserDto
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     User toUser(UserDto userDto);
@@ -24,7 +26,7 @@ public interface UserMapper {
 
     List<UserDto> toUserDtos(List<User> users);
 
-
+    // For GetUserDTO
     @Mapping(target = "password", ignore = true)
     User toUser(GetUserDTO getUserDTO);
 
@@ -33,4 +35,12 @@ public interface UserMapper {
     GetUserDTO toGetUserDTO(User user);
 
     List<GetUserDTO> toGetUserDTOs(List<User> users);
+
+    // For AddUserDTO
+    @Mapping(target = "password", ignore = true)
+    User toUser(AddUserDTO addUserDTO);
+
+    AddUserDTO toAddUserDTO(User user);
+
+    List<AddUserDTO> toAddUserDTOs(List<User> users);
 }

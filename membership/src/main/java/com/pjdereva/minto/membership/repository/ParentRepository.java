@@ -11,7 +11,7 @@ public interface ParentRepository extends JpaRepository<Parent, Long> {
 
     List<Parent> findByApplicationId(Long applicationId);
 
-    List<Parent> findByApplicationIdAndLiving(Long applicationId, boolean living);
+    //List<Parent> findByApplicationIdAndLiving(Long applicationId, boolean living);
 
     @Query("SELECT p FROM Parent p " +
             "LEFT JOIN FETCH p.person " +

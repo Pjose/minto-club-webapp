@@ -42,8 +42,8 @@ public class UserController {
     }
 
     @PostMapping("/secure")
-    public ResponseEntity<Optional<UserDto>> createUser(@RequestBody AddUserDTO addUserDTO) {
-        var userDto = userService.createUser(addUserDTO);
+    public ResponseEntity<UserDto> createGuestUser(@RequestBody AddUserDTO addUserDTO) {
+        var userDto = userService.createGuestUser(addUserDTO);
         return ResponseEntity.ok(userDto);
     }
 
@@ -75,5 +75,31 @@ public class UserController {
             return ResponseEntity.badRequest()
                     .body("Error: Something went wrong while deleting user with email address: " + email);
         }
+    }
+
+    @PostMapping("/secure/admin")
+    public ResponseEntity<UserDto> createAdminUser(@RequestBody AddUserDTO addUserDTO) {
+        var userDto = userService.createAdminUser(addUserDTO.firstName(), addUserDTO.lastName(),
+                addUserDTO.email(), addUserDTO.password());
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PostMapping("/secure/staff")
+    public ResponseEntity<UserDto> createStaffUser(@RequestBody AddUserDTO addUserDTO) {
+        var userDto = userService.createStaffUser(addUserDTO.firstName(), addUserDTO.lastName(),
+                addUserDTO.email(), addUserDTO.password());
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PostMapping("/secure/upgrade/user")
+    public ResponseEntity<String> upgradeUserToMember(@RequestBody GetUserDTO getUserDTO) {
+        userService.upgradeUserToMember(getUserDTO.getId());
+        return ResponseEntity.ok("User with User Id: " + getUserDTO.getId() + ", upgraded to member.");
+    }
+
+    @PostMapping("/secure/downgrade/user")
+    public ResponseEntity<String> downgradeMemberToGuestUser(@RequestBody GetUserDTO getUserDTO) {
+        userService.downgradeMemberToGuest(getUserDTO.getId());
+        return ResponseEntity.ok("Member with User Id: " + getUserDTO.getId() + ", downgraded to user.");
     }
 }

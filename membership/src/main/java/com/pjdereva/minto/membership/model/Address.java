@@ -23,7 +23,7 @@ public class Address {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private AddressType type;
+    private AddressType addressType;
 
     @Column(length = 200)
     private String street;

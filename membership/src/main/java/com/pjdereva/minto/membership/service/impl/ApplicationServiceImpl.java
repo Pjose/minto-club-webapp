@@ -49,7 +49,26 @@ public class ApplicationServiceImpl implements ApplicationService {
         // Get user's person
         Person person = user.getPerson();
         if (person == null) {
-            throw new IllegalStateException("User has no person record");
+            //throw new IllegalStateException("User has no person record");
+            // Create Person with basic info
+            person = Person.builder()
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .lifeStatus(LifeStatus.LIVING)
+                    .build();
+
+            // Create Contact with email
+            Contact contact = Contact.builder()
+                    .notes("Created by User.")
+                    .build();
+
+            Email email = Email.builder()
+                    .emailType(EmailType.PERSONAL)
+                    .address(user.getEmail())
+                    .build();
+
+            contact.addEmail(email);
+            person.setContact(contact);
         }
 
         // Create application
@@ -69,6 +88,129 @@ public class ApplicationServiceImpl implements ApplicationService {
                 application.getApplicationNumber(), user.getEmail());
 
         return application;
+    }
+
+    /**
+     * Add family members, relatives, referees and beneficiaries to application
+     */
+    @Transactional
+    public void addPeopleAndOtherInfo(ApplicationRequest request) {
+        log.info("Find application with id: {}", request.getApplicationId());
+        Application application = applicationRepository.findById(request.getApplicationId())
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        log.info("Verify ownership and editable");
+        // Verify ownership and editable
+        if (!application.getUser().getId().equals(request.getUserId())) {
+            throw new SecurityException("User does not own this application");
+        }
+        if (!application.isEditable()) {
+            throw new IllegalStateException("Application cannot be edited");
+        }
+
+        if (request.getPerson() != null) {
+            Person personObj = createPersonFromRequest(request.getPerson());
+            Person person = application.getPerson();
+            person.setFirstName(personObj.getFirstName());
+            person.setLastName(personObj.getLastName());
+            person.setMiddleName(personObj.getMiddleName());
+            person.setDob(personObj.getDob());
+            person.setLifeStatus(personObj.getLifeStatus());
+            person.setContact(personObj.getContact());
+        }
+
+        log.info("Add parents");
+        // Add parents
+        if (request.getParents() != null) {
+            request.getParents().forEach(parentReq -> {
+                Person parentPerson = createPersonFromRequest(parentReq);
+                Parent parent = Parent.builder()
+                        .person(parentPerson)
+                        .parentType(parentReq.getParentType())
+                        .build();
+                application.addParent(parent);
+            });
+        }
+
+        // Add spouses
+        application.setMaritalStatus(request.getMaritalStatus());
+        if (request.getSpouses() != null) {
+            request.getSpouses().forEach(spouseReq -> {
+                Person spousePerson = createPersonFromRequest(spouseReq);
+                Spouse spouse = Spouse.builder()
+                        .person(spousePerson)
+                        .maritalStatus(spouseReq.getMaritalStatus())
+                        .build();
+                application.addSpouse(spouse);
+            });
+        }
+
+        // Add children
+        if (request.getChildren() != null) {
+            request.getChildren().forEach(childReq -> {
+                Person childPerson = createPersonFromRequest(childReq);
+                Child child = Child.builder()
+                        .person(childPerson)
+                        .childType(childReq.getChildType())
+                        .build();
+                application.addChild(child);
+            });
+        }
+
+        // Add siblings
+        if (request.getSiblings() != null) {
+            request.getSiblings().forEach(siblingRequest -> {
+                Person siblingPerson = createPersonFromRequest(siblingRequest);
+                Sibling sibling = Sibling.builder()
+                        .person(siblingPerson)
+                        .siblingType(siblingRequest.getSiblingType())
+                        .build();
+                application.addSibling(sibling);
+            });
+        }
+
+        // Add referees
+        if (request.getReferees() != null) {
+            request.getReferees().forEach(refereeRequest -> {
+                Person refereePerson = createPersonFromRequest(refereeRequest);
+                Referee referee = Referee.builder()
+                        .person(refereePerson)
+                        .membershipNumber((refereeRequest.getMembershipNumber() == null) ? "MEM-New-001" : refereeRequest.getMembershipNumber())
+                        .build();
+                application.addReferee(referee);
+            });
+        }
+
+        // Add relatives
+        if (request.getRelatives() != null) {
+            request.getRelatives().forEach(relativeRequest -> {
+                Person relativePerson = createPersonFromRequest(relativeRequest);
+                Relative relative = Relative.builder()
+                        .person(relativePerson)
+                        .membershipNumber((relativeRequest.getMembershipNumber() == null) ? "MEM-New-001" : relativeRequest.getMembershipNumber())
+                        .familyRelationship(relativeRequest.getRelationship())
+                        .build();
+                application.addRelative(relative);
+            });
+        }
+
+        // Add beneficiaries
+        if (request.getBeneficiaries() != null) {
+            request.getBeneficiaries().forEach(beneficiaryRequest -> {
+                Person beneficiaryPerson = createPersonFromRequest(beneficiaryRequest);
+                Beneficiary beneficiary = Beneficiary.builder()
+                        .person(beneficiaryPerson)
+                        .relationship(beneficiaryRequest.getRelationship())
+                        .percentage(beneficiaryRequest.getPercentage())
+                        .build();
+                application.addBeneficiary(beneficiary);
+            });
+        }
+
+        log.info("Save application: {}", application.getMaritalStatus());
+        applicationRepository.save(application);
+        log.info("Family members, referees and beneficiaries added to application {}",
+                application.getApplicationNumber());
     }
 
     /**
@@ -171,113 +313,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.info("Application {} withdrawn by user", application.getApplicationNumber());
     }
 
-    /**
-     * Add family members, relatives, referees and beneficiaries to application
-     */
-    @Transactional
-    public void addFamilyAndOthers(Long applicationId, Long userId, ApplicationRequest request) {
-        Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
-
-        // Verify ownership and editable
-        if (!application.getUser().getId().equals(userId)) {
-            throw new SecurityException("User does not own this application");
-        }
-        if (!application.isEditable()) {
-            throw new IllegalStateException("Application cannot be edited");
-        }
-
-        // Add parents
-        if (request.getParents() != null) {
-            request.getParents().forEach(parentReq -> {
-                Person parentPerson = createPersonFromRequest(parentReq);
-                Parent parent = Parent.builder()
-                        .person(parentPerson)
-                        .parentType(parentReq.getParentType())
-                        .build();
-                application.addParent(parent);
-            });
-        }
-
-        // Add spouses
-        if (request.getSpouses() != null) {
-            request.getSpouses().forEach(spouseReq -> {
-                Person spousePerson = createPersonFromRequest(spouseReq);
-                Spouse spouse = Spouse.builder()
-                        .person(spousePerson)
-                        .maritalStatus(spouseReq.getMaritalStatus())
-                        .build();
-                application.addSpouse(spouse);
-            });
-        }
-
-        // Add children
-        if (request.getChildren() != null) {
-            request.getChildren().forEach(childReq -> {
-                Person childPerson = createPersonFromRequest(childReq);
-                Child child = Child.builder()
-                        .person(childPerson)
-                        .childType(childReq.getChildType())
-                        .build();
-                application.addChild(child);
-            });
-        }
-
-        // Add siblings
-        if (request.getSiblings() != null) {
-            request.getSiblings().forEach(siblingRequest -> {
-                Person siblingPerson = createPersonFromRequest(siblingRequest);
-                Sibling sibling = Sibling.builder()
-                        .person(siblingPerson)
-                        .siblingType(siblingRequest.getSiblingType())
-                        .build();
-                application.addSibling(sibling);
-            });
-        }
-
-        // Add referees
-        if (request.getReferees() != null) {
-            request.getReferees().forEach(refereeRequest -> {
-                Person refereePerson = createPersonFromRequest(refereeRequest);
-                Referee referee = Referee.builder()
-                        .person(refereePerson)
-                        .membershipNumber(refereeRequest.getMembershipNumber())
-                        .build();
-                application.addReferee(referee);
-            });
-        }
-
-        // Add relatives
-        if (request.getRelatives() != null) {
-            request.getRelatives().forEach(relativeRequest -> {
-                Person relativePerson = createPersonFromRequest(relativeRequest);
-                Relative relative = Relative.builder()
-                        .person(relativePerson)
-                        .membershipNumber(relativeRequest.getMembershipNumber())
-                        .relationship(relativeRequest.getRelationship())
-                        .build();
-                application.addRelative(relative);
-            });
-        }
-
-        // Add beneficiaries
-        if (request.getBeneficiaries() != null) {
-            request.getBeneficiaries().forEach(beneficiaryRequest -> {
-                Person beneficiaryPerson = createPersonFromRequest(beneficiaryRequest);
-                Beneficiary beneficiary = Beneficiary.builder()
-                        .person(beneficiaryPerson)
-                        .relationship(beneficiaryRequest.getRelationship())
-                        .percentage(beneficiaryRequest.getPercentage())
-                        .build();
-                application.addBeneficiary(beneficiary);
-            });
-        }
-
-        applicationRepository.save(application);
-        log.info("Family members, referees and beneficiaries added to application {}",
-                application.getApplicationNumber());
-    }
-
     // Helper methods
     private String generateApplicationNumber() {
         return "APP-" + LocalDateTime.now().getYear() + "-" +
@@ -292,6 +327,25 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (application.getMaritalStatus() == MaritalStatus.MARRIED
                 && application.getSpouses().isEmpty()) {
             throw new IllegalStateException("Married applicant must have at least one spouse");
+        }
+
+        if (application.getParents() != null) {
+            application.getParents().forEach(parent -> {
+                if (parent.getParentType() == null) {
+                    throw new IllegalStateException("Parent type is required");
+                }
+            });
+        }
+
+        if (application.getBeneficiaries() != null) {
+            application.getBeneficiaries().forEach(beneficiary -> {
+                if (beneficiary.getRelationship() == null) {
+                    throw new IllegalStateException("Relationship is required");
+                }
+                if (beneficiary.getPercentage() == null) {
+                    throw new IllegalStateException("Percentage is required");
+                }
+            });
         }
 
         // Additional validations as needed
@@ -363,13 +417,15 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     private Person createPersonFromRequest(PersonRequest request) {
+        log.info("Create person from request: {}", request);
         Contact contact = Contact.builder().build();
 
         if(request.getContact() != null) {
             if (request.getContact().getAddresses() != null) {
                 request.getContact().getAddresses().forEach(addressRequest -> {
+                    log.info("Add address: {}", addressRequest);
                     Address address = Address.builder()
-                            .type(addressRequest.getType())
+                            .addressType(addressRequest.getType())
                             .street(addressRequest.getStreet())
                             .city(addressRequest.getCity())
                             .state(addressRequest.getState())
@@ -382,8 +438,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
             if (request.getContact().getEmails() != null) {
                 request.getContact().getEmails().forEach(emailRequest -> {
+                    log.info("Add email: {}", emailRequest);
                     Email email = Email.builder()
-                            .type(emailRequest.getType())
+                            .emailType(emailRequest.getType())
                             .address(emailRequest.getAddress())
                             .build();
                     contact.addEmail(email);
@@ -392,8 +449,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
             if (request.getContact().getPhones() != null) {
                 request.getContact().getPhones().forEach(phoneRequest -> {
+                    log.info("Add phone: {}", phoneRequest);
                     Phone phone = Phone.builder()
-                            .type(phoneRequest.getType())
+                            .phoneType(phoneRequest.getType())
                             .number(phoneRequest.getNumber())
                             .countryCode(phoneRequest.getCountryCode())
                             .build();
@@ -402,6 +460,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
 
+        log.info("Adding person details...firstName: {}", request.getFirstName());
         Person person = Person.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())

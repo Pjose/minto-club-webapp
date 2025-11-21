@@ -15,6 +15,9 @@ import java.util.List;
 @Builder
 public class ApplicationRequest {
 
+    private Long applicationId;
+    private String applicationNumber;
+    private Long userId;
     private PersonRequest person;
     private MaritalStatus maritalStatus;
     private List<ParentRequest> parents;
@@ -24,4 +27,6 @@ public class ApplicationRequest {
     private List<RefereeRequest> referees;
     private List<RelativeRequest> relatives;
     private List<BeneficiaryRequest> beneficiaries;
+    private String notes;
+    private String rejectionReason;
 }

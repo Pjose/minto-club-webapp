@@ -4,14 +4,17 @@ import com.pjdereva.minto.membership.dto.MemberDTO;
 import com.pjdereva.minto.membership.model.transaction.Application;
 import com.pjdereva.minto.membership.model.transaction.ApplicationStatus;
 import com.pjdereva.minto.membership.model.transaction.Member;
+import com.pjdereva.minto.membership.payload.request.application.ApplicationRequest;
 import com.pjdereva.minto.membership.service.impl.ApplicationServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("http://localhost:3000")
@@ -74,4 +77,87 @@ public class ApplicationController {
         else
             return ResponseEntity.unprocessableEntity().body("Error: Something went wrong in the database!");
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createApplicationForUser(@RequestBody ApplicationRequest applicationRequest) {
+        Application app = null;
+        try {
+            app = applicationService.createApplicationForUser(applicationRequest.getUserId());
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
+        return ResponseEntity.ok(app);
+    }
+
+    @PostMapping("/add-people")
+    public ResponseEntity<?> addPeopleAndOtherInfo(@RequestBody ApplicationRequest applicationRequest) {
+        try {
+            log.info("applicationRequest: {}", applicationRequest);
+            applicationService.addPeopleAndOtherInfo(applicationRequest);
+        } catch (Exception e) {
+            log.error("Add people failed: {}", e.getMessage());
+            return ResponseEntity.ok(e.getMessage());
+        }
+        return ResponseEntity.ok("Family members, referees and beneficiaries added to application " +
+                applicationRequest.getApplicationNumber());
+    }
+
+    @PostMapping("/submit")
+    public ResponseEntity<?> submitApplication(@RequestBody ApplicationRequest applicationRequest) {
+        try {
+            applicationService.submitApplication(applicationRequest.getApplicationId(),
+                    applicationRequest.getUserId());
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
+        return ResponseEntity.ok("Application " + applicationRequest.getApplicationNumber() +
+                " submitted successfully.");
+    }
+
+    @PostMapping("/review")
+    public ResponseEntity<?> setApplicationUnderReview(@RequestBody ApplicationRequest applicationRequest) {
+        try {
+            applicationService.setApplicationUnderReview(applicationRequest.getApplicationId());
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
+        return ResponseEntity.ok("Application: " + applicationRequest.getApplicationNumber()  +
+                ", is now under review.");
+    }
+
+    @PostMapping("/approve")
+    public ResponseEntity<?> approveApplication(@RequestBody Application application) {
+        Application app = null;
+        try {
+            app = applicationService.createApplicationForUser(application.getUser().getId());
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
+        return ResponseEntity.ok(app);
+    }
+
+    @PostMapping("/reject")
+    public ResponseEntity<?> rejectApplication(@RequestBody ApplicationRequest applicationRequest) {
+        try {
+            applicationService.rejectApplication(applicationRequest.getApplicationId(),
+                    applicationRequest.getRejectionReason());
+        } catch (Exception ex) {
+            return ResponseEntity.ok(ex.getMessage());
+        }
+        return ResponseEntity.ok("Application: " + applicationRequest.getApplicationNumber() +
+                " rejected for the following reason: " + applicationRequest.getRejectionReason());
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<?> withdrawApplication(@RequestBody ApplicationRequest applicationRequest) {
+        try {
+            applicationService.withdrawApplication(applicationRequest.getApplicationId(),
+                    applicationRequest.getUserId());
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
+        return ResponseEntity.ok("Application: " + applicationRequest.getApplicationNumber() +
+                ", withdrawn by the user.");
+    }
+
 }

@@ -8,7 +8,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -26,15 +25,8 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
-
     @Column(nullable = false, unique = true, length = 50)
     private String membershipNumber;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    @Builder.Default
-    private MembershipStatus status = MembershipStatus.ACTIVE;
 
     // NEW: Member belongs to User
     @OneToOne(fetch = FetchType.LAZY)
@@ -54,6 +46,11 @@ public class Member {
     @ToString.Exclude
     private Application application;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private MembershipStatus status = MembershipStatus.ACTIVE;
+
     // Membership dates
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -68,18 +65,18 @@ public class Member {
     private LocalDate terminationDate;
 
     // Financial information
-    @Column(name = "membership_fee", precision = 10, scale = 2)
-    private BigDecimal membershipFee;
+    //@Column(name = "membership_fee", precision = 10, scale = 2)
+    //private BigDecimal membershipFee;
 
-    @Column(name = "last_payment_date")
-    private LocalDate lastPaymentDate;
+    //@Column(name = "last_payment_date")
+    //private LocalDate lastPaymentDate;
 
-    @Column(name = "next_payment_due")
-    private LocalDate nextPaymentDue;
+    //@Column(name = "next_payment_due")
+    //private LocalDate nextPaymentDue;
 
-    @Column(name = "is_fee_paid")
-    @Builder.Default
-    private boolean feePaid = false;
+    //@Column(name = "is_fee_paid")
+    //@Builder.Default
+    //private boolean feePaid = false;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -140,10 +137,12 @@ public class Member {
         return java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), endDate);
     }
 
+    /*
     public boolean requiresPayment() {
         return !feePaid || (nextPaymentDue != null &&
                 nextPaymentDue.isBefore(LocalDate.now()));
     }
+    */
 
     @Override
     public boolean equals(Object o) {

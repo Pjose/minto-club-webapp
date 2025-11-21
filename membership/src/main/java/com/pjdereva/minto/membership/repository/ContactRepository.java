@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 
-    List<Contact> findByCompanyContainingIgnoreCase(String company);
-
     @Query("SELECT c FROM Contact c JOIN c.emails e WHERE e.address = :email")
     Optional<Contact> findByEmailAddress(@Param("email") String email);
 

@@ -12,7 +12,7 @@ public interface SiblingRepository extends JpaRepository<Sibling, Long> {
 
     List<Sibling> findByApplicationId(Long applicationId);
 
-    List<Sibling> findByApplicationIdAndType(Long applicationId, SiblingType type);
+    List<Sibling> findByApplicationIdAndSiblingType(Long applicationId, SiblingType siblingType);
 
     @Query("SELECT s FROM Sibling s " +
             "LEFT JOIN FETCH s.person " +

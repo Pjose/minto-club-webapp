@@ -20,7 +20,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     List<Person> findByFirstNameAndLastName(String firstName, String lastName);
 
-    List<Person> findByLifeStatus(LifeStatus status);
+    List<Person> findByLifeStatus(LifeStatus lifeStatus);
 
     List<Person> findByDobBetween(LocalDate startDate, LocalDate endDate);
 

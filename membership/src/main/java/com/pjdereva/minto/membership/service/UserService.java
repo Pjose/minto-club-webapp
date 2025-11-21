@@ -117,7 +117,7 @@ public class UserService {
      * STEP 1 & 2: Register new user account (starts as GUEST) and activate account
      */
     @Transactional
-    public Optional<UserDto> createUser(AddUserDTO addUserDTO) {
+    public UserDto createGuestUser(AddUserDTO addUserDTO) {
         log.info("Registering new user: {}", addUserDTO.email());
 
         // Validate
@@ -134,11 +134,11 @@ public class UserService {
 
         // Create Contact with email
         Contact contact = Contact.builder()
-                .notes("Created during registration")
+                .notes("Created by Staff/Admin.")
                 .build();
 
         Email email = Email.builder()
-                .type(EmailType.PERSONAL)
+                .emailType(EmailType.PERSONAL)
                 .address(addUserDTO.email())
                 .build();
 
@@ -151,9 +151,8 @@ public class UserService {
                 .lastName(addUserDTO.lastName())
                 .email(addUserDTO.email())
                 .password(passwordEncoder.encode(addUserDTO.password()))
-                .role(Role.valueOf(addUserDTO.role()))
-                .source(RegistrationSource.valueOf(addUserDTO.source()))
-                .picture(addUserDTO.picture())
+                .role(Role.USER)
+                .source(RegistrationSource.DASHBOARD)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .accountStatus(AccountStatus.ACTIVE)
@@ -163,7 +162,7 @@ public class UserService {
 
         log.info("User registered successfully: {} with GUEST user role", savedUser.getEmail());
 
-        return Optional.ofNullable(UserMapper.INSTANCE.toUserDto(savedUser));
+        return UserMapper.INSTANCE.toUserDto(savedUser);
     }
 
     /**
@@ -186,7 +185,7 @@ public class UserService {
      * Admin creates Staff user
      */
     @Transactional
-    public User createStaffUser(String firstName, String lastName,
+    public UserDto createStaffUser(String firstName, String lastName,
                                String email, String password) {
         log.info("Creating staff user: {}", email);
 
@@ -201,27 +200,46 @@ public class UserService {
                 .lifeStatus(LifeStatus.LIVING)
                 .build();
 
-        User user = User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .accountStatus(AccountStatus.ACTIVE)
-                .person(person)
+        // Create Contact with email
+        Contact contact = Contact.builder()
+                .notes("Created by Staff/Admin.")
                 .build();
 
-        // Assign ROLE_STAFF
+        Email primaryEmail = Email.builder()
+                .emailType(EmailType.PERSONAL)
+                .address(email)
+                .build();
+
+        contact.addEmail(primaryEmail);
+        person.setContact(contact);
+
+        User user = User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .source(RegistrationSource.DASHBOARD)
+                .accountStatus(AccountStatus.ACTIVE)
+                .person(person)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        // Assign role STAFF
         user.setRole(Role.STAFF);
 
         user = userRepository.save(user);
 
         log.info("Staff user created: {} with STAFF user role", email);
-        return user;
+
+        return UserMapper.INSTANCE.toUserDto(user);
     }
 
     /**
      * Admin creates Admin user
      */
     @Transactional
-    public User createAdminUser(String firstName, String lastName,
+    public UserDto createAdminUser(String firstName, String lastName,
                                 String email, String password) {
         log.info("Creating admin user: {}", email);
 
@@ -235,20 +253,39 @@ public class UserService {
                 .lifeStatus(LifeStatus.LIVING)
                 .build();
 
-        User user = User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .accountStatus(AccountStatus.ACTIVE)
-                .person(person)
+        // Create Contact with email
+        Contact contact = Contact.builder()
+                .notes("Created by Staff/Admin.")
                 .build();
 
-        // Assign ROLE_ADMIN
+        Email primaryEmail = Email.builder()
+                .emailType(EmailType.PERSONAL)
+                .address(email)
+                .build();
+
+        contact.addEmail(primaryEmail);
+        person.setContact(contact);
+
+        User user = User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .source(RegistrationSource.DASHBOARD)
+                .accountStatus(AccountStatus.ACTIVE)
+                .person(person)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        // Assign role ADMIN
         user.setRole(Role.ADMIN);
 
         user = userRepository.save(user);
 
         log.info("Admin user created: {} with ADMIN user role", email);
-        return user;
+
+        return UserMapper.INSTANCE.toUserDto(user);
     }
 
     /**

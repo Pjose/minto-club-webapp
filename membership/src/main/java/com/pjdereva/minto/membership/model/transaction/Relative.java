@@ -31,7 +31,7 @@ public class Relative {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 30)
-    private FamilyRelationship relationship;
+    private FamilyRelationship familyRelationship;
 
     @Column(length = 500)
     private String notes;

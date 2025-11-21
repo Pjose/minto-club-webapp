@@ -9,5 +9,5 @@ import java.util.List;
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
     List<Address> findByContactId(Long contactId);
-    List<Address> findByContactIdAndType(Long contactId, AddressType type);
+    List<Address> findByContactIdAndAddressType(Long contactId, AddressType addressType);
 }

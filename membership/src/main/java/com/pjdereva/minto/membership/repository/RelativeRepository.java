@@ -1,5 +1,6 @@
 package com.pjdereva.minto.membership.repository;
 
+import com.pjdereva.minto.membership.model.transaction.FamilyRelationship;
 import com.pjdereva.minto.membership.model.transaction.Relative;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ public interface RelativeRepository extends JpaRepository<Relative, Long> {
 
     List<Relative> findByApplicationId(Long applicationId);
 
-    List<Relative> findByApplicationIdAndType(Long applicationId, RelationType type);
+    List<Relative> findByApplicationIdAndFamilyRelationship(Long applicationId, FamilyRelationship familyRelationship);
 
     @Query("SELECT r FROM Relative r " +
             "LEFT JOIN FETCH r.person p " +

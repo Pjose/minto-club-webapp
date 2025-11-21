@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/minto_membership_db
+    url: jdbc:postgresql://localhost:5432/minto_club_db
     username: postgres
     password: Admin@4321
     driver-class-name: org.postgresql.Driver
@@ -36,3 +36,6 @@ application:
 
 frontend:
   url: http://localhost:3000
+
+server:
+  port: 8081

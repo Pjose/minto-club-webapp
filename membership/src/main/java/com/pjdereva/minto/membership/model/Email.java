@@ -23,7 +23,7 @@ public class Email {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private EmailType type;
+    private EmailType emailType;
 
     @Column(nullable = false, length = 255)
     private String address;

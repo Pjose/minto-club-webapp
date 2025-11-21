@@ -14,7 +14,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByUserIdOrApplicationId(Long userId, Long applicationId);
 
-    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.userId = :userId OR m.application.id = :applicationId")
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.user.id = :userId OR m.application.id = :applicationId")
     boolean memberExistsByUserIdOrApplicationId(@Param("userId") Long userId, @Param("applicationId") Long applicationId);
 
     Optional<Member> findByUserId(Long userId);
@@ -51,7 +51,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     );
 
     // Find members with overdue payments
-    List<Member> findByNextPaymentDueBeforeAndFeePaidFalse(LocalDate date);
+    //List<Member> findByNextPaymentDueBeforeAndFeePaidFalse(LocalDate date);
 
     // Find members by start date range
     List<Member> findByStartDateBetween(LocalDate startDate, LocalDate endDate);
@@ -87,8 +87,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     //@Query("SELECT m.type, COUNT(m) FROM Member m WHERE m.status = 'ACTIVE' GROUP BY m.type")
     //List<Object[]> getActiveMemberCountByType();
 
-    @Query("SELECT m.feesPaid, COUNT(m) FROM Member m WHERE m.status = 'ACTIVE' GROUP BY m.feesPaid")
-    List<Object[]> getActiveMemberCount();
+    //@Query("SELECT m.feesPaid, COUNT(m) FROM Member m WHERE m.status = 'ACTIVE' GROUP BY m.feesPaid")
+    //List<Object[]> getActiveMemberCount();
 
     @Query("SELECT m.status, COUNT(m) FROM Member m GROUP BY m.status")
     List<Object[]> getMemberCountByStatus();
