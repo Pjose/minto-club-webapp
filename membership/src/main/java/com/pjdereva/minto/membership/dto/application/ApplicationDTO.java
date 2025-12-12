@@ -1,13 +1,14 @@
 package com.pjdereva.minto.membership.dto.application;
 
 
+import com.pjdereva.minto.membership.dto.GetUserDTO;
 import com.pjdereva.minto.membership.model.transaction.MaritalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -15,18 +16,19 @@ import java.util.List;
 @Builder
 public class ApplicationDTO {
 
-    private Long applicationId;
+    private Long id;
     private String applicationNumber;
-    private Long userId;
+    private String applicationStatus;
+    private GetUserDTO user;
     private PersonDTO person;
     private MaritalStatus maritalStatus;
-    private List<ParentDTO> parents;
-    private List<SpouseDTO> spouses;
-    private List<ChildDTO> children;
-    private List<SiblingDTO> siblings;
-    private List<RefereeDTO> referees;
-    private List<RelativeDTO> relatives;
-    private List<BeneficiaryDTO> beneficiaries;
+    private Set<ParentDTO> parents;
+    private Set<SpouseDTO> spouses;
+    private Set<ChildDTO> children;
+    private Set<SiblingDTO> siblings;
+    private Set<RefereeDTO> referees;
+    private Set<RelativeDTO> relatives;
+    private Set<BeneficiaryDTO> beneficiaries;
     private String submittedDate;
     private String approvedDate;
     private String rejectedDate;

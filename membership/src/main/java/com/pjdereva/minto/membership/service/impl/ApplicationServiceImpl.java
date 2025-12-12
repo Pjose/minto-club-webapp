@@ -2,6 +2,7 @@ package com.pjdereva.minto.membership.service.impl;
 
 import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
 import com.pjdereva.minto.membership.dto.application.PersonDTO;
+import com.pjdereva.minto.membership.mapper.ApplicationMapper;
 import com.pjdereva.minto.membership.model.*;
 import com.pjdereva.minto.membership.model.transaction.*;
 import com.pjdereva.minto.membership.repository.ApplicationRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -97,13 +99,13 @@ public class ApplicationServiceImpl implements ApplicationService {
      */
     @Transactional
     public void addPeopleAndOtherInfo(ApplicationDTO request) {
-        log.info("Find application with id: {}", request.getApplicationId());
-        Application application = applicationRepository.findById(request.getApplicationId())
+        log.info("Find application with id: {}", request.getId());
+        Application application = applicationRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Application not found"));
 
         log.info("Verify ownership and editable");
         // Verify ownership and editable
-        if (!application.getUser().getId().equals(request.getUserId())) {
+        if (!application.getUser().getId().equals(request.getUser().getId())) {
             throw new SecurityException("User does not own this application.");
         }
         if (!application.isEditable()) {
@@ -134,7 +136,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 Person parentPerson = createPersonFromRequest(parentReq);
                 Parent parent = Parent.builder()
                         .person(parentPerson)
-                        .parentType(parentReq.getParentType())
+                        .parentType(ParentType.valueOf(parentReq.getParentType()))
                         .build();
                 application.addParent(parent);
             });
@@ -146,7 +148,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 Person spousePerson = createPersonFromRequest(spouseReq);
                 Spouse spouse = Spouse.builder()
                         .person(spousePerson)
-                        .maritalStatus(spouseReq.getMaritalStatus())
+                        .maritalStatus(MaritalStatus.valueOf(spouseReq.getMaritalStatus()))
                         .build();
                 application.addSpouse(spouse);
             });
@@ -158,7 +160,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 Person childPerson = createPersonFromRequest(childReq);
                 Child child = Child.builder()
                         .person(childPerson)
-                        .childType(childReq.getChildType())
+                        .childType(ChildType.valueOf(childReq.getChildType()))
                         .build();
                 application.addChild(child);
             });
@@ -170,7 +172,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 Person siblingPerson = createPersonFromRequest(siblingRequest);
                 Sibling sibling = Sibling.builder()
                         .person(siblingPerson)
-                        .siblingType(siblingRequest.getSiblingType())
+                        .siblingType(SiblingType.valueOf(siblingRequest.getSiblingType()))
                         .build();
                 application.addSibling(sibling);
             });
@@ -195,7 +197,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 Relative relative = Relative.builder()
                         .person(relativePerson)
                         .membershipNumber((relativeRequest.getMembershipNumber() == null) ? "MEM-New-001" : relativeRequest.getMembershipNumber())
-                        .familyRelationship(relativeRequest.getRelationship())
+                        .familyRelationship(FamilyRelationship.valueOf(relativeRequest.getRelationship()))
                         .build();
                 application.addRelative(relative);
             });
@@ -403,8 +405,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public Optional<Application> findByIdWithPersonAndContact(Long id) {
-        return applicationRepository.findByIdWithPersonAndContact(id);
+    public Optional<ApplicationDTO> findByIdWithPersonAndContact(Long id) {
+        Optional<Application> applicationDTO = applicationRepository.findByIdWithPersonAndContact(id);
+        return applicationDTO.map(ApplicationMapper.INSTANCE::toApplicationDTO);
     }
 
     @Override
@@ -437,7 +440,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 request.getContact().getAddresses().forEach(addressRequest -> {
                     log.info("Add address: {}", addressRequest);
                     Address address = Address.builder()
-                            .addressType(addressRequest.getType())
+                            .addressType(AddressType.valueOf(addressRequest.getAddressType()))
                             .street(addressRequest.getStreet())
                             .city(addressRequest.getCity())
                             .state(addressRequest.getState())
@@ -452,7 +455,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 request.getContact().getEmails().forEach(emailRequest -> {
                     log.info("Add email: {}", emailRequest);
                     Email email = Email.builder()
-                            .emailType(emailRequest.getType())
+                            .emailType(EmailType.valueOf(emailRequest.getEmailType()))
                             .address(emailRequest.getAddress())
                             .build();
                     contact.addEmail(email);
@@ -463,7 +466,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 request.getContact().getPhones().forEach(phoneRequest -> {
                     log.info("Add phone: {}", phoneRequest);
                     Phone phone = Phone.builder()
-                            .phoneType(phoneRequest.getType())
+                            .phoneType(PhoneType.valueOf(phoneRequest.getPhoneType()))
                             .number(phoneRequest.getNumber())
                             .countryCode(phoneRequest.getCountryCode())
                             .build();
@@ -477,7 +480,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .middleName(request.getMiddleName())
-                .dob(request.getDob())
+                .dob(LocalDate.parse(request.getDob()))
                 .lifeStatus(LifeStatus.LIVING)
                 .contact(contact)
                 .build();

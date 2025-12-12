@@ -1,6 +1,6 @@
 package com.pjdereva.minto.membership.controller;
 
-import com.pjdereva.minto.membership.dto.PersonDTO;
+import com.pjdereva.minto.membership.dto.application.PersonDTO;
 import com.pjdereva.minto.membership.exception.PersonNotFoundException;
 import com.pjdereva.minto.membership.model.Person;
 import com.pjdereva.minto.membership.service.impl.PersonServiceImpl;

@@ -1,6 +1,5 @@
 package com.pjdereva.minto.membership.dto.application;
 
-import com.pjdereva.minto.membership.model.AddressType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AddressDTO {
 
-    private Long addressId;
-    private AddressType type;
+    private Long id;
+    private String addressType;
     private String street;
     private String city;
     private String state;

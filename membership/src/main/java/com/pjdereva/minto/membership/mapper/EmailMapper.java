@@ -3,6 +3,7 @@ package com.pjdereva.minto.membership.mapper;
 import com.pjdereva.minto.membership.dto.application.EmailDTO;
 import com.pjdereva.minto.membership.model.Email;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;

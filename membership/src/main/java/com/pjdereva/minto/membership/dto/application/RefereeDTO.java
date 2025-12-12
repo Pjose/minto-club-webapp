@@ -10,8 +10,10 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class RefereeDTO extends PersonDTO {
 
-    private Long refereeId;
+    private Long id;
     private String membershipNumber;
     private String comments;
     private String notes;
+    private String referenceDate;
+    private boolean contacted;
 }

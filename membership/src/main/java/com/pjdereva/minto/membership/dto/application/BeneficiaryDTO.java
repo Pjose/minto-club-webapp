@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class BeneficiaryDTO extends PersonDTO {
 
-    private Long beneficiaryId;
+    private Long id;
     private BigDecimal percentage;
     private String relationship;
     private String notes;

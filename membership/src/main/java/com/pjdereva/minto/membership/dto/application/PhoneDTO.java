@@ -1,6 +1,5 @@
 package com.pjdereva.minto.membership.dto.application;
 
-import com.pjdereva.minto.membership.model.PhoneType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PhoneDTO {
 
-    private Long phoneId;
-    private PhoneType type;
+    private Long id;
+    private String phoneType;
     private String number;
     private String countryCode;
 }

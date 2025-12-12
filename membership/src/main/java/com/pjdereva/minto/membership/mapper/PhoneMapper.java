@@ -3,6 +3,7 @@ package com.pjdereva.minto.membership.mapper;
 import com.pjdereva.minto.membership.dto.application.PhoneDTO;
 import com.pjdereva.minto.membership.model.Phone;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface PhoneMapper {
 
     PhoneDTO toPhoneDTO(Phone phone);
 
-    List<PhoneDTO> toPhoneDTOs(Phone phone);
+    List<PhoneDTO> toPhoneDTOs(List<Phone> phone);
 }

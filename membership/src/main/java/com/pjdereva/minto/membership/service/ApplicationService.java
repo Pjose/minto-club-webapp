@@ -21,7 +21,7 @@ public interface ApplicationService {
     List<Application> getAllApplications();
     List<Application> findAllByApplicationStatus(ApplicationStatus applicationStatus);
     Optional<Application> findById(Long id);
-    Optional<Application> findByIdWithPersonAndContact(Long applicationId);
+    Optional<ApplicationDTO> findByIdWithPersonAndContact(Long applicationId);
     boolean existById(Long id);
     Application updateApplication(Application application);
     boolean deleteApplicationById(Long id);

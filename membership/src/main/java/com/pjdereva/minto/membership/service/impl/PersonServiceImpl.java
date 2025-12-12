@@ -1,6 +1,7 @@
 package com.pjdereva.minto.membership.service.impl;
 
-import com.pjdereva.minto.membership.dto.PersonDTO;
+import com.pjdereva.minto.membership.dto.application.PersonDTO;
+import com.pjdereva.minto.membership.mapper.ContactMapper;
 import com.pjdereva.minto.membership.mapper.PersonMapper;
 import com.pjdereva.minto.membership.model.Contact;
 import com.pjdereva.minto.membership.model.Person;
@@ -24,16 +25,16 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Optional<Person> createPerson(PersonDTO personDTO) {
-        if(!personRepository.existsByFirstNameAndLastNameAndDob(personDTO.firstName(), personDTO.lastName(), LocalDate.parse(personDTO.dob()))){
+        if(!personRepository.existsByFirstNameAndLastNameAndDob(personDTO.getFirstName(), personDTO.getLastName(), LocalDate.parse(personDTO.getDob()))){
             Person newPerson = Person.builder()
-                    .firstName(personDTO.firstName())
-                    .middleName(personDTO.middleName())
-                    .lastName(personDTO.lastName())
-                    .dob(LocalDate.parse(personDTO.dob()))
-                    .lifeStatus(LifeStatus.valueOf(personDTO.lifeStatus()))
+                    .firstName(personDTO.getFirstName())
+                    .middleName(personDTO.getMiddleName())
+                    .lastName(personDTO.getLastName())
+                    .dob(LocalDate.parse(personDTO.getDob()))
+                    .lifeStatus(LifeStatus.valueOf(personDTO.getLifeStatus()))
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
-                    .contact(personDTO.contact())
+                    .contact(ContactMapper.INSTANCE.toContact(personDTO.getContact()))
                     .build();
             var savedPerson = personRepository.save(newPerson);
             return Optional.of(savedPerson);

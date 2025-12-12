@@ -35,8 +35,8 @@ public class ApplicationController {
 
     @GetMapping("/person/{id}")
     public ResponseEntity<?> getApplicationByIdWithPersonAndContact(@PathVariable Long id) {
-        var application = applicationService.findByIdWithPersonAndContact(id);
-        return ResponseEntity.ok(application);
+        var applicationDTO = applicationService.findByIdWithPersonAndContact(id);
+        return ResponseEntity.ok(applicationDTO);
     }
 
     @GetMapping("/app-status/{appStatus}")
@@ -86,7 +86,7 @@ public class ApplicationController {
     public ResponseEntity<?> createApplicationForUser(@RequestBody ApplicationDTO applicationDTO) {
         Application app = null;
         try {
-            app = applicationService.createApplicationForUser(applicationDTO.getUserId());
+            app = applicationService.createApplicationForUser(applicationDTO.getUser().getId());
         } catch (Exception e) {
             return ResponseEntity.ok(e.getMessage());
         }
@@ -109,8 +109,8 @@ public class ApplicationController {
     @PostMapping("/submit")
     public ResponseEntity<?> submitApplication(@RequestBody ApplicationDTO applicationDTO) {
         try {
-            applicationService.submitApplication(applicationDTO.getApplicationId(),
-                    applicationDTO.getUserId());
+            applicationService.submitApplication(applicationDTO.getId(),
+                    applicationDTO.getUser().getId());
         } catch (Exception e) {
             return ResponseEntity.ok(e.getMessage());
         }
@@ -121,7 +121,7 @@ public class ApplicationController {
     @PostMapping("/review")
     public ResponseEntity<?> setApplicationUnderReview(@RequestBody ApplicationDTO applicationDTO) {
         try {
-            applicationService.setApplicationUnderReview(applicationDTO.getApplicationId());
+            applicationService.setApplicationUnderReview(applicationDTO.getId());
         } catch (Exception e) {
             return ResponseEntity.ok(e.getMessage());
         }
@@ -143,7 +143,7 @@ public class ApplicationController {
     @PostMapping("/reject")
     public ResponseEntity<?> rejectApplication(@RequestBody ApplicationDTO applicationDTO) {
         try {
-            applicationService.rejectApplication(applicationDTO.getApplicationId(),
+            applicationService.rejectApplication(applicationDTO.getId(),
                     applicationDTO.getRejectionReason());
         } catch (Exception ex) {
             return ResponseEntity.ok(ex.getMessage());
@@ -155,8 +155,8 @@ public class ApplicationController {
     @PostMapping("/withdraw")
     public ResponseEntity<?> withdrawApplication(@RequestBody ApplicationDTO applicationDTO) {
         try {
-            applicationService.withdrawApplication(applicationDTO.getApplicationId(),
-                    applicationDTO.getUserId());
+            applicationService.withdrawApplication(applicationDTO.getId(),
+                    applicationDTO.getUser().getId());
         } catch (Exception e) {
             return ResponseEntity.ok(e.getMessage());
         }

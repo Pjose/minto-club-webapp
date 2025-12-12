@@ -1,6 +1,5 @@
 package com.pjdereva.minto.membership.dto.application;
 
-import com.pjdereva.minto.membership.model.EmailType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EmailDTO {
 
-    private Long emailId;
-    private EmailType type;
+    private Long id;
+    private String emailType;
     private String address;
 }

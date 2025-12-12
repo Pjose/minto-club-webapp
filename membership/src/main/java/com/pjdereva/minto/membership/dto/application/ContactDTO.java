@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class ContactDTO {
 
-    private Long contactId;
+    private Long id;
     private List<AddressDTO> addresses;
     private List<PhoneDTO> phones;
     private List<EmailDTO> emails;

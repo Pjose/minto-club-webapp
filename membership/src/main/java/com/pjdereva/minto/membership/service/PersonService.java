@@ -1,6 +1,6 @@
 package com.pjdereva.minto.membership.service;
 
-import com.pjdereva.minto.membership.dto.PersonDTO;
+import com.pjdereva.minto.membership.dto.application.PersonDTO;
 import com.pjdereva.minto.membership.model.Person;
 
 import java.util.List;
