@@ -34,15 +34,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     public UserDto getUserByEmail(String email) {
         var existingUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserEmailNotFoundException(email));
-        return UserMapper.INSTANCE.toUserDto(existingUser);
+        return userMapper.toUserDto(existingUser);
     }
 
     public Optional<UserDto> findUserByEmail(String email) {
-        return Optional.ofNullable(UserMapper.INSTANCE.toUserDto(userRepository.findByEmail(email)
+        return Optional.ofNullable(userMapper.toUserDto(userRepository.findByEmail(email)
                 .orElse(null)));
 //        return Optional.ofNullable(userMapper.toUserDto(userRepository.findByEmail(email)
 //                .orElseThrow(() -> new UserEmailNotFoundException(email))));
@@ -56,12 +57,12 @@ public class UserService {
     public UserDto getUserById(Long id) {
         var existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserIdNotFoundException(id));
-        return UserMapper.INSTANCE.toUserDto(existingUser);
+        return userMapper.toUserDto(existingUser);
     }
 
     public List<GetUserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return UserMapper.INSTANCE.toGetUserDTOs(users);
+        return userMapper.toGetUserDTOs(users);
     }
 
     public UserDto updateUserByEmail(UserUpdateDto userUpdateDto) {
@@ -74,7 +75,7 @@ public class UserService {
         existingUser.setPicture(userUpdateDto.picture());
         existingUser.setUpdatedAt(LocalDateTime.now());
         var savedUser = userRepository.save(existingUser);
-        return UserMapper.INSTANCE.toUserDto(savedUser);
+        return userMapper.toUserDto(savedUser);
     }
 
     public UserDto patchUserByEmail(String email, Map<String, Object> updates) {
@@ -98,13 +99,13 @@ public class UserService {
                 user.setPicture((String) updates.get("picture"));
             }
             user.setUpdatedAt(LocalDateTime.now());
-            return UserMapper.INSTANCE.toUserDto(userRepository.save(user));
+            return userMapper.toUserDto(userRepository.save(user));
         }
         return null;
     }
 
     public void save(UserDto userDto) {
-        userRepository.save(UserMapper.INSTANCE.toUser(userDto));
+        userRepository.save(userMapper.toUser(userDto));
     }
 
     public boolean deleteUserByEmail(String email) {
@@ -162,7 +163,7 @@ public class UserService {
 
         log.info("User registered successfully: {} with GUEST user role", savedUser.getEmail());
 
-        return UserMapper.INSTANCE.toUserDto(savedUser);
+        return userMapper.toUserDto(savedUser);
     }
 
     /**
@@ -232,7 +233,7 @@ public class UserService {
 
         log.info("Staff user created: {} with STAFF user role", email);
 
-        return UserMapper.INSTANCE.toUserDto(user);
+        return userMapper.toUserDto(user);
     }
 
     /**
@@ -285,7 +286,7 @@ public class UserService {
 
         log.info("Admin user created: {} with ADMIN user role", email);
 
-        return UserMapper.INSTANCE.toUserDto(user);
+        return userMapper.toUserDto(user);
     }
 
     /**

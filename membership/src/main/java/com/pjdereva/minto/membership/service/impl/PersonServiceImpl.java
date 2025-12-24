@@ -22,6 +22,8 @@ import java.util.Optional;
 public class PersonServiceImpl implements PersonService {
     
     private final PersonRepository personRepository;
+    private final PersonMapper personMapper;
+    private final ContactMapper contactMapper;
 
     @Override
     public Optional<Person> createPerson(PersonDTO personDTO) {
@@ -34,7 +36,7 @@ public class PersonServiceImpl implements PersonService {
                     .lifeStatus(LifeStatus.valueOf(personDTO.getLifeStatus()))
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
-                    .contact(ContactMapper.INSTANCE.toContact(personDTO.getContact()))
+                    .contact(contactMapper.toContact(personDTO.getContact()))
                     .build();
             var savedPerson = personRepository.save(newPerson);
             return Optional.of(savedPerson);
@@ -45,8 +47,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonDTO savePerson(PersonDTO personDTO) {
-        var person = personRepository.save(PersonMapper.INSTANCE.toPerson(personDTO));
-        return PersonMapper.INSTANCE.toPersonDTO(person);
+        var person = personRepository.save(personMapper.toPerson(personDTO));
+        return personMapper.toPersonDTO(person);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class PersonServiceImpl implements PersonService {
                 person.setContact((Contact) updates.get("contact"));
             }
             person.setUpdatedAt(LocalDateTime.now());
-            return PersonMapper.INSTANCE.toPersonDTO(personRepository.save(person));
+            return personMapper.toPersonDTO(personRepository.save(person));
         }
         return null;
     }

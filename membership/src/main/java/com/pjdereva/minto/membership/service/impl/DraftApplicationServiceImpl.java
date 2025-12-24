@@ -1,6 +1,9 @@
 package com.pjdereva.minto.membership.service.impl;
 
 import com.pjdereva.minto.membership.dto.application.*;
+import com.pjdereva.minto.membership.mapper.ApplicationMapper;
+import com.pjdereva.minto.membership.mapper.PersonMapper;
+import com.pjdereva.minto.membership.mapper.UserMapper;
 import com.pjdereva.minto.membership.model.*;
 import com.pjdereva.minto.membership.model.transaction.*;
 import com.pjdereva.minto.membership.repository.*;
@@ -28,6 +31,9 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
     private final AddressRepository addressRepository;
     private final EmailRepository emailRepository;
     private final PhoneRepository phoneRepository;
+    private final UserMapper userMapper;
+    private final PersonMapper personMapper;
+    private final ApplicationMapper applicationMapper;
 
     /**
      * Save or update application draft
@@ -54,6 +60,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
             }
 
             log.info("Updating existing draft application: {}", application.getApplicationNumber());
+            application.setNotes(draft.getNotes());
         } else {
             // Create new application
             application = applicationRepository.findByUserIdAndApplicationStatus(
@@ -75,7 +82,6 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         // Update basic application info
         application.setMaritalStatus(draft.getMaritalStatus());
-        application.setNotes(draft.getNotes());
 
         // TODO: Update person info with deduplication
         updatePersonalInfo(user.getPerson().getId(), draft.getPerson());
@@ -113,14 +119,21 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
             return new ApplicationDTO();
         }
 
+        /*
         Application application = applicationRepository
                 .findByIdWithFamily(draftOpt.get().getId())
                 .orElseThrow();
+        */
+        /*
+        Application application = draftOpt.get();
 
         // Convert to Request
         ApplicationDTO draft = new ApplicationDTO();
         draft.setId(application.getId());
         draft.setApplicationNumber(application.getApplicationNumber());
+        draft.setApplicationStatus(application.getApplicationStatus().getLabel());
+        draft.setUser(userMapper.toGetUserDTO(user));
+        draft.setPerson(personMapper.toPersonDTO(user.getPerson()));
         draft.setMaritalStatus(application.getMaritalStatus());
         draft.setNotes(application.getNotes());
 
@@ -152,8 +165,12 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
         draft.setReferees(application.getReferees().stream()
                 .map(this::convertToRefereeRequest)
                 .collect(Collectors.toSet()));
+        */
 
-        log.info("Draft loaded: {}", application.getApplicationNumber());
+        //ApplicationDTO draft = ApplicationMapper.INSTANCE.toApplicationDTO(draftOpt.get());
+        ApplicationDTO draft = applicationMapper.toApplicationDTO(draftOpt.get());
+
+        log.info("Draft loaded: {}", draft.getApplicationNumber());
         return draft;
     }
 
@@ -193,7 +210,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
             person.setLastName(data.getLastName());
             person.setMiddleName(data.getMiddleName());
             person.setDob(LocalDate.parse(data.getDob()));
-            person.setLifeStatus(LifeStatus.valueOf(data.getLifeStatus()));
+            person.setLifeStatus(LifeStatus.fromLabel(data.getLifeStatus()));
 
             // Update or create contact
             if (data.getContact() != null) {
@@ -425,7 +442,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         return Parent.builder()
                 .person(person)
-                .parentType(ParentType.valueOf(dto.getParentType()))
+                .parentType(ParentType.fromLabel(dto.getParentType()))
                 .notes(dto.getNotes())
                 .build();
     }
@@ -435,7 +452,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
         updatePersonFromRequest(parent.getPerson(), dto);
 
         // Update parent-specific fields
-        parent.setParentType(ParentType.valueOf(dto.getParentType()));
+        parent.setParentType(ParentType.fromLabel(dto.getParentType()));
         parent.setNotes(dto.getNotes());
     }
 
@@ -444,14 +461,14 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         return Spouse.builder()
                 .person(person)
-                .maritalStatus(MaritalStatus.valueOf(dto.getMaritalStatus()))
+                .maritalStatus(MaritalStatus.fromLabel(dto.getMaritalStatus()))
                 .notes(dto.getNotes())
                 .build();
     }
 
     private void updateSpouseFromRequest(Spouse spouse, SpouseDTO dto) {
         updatePersonFromRequest(spouse.getPerson(), dto);
-        spouse.setMaritalStatus(MaritalStatus.valueOf(dto.getMaritalStatus()));
+        spouse.setMaritalStatus(MaritalStatus.fromLabel(dto.getMaritalStatus()));
         spouse.setNotes(dto.getNotes());
     }
 
@@ -460,14 +477,14 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         return Child.builder()
                 .person(person)
-                .childType(ChildType.valueOf(dto.getChildType()))
+                .childType(ChildType.fromLabel(dto.getChildType()))
                 .notes(dto.getNotes())
                 .build();
     }
 
     private void updateChildFromRequest(Child child, ChildDTO dto) {
         updatePersonFromRequest(child.getPerson(), dto);
-        child.setChildType(ChildType.valueOf(dto.getChildType()));
+        child.setChildType(ChildType.fromLabel(dto.getChildType()));
         child.setNotes(dto.getNotes());
     }
 
@@ -476,14 +493,14 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         return Sibling.builder()
                 .person(person)
-                .siblingType(SiblingType.valueOf(dto.getSiblingType()))
+                .siblingType(SiblingType.fromLabel(dto.getSiblingType()))
                 .notes(dto.getNotes())
                 .build();
     }
 
     private void updateSiblingFromRequest(Sibling sibling, SiblingDTO dto) {
         updatePersonFromRequest(sibling.getPerson(), dto);
-        sibling.setSiblingType(SiblingType.valueOf(dto.getSiblingType()));
+        sibling.setSiblingType(SiblingType.fromLabel(dto.getSiblingType()));
         sibling.setNotes(dto.getNotes());
     }
 
@@ -492,7 +509,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         return Relative.builder()
                 .person(person)
-                .familyRelationship(FamilyRelationship.valueOf(dto.getRelationship()))
+                .familyRelationship(FamilyRelationship.fromLabel(dto.getFamilyRelationship()))
                 .membershipNumber(dto.getMembershipNumber())
                 .notes(dto.getNotes())
                 .build();
@@ -500,7 +517,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
     private void updateRelativeFromRequest(Relative relative, RelativeDTO dto) {
         updatePersonFromRequest(relative.getPerson(), dto);
-        relative.setFamilyRelationship(FamilyRelationship.valueOf(dto.getRelationship()));
+        relative.setFamilyRelationship(FamilyRelationship.fromLabel(dto.getFamilyRelationship()));
         relative.setMembershipNumber(dto.getMembershipNumber());
         relative.setNotes(dto.getNotes());
     }
@@ -577,7 +594,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
         person.setLastName(data.getLastName());
         person.setMiddleName(data.getMiddleName());
         person.setDob(LocalDate.parse(data.getDob()));
-        person.setLifeStatus(LifeStatus.valueOf(data.getLifeStatus()));
+        person.setLifeStatus(LifeStatus.fromLabel(data.getLifeStatus()));
 
         // Update or create contact
         if (data.getContact() != null) {
@@ -604,7 +621,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
             addressDTOS.forEach(addressDTO -> {
                 if (addressDTO.getId() == null) {
                     Address address = Address.builder()
-                            .addressType(AddressType.valueOf(addressDTO.getAddressType()))
+                            .addressType(AddressType.fromLabel(addressDTO.getAddressType()))
                             .street(addressDTO.getStreet())
                             .city(addressDTO.getCity())
                             .state(addressDTO.getState())
@@ -616,7 +633,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
                     Address existingAddress = addressRepository.findById(addressDTO.getId())
                             .orElseThrow(() -> new EntityNotFoundException("Address with ID " + addressDTO.getId() + " not found"));
 
-                    existingAddress.setAddressType(AddressType.valueOf(addressDTO.getAddressType()));
+                    existingAddress.setAddressType(AddressType.fromLabel(addressDTO.getAddressType()));
                     existingAddress.setStreet(addressDTO.getStreet());
                     existingAddress.setCity(addressDTO.getCity());
                     existingAddress.setState(addressDTO.getState());
@@ -636,7 +653,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
             emailDTOS.forEach(emailDTO -> {
                 if (emailDTO.getId() == null) {
                     Email email = Email.builder()
-                            .emailType(EmailType.valueOf(emailDTO.getEmailType()))
+                            .emailType(EmailType.fromLabel(emailDTO.getEmailType()))
                             .address(emailDTO.getAddress())
                             .build();
                     contact.addEmail(email);
@@ -644,7 +661,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
                     Email existingEmail = emailRepository.findById(emailDTO.getId())
                             .orElseThrow(() -> new EntityNotFoundException("Email with Id: " + emailDTO.getId() + " not found"));
 
-                    existingEmail.setEmailType(EmailType.valueOf(emailDTO.getEmailType()));
+                    existingEmail.setEmailType(EmailType.fromLabel(emailDTO.getEmailType()));
                     existingEmail.setAddress(emailDTO.getAddress());
                 }
             });
@@ -659,7 +676,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
             phoneDTOS.forEach(phoneDTO -> {
                 if (phoneDTO.getId() == null) {
                     Phone phone = Phone.builder()
-                            .phoneType(PhoneType.valueOf(phoneDTO.getPhoneType()))
+                            .phoneType(PhoneType.fromLabel(phoneDTO.getPhoneType()))
                             .number(phoneDTO.getNumber())
                             .countryCode(phoneDTO.getCountryCode())
                             .build();
@@ -668,7 +685,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
                     Phone existingPhone = phoneRepository.findById(phoneDTO.getId())
                             .orElseThrow(() -> new EntityNotFoundException("Phone with Id: " + phoneDTO.getId() + " not found"));
 
-                    existingPhone.setPhoneType(PhoneType.valueOf(phoneDTO.getPhoneType()));
+                    existingPhone.setPhoneType(PhoneType.fromLabel(phoneDTO.getPhoneType()));
                     existingPhone.setNumber(phoneDTO.getNumber());
                     existingPhone.setCountryCode(phoneDTO.getCountryCode());
                 }
@@ -745,7 +762,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
         request.setDob(String.valueOf(relative.getPerson().getDob()));
         request.setLifeStatus(String.valueOf(relative.getPerson().getLifeStatus()));
         request.setContact(convertToContactRequest(relative.getPerson().getContact()));
-        request.setRelationship(String.valueOf(relative.getFamilyRelationship()));
+        request.setFamilyRelationship(String.valueOf(relative.getFamilyRelationship()));
         request.setMembershipNumber(relative.getMembershipNumber());
         request.setNotes(relative.getNotes());
         return request;

@@ -12,6 +12,6 @@ public class RelativeDTO extends PersonDTO {
 
     private Long id;
     private String membershipNumber;
-    private String relationship;
+    private String familyRelationship;
     private String notes;
 }

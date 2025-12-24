@@ -31,6 +31,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final PersonRepository personRepository;
+    private final ApplicationMapper applicationMapper;
 
     /**
      * User creates a new application
@@ -197,7 +198,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 Relative relative = Relative.builder()
                         .person(relativePerson)
                         .membershipNumber((relativeRequest.getMembershipNumber() == null) ? "MEM-New-001" : relativeRequest.getMembershipNumber())
-                        .familyRelationship(FamilyRelationship.valueOf(relativeRequest.getRelationship()))
+                        .familyRelationship(FamilyRelationship.valueOf(relativeRequest.getFamilyRelationship()))
                         .build();
                 application.addRelative(relative);
             });
@@ -407,7 +408,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Optional<ApplicationDTO> findByIdWithPersonAndContact(Long id) {
         Optional<Application> applicationDTO = applicationRepository.findByIdWithPersonAndContact(id);
-        return applicationDTO.map(ApplicationMapper.INSTANCE::toApplicationDTO);
+        return applicationDTO.map(applicationMapper::toApplicationDTO);
     }
 
     @Override

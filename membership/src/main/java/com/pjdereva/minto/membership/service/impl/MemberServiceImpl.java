@@ -36,6 +36,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
+    private final MemberMapper memberMapper;
 
     /**
      * Convert approved application to membership
@@ -175,8 +176,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDTO saveMember(MemberDTO memberDTO) {
-        var member = memberRepository.save(MemberMapper.INSTANCE.toMember(memberDTO));
-        return MemberMapper.INSTANCE.toMemberDTO(member);
+        var member = memberRepository.save(memberMapper.toMember(memberDTO));
+        return memberMapper.toMemberDTO(member);
     }
 
     @Override

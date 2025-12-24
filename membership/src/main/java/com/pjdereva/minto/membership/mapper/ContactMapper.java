@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {AddressMapper.class, EmailMapper.class, PhoneMapper.class})
 public interface ContactMapper {
 
-    ContactMapper INSTANCE = Mappers.getMapper(ContactMapper.class);
+    //ContactMapper INSTANCE = Mappers.getMapper(ContactMapper.class);
 
     Contact toContact(ContactDTO contactDTO);
 

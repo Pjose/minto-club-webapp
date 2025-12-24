@@ -2,20 +2,27 @@ package com.pjdereva.minto.membership.mapper;
 
 import com.pjdereva.minto.membership.dto.application.AddressDTO;
 import com.pjdereva.minto.membership.model.Address;
+import com.pjdereva.minto.membership.model.AddressType;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
-
-    AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
     Address toAddress(AddressDTO addressDTO);
 
     AddressDTO toAddressDTO(Address address);
 
     List<AddressDTO> toAddressDTOs(List<Address> addresses);
+    Set<AddressDTO> addressSetToAddressDTOSet(Set<Address> addresses);
+    Set<Address> addressDTOSetToAddressSet(Set<AddressDTO> addressDTOS);
+
+    default String mapAddressTypeToLabel(AddressType addressType) {
+        if(addressType == null) {
+            return null;
+        }
+        return addressType.getLabel();
+    }
 }

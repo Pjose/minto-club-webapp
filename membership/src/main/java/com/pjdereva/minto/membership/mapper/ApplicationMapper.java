@@ -13,7 +13,7 @@ ChildMapper.class, SiblingMapper.class, RefereeMapper.class, RelativeMapper.clas
 UserMapper.class})
 public interface ApplicationMapper {
 
-    ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
+    //ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
 
     @Mapping(target = "member", ignore = true)
     Application toApplication(ApplicationDTO applicationDTO);

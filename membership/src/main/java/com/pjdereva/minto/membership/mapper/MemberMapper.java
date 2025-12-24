@@ -8,10 +8,10 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ContactMapper.class, PersonMapper.class})
 public interface MemberMapper {
 
-    MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
+    //MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
     Member toMember(MemberDTO memberDTO);
 

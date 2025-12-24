@@ -33,6 +33,7 @@ public class CompleteWorkflowService {
     private final UserRepository userRepository;
     private final ApplicationRepository applicationRepository;
     private final MemberRepository memberRepository;
+    private final UserMapper userMapper;
 
     /**
      * COMPLETE WORKFLOW DEMONSTRATION
@@ -54,10 +55,12 @@ public class CompleteWorkflowService {
                     .password("SecurePass123!")
                     .build();
 
-            AddUserDTO addUserDTO = UserMapper.INSTANCE.toAddUserDTO(signUpUser);
+            //AddUserDTO addUserDTO = UserMapper.INSTANCE.toAddUserDTO(signUpUser);
+            AddUserDTO addUserDTO = userMapper.toAddUserDTO(signUpUser);
 
             UserDto userDto = userService.createGuestUser(addUserDTO);
-            User user = UserMapper.INSTANCE.toUser(userDto);
+            //User user = UserMapper.INSTANCE.toUser(userDto);
+            User user = userMapper.toUser(userDto);
             result.setUserId(user.getId());
             result.setEmail(user.getEmail());
             result.setUserRole("ROLE_GUEST");

@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    //UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     // For UserDto
     @Mapping(target = "id", ignore = true)
