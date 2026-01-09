@@ -1,6 +1,6 @@
 import HomeFooter from "../sections/HomeFooter";
 import HowTo from "../sections/HowTo";
-import Faq from "../sections/FAQ";
+import Faq from "../sections/Faq";
 import Features from "../sections/Features";
 import AboutUs from "../sections/AboutUs";
 import GetInTouch from "../sections/GetInTouch";
