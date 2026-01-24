@@ -7,6 +7,7 @@ import ConfirmationModal from '../misc/modals/ConfirmationModal';
 import useConfirmation from '../hooks/useConfirmation';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { defaultPerson } from '../../model/defaultPerson';
 
 const ModifyApplication = (props) => {
     const { formData, setFormData, loading, onSubmit } = props
@@ -25,66 +26,15 @@ const ModifyApplication = (props) => {
         { number: 7, title: "Beneficiaries Info", icon: PersonHearts },
     ];
 
-    const createEmptyPerson = () => ({
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        dob: "",
-        lifeStatus: "",
-        contact: {
-            addresses: [{ type: "", street: "", city: "", state: "", zipcode: "", country: "" }],
-            emails: [{ type: "", address: "" }],
-            phones: [{ type: "", countryCode: "", number: "" }]
-        }
-    })
+    const createEmptyPerson = () => ({ ...defaultPerson })
 
-    const createNewReferee = () => ({
-        id:0,
-        member: {
-            id: 0,
-            userId: 0,
-            memberCreatedAt: "",
-            memberUpdatedAt: "",
-            application: {
-                id: 0,
-                applicationStatus: "",
-                maritalStatus: "",
-                appCreatedAt: "",
-                appUpdatedAt: "",
-                person: {
-                    id: 0,
-                    firstName: "",
-                    middleName: "",
-                    lastName: "",
-                    dob: "",
-                    lifeStatus: "",
-                    createdAt: "",
-                    updatedAt: "",
-                    contact: {
-                        id: 0,
-                        addresses: [{ id: 0, type: "", street: "", city: "", state: "", zipcode: "", country: "" }],
-                        emails: [{ id: 0, type: "", address: "" }],
-                        phones: [{ id: 0, type: "", countryCode: "", number: "" }]
-                    }
-                },
-                parents: [],
-                spouses: [],
-                children: [],
-                siblings: [],
-                referees: [],
-                relatives: [],
-                beneficiaries: []
-            } 
-        } 
-    })
-
-    const createEmptyParent = () => ({ person: createEmptyPerson() })
+    const createEmptyParent = () => ({ person: createEmptyPerson(), parentType: "" })
     const createEmptySpouse = () => ({ person: createEmptyPerson(), maritalStatus: "" })
-    const createEmptyChild = () => ({ person: createEmptyPerson() })
+    const createEmptyChild = () => ({ person: createEmptyPerson(), childType: "" })
     const createEmptySibling = () => ({ person: createEmptyPerson(), siblingType: "" })
-    const createEmptyReferee = () => ( createNewReferee() )
-    const createEmptyRelative = () => ({ person: createEmptyPerson(), relationship: "" })
-    const createEmptyBeneficiary = () => ({ person: createEmptyPerson(), percentage: 0.0 })
+    const createEmptyReferee = () => ({ person: createEmptyPerson(), membershipNumber: "" })
+    const createEmptyRelative = () => ({ person: createEmptyPerson(), membershipNumber: "", familyRelationship: "" })
+    const createEmptyBeneficiary = () => ({ person: createEmptyPerson(), relationship: "", percentage: 0.0 })
 
     const addPersonToArray = (arrayName) => {
         let newEntry
@@ -127,35 +77,34 @@ const ModifyApplication = (props) => {
             if (i === index) {
                 switch (arrayName) {
                     case 'parents':
-                    case 'children':
+                        if (field === 'parentType') {
+                            return { ...entry, parentType: value }
+                        }
                         if (subField) {
                             return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
                         }
-                        return { ...entry, person: { ...entry.person, [field]: value } };
+                        return { ...entry, person: { ...entry.person, [field]: value } }
                     
-                    case 'referees':
+                    
+                    case 'children':
+                        if (field === 'childType') {
+                            return { ...entry, childType: value }
+                        }
                         if (subField) {
-                            return { 
-                                ...entry, member: {
-                                    ...entry.member, application: {
-                                        ...entry.member.application, person: {
-                                            ...entry.member.application.person, [field]: {
-                                                ...entry.member.application.person[field], [subField]: value
-                                            }
-                                        }
-                                    }
-                                }
-                            };
+                            return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
                         }
-                        return { 
-                            ...entry, member: { 
-                                ...entry.member, application: { 
-                                    ...entry.member.application, person: { 
-                                        ...entry.member.application.person, [field]: value 
-                                    } 
-                                } 
-                            } 
+                        return { ...entry, person: { ...entry.person, [field]: value } }
+                    
+
+                    case 'referees':
+                        if (field === 'membershipNumber') {
+                            return { ...entry, membershipNumber: value }
                         }
+                        if (subField) {
+                            return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                        }
+                        return { ...entry, person: { ...entry.person, [field]: value } }
+                    
                         
                     case 'siblings':
                         if (field === 'siblingType') {
@@ -176,8 +125,11 @@ const ModifyApplication = (props) => {
                         return { ...entry, person: { ...entry.person, [field]: value } }
                     
                     case 'relatives':
-                        if (field === 'relationship') {
-                            return { ...entry, relationship: value }
+                        if (field === 'membershipNumber') {
+                            return { ...entry, membershipNumber: value }
+                        }
+                        if (field === 'familyRelationship') {
+                            return { ...entry, familyRelationship: value }
                         }
                         if (subField) {
                             return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
@@ -185,6 +137,9 @@ const ModifyApplication = (props) => {
                         return { ...entry, person: { ...entry.person, [field]: value } }
                     
                     case 'beneficiaries':
+                        if (field === 'relationship') {
+                            return { ...entry, relationship: value }
+                        }
                         if (field === 'percentage') {
                             return { ...entry, percentage: value }
                         }
@@ -211,88 +166,12 @@ const ModifyApplication = (props) => {
                 switch (arrayName) {
                     case 'parents':
                     case 'children':
-                        personObj = entry.person;
-                    return {
-                        ...entry,
-                        person: {
-                            ...personObj,
-                            contact: {
-                                ...personObj.contact,
-                                [contactType]: personObj.contact[contactType].map((contact, j) =>
-                                    j === contactIndex ? { ...contact, [field]: value } : contact
-                                )
-                            }
-                        }
-                    }
-                    
                     case 'referees':
-                        personObj = entry.member.application.person
-                    return {
-                        ...entry,
-                        member: {
-                            ...entry.member,
-                            application: {
-                                ...entry.member.application,
-                                person: {
-                                    ...personObj,
-                                    contact: {
-                                        ...personObj.contact,
-                                        [contactType]: personObj.contact[contactType].map((contact, j) =>
-                                            j === contactIndex ? { ...contact, [field]: value } : contact
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
                     case 'siblings':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: personObj.contact[contactType].map((contact, j) =>
-                                        j === contactIndex ? { ...contact, [field]: value } : contact
-                                    )
-                                }
-                            }
-                        }
-                    
                     case 'spouses':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                            ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: personObj.contact[contactType].map((contact, j) =>
-                                        j === contactIndex ? { ...contact, [field]: value } : contact
-                                    )
-                                }
-                            }
-                        }
-                    
                     case 'relatives':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: personObj.contact[contactType].map((contact, j) =>
-                                        j === contactIndex ? { ...contact, [field]: value } : contact
-                                    )
-                                }
-                            }
-                        }
-                    
                     case 'beneficiaries':
-                        personObj = entry.person
+                        personObj = entry.person;
                         return {
                             ...entry,
                             person: {
@@ -330,76 +209,10 @@ const ModifyApplication = (props) => {
                 switch (arrayName) {
                     case 'parents':
                     case 'children':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: [...personObj.contact[contactType], newContact]
-                                }
-                            }
-                        }
-                    
                     case 'referees':
-                        personObj = entry.member.application.person
-                        return {
-                            ...entry,
-                            member: {
-                                ...entry.member,
-                                application: {
-                                    ...entry.member.application,
-                                    person: {
-                                        ...personObj,
-                                        contact: {
-                                            ...personObj.contact,
-                                            [contactType]: [...personObj.contact[contactType], newContact]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    
                     case 'siblings':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: [...personObj.contact[contactType], newContact]
-                                }
-                            }
-                        }
-                    
                     case 'spouses':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: [...personObj.contact[contactType], newContact]
-                                }
-                            }
-                        }
-                    
                     case 'relatives':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: [...personObj.contact[contactType], newContact]
-                                }
-                            }
-                        }
-                    
                     case 'beneficiaries':
                         personObj = entry.person
                         return {
@@ -431,76 +244,10 @@ const ModifyApplication = (props) => {
                 switch (arrayName) {
                     case 'parents':
                     case 'children':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
-                                }
-                            }
-                        }
-                    
                     case 'referees':
-                        personObj = entry.member.application.person
-                        return {
-                            ...entry,
-                            member: {
-                                ...entry.member,
-                                application: {
-                                    ...entry.member.application,
-                                    person: {
-                                        ...personObj,
-                                        contact: {
-                                            ...personObj.contact,
-                                            [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    
                     case 'siblings':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
-                                }
-                            }
-                        }
-
                     case 'spouses':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
-                                }
-                            }
-                        }
-                    
                     case 'relatives':
-                        personObj = entry.person
-                        return {
-                            ...entry,
-                            person: {
-                                ...personObj,
-                                contact: {
-                                    ...personObj.contact,
-                                    [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
-                                }
-                            }
-                        }
-                    
                     case 'beneficiaries':
                         personObj = entry.person
                         return {
@@ -640,11 +387,16 @@ const ModifyApplication = (props) => {
         
         switch (arrayName) {
         case 'parents':
+            person = entry.person;
+            extraFields.parentType = entry.parentType;
+            break;
         case 'children':
             person = entry.person;
+            extraFields.childType = entry.childType;
             break;
         case 'referees':
-            person = entry.member.application.person;
+            person = entry.person;
+            extraFields.membershipNumber = entry.membershipNumber;
             break;
         case 'siblings':
             person = entry.person;
@@ -656,10 +408,12 @@ const ModifyApplication = (props) => {
             break;
         case 'relatives':
             person = entry.person;
-            extraFields.relationship = entry.relationship;
+            extraFields.membershipNumber = entry.membershipNumber;
+            extraFields.familyRelationship = entry.familyRelationship;
             break;
         case 'beneficiaries':
             person = entry.person;
+            extraFields.relationship = entry.relationship;
             extraFields.percentage = entry.percentage;
             break;
         default:
@@ -784,69 +538,138 @@ const ModifyApplication = (props) => {
                                             onChange={(e) => updatePersonInArray(arrayName, index, 'siblingType', e.target.value)}
                                             className="form-select"
                                         >
-                                            <option value="">Select...</option>
+                                            <option value="">-- Select --</option>
                                             <option value="Brother">Brother</option>
                                             <option value="Sister">Sister</option>
+                                            <option value="Step Brother">Step Brother</option>
+                                            <option value="Step Sister">Step Sister</option>
+                                            <option value="Adopted Brother">Adopted Brother</option>
+                                            <option value="Adopted Sister">Adopted Sister</option>
+                                            <option value="Other">Other</option>
                                         </select>
                                         <label htmlFor={`${arrayName}-${index}-siblingType`}>Sibling Type</label>
                                     </div>
                                 </div>
                             )}
 
-                            {arrayName === 'relatives' && (
+                            {arrayName === 'children' && (
                                 <div className="col-sm-6 mb-3">
                                     <div className="form-floating">
                                         <select
-                                            id={`relationship-${index}`}
-                                            value={extraFields.relationship}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'relationship', e.target.value)}
+                                            id={`${arrayName}-${index}-childType`}
+                                            value={extraFields.childType}
+                                            onChange={(e) => updatePersonInArray(arrayName, index, 'childType', e.target.value)}
                                             className="form-select"
                                         >
-                                            <option value="">Select...</option>
-                                            <option value="Spouse">Spouse</option>
-                                            <option value="Father">Father</option>
-                                            <option value="Mother">Mother</option>
-                                            <option value="Son">Son</option>
-                                            <option value="Daughter">Daughter</option>
-                                            <option value="Brother">Brother</option>
-                                            <option value="Sister">Sister</option>
-                                            <option value="Grandfather">Grandfather</option>
-                                            <option value="Grandmother">Grandmother</option>
-                                            <option value="Grandson">Grandon</option>
-                                            <option value="Granddaughter">Granddaughter</option>
-                                            <option value="Uncle">Uncle</option>
-                                            <option value="Aunt">Aunt</option>
-                                            <option value="Nephew">Nephew</option>
-                                            <option value="Niece">Niece</option>
-                                            <option value="Cousin">Cousin</option>
-                                            <option value="Great-Grandfather">Great-Grandfather</option>
-                                            <option value="Great-Grandmother">Great-Grandmother</option>
-                                            <option value="Great-Uncle">Great-Uncle</option>
-                                            <option value="Great-Aunt">Great-Aunt</option>
-                                            <option value="Step relative">Step relative</option>
-                                            <option value="Other relative">Other relative</option>
+                                            <option value="">-- Select --</option>
+                                            <option value="Biological">Biological</option>
+                                            <option value="Adopted">Adopted</option>
+                                            <option value="Step Child">Step Child</option>
+                                            <option value="Foster Child">Foster Child</option>
                                         </select>
-                                        <label htmlFor={`relationship-${index}`}>Family Relationship</label>
+                                        <label htmlFor={`${arrayName}-${index}-childType`}>Child Type</label>
                                     </div>
                                 </div>
                             )}
 
-                            {arrayName === 'beneficiaries' && (
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <input
-                                            id={`percentage-${index}`}
-                                            type="number"
-                                            step="0.1"
-                                            min="0"
-                                            max="100"
-                                            value={extraFields.percentage}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'percentage', parseFloat(e.target.value) || 0.0)}
-                                            className="form-control"
-                                        />
-                                        <label htmlFor={`percentage-${index}`}>Percentage</label>
+                            {arrayName === 'referees' && (
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`${arrayName}-${index}-membershipNumber`}
+                                                type={"text"}
+                                                className="form-control"
+                                                placeholder="Membership Number"
+                                                value={extraFields.membershipNumber}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
+                                            />
+                                            <label htmlFor={`${arrayName}-${index}-membershipNumber`}>Membership Number*</label>
+                                        </div>
                                     </div>
-                                </div>
+                            )}
+
+                            {arrayName === 'relatives' && (
+                                <>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <select
+                                                id={`relationship-${index}`}
+                                                value={extraFields.relationship}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'relationship', e.target.value)}
+                                                className="form-select"
+                                            >
+                                                <option value="">-- Select --</option>
+                                                <option value="Spouse">Spouse</option>
+                                                <option value="Father">Father</option>
+                                                <option value="Mother">Mother</option>
+                                                <option value="Son">Son</option>
+                                                <option value="Daughter">Daughter</option>
+                                                <option value="Brother">Brother</option>
+                                                <option value="Sister">Sister</option>
+                                                <option value="Grandfather">Grandfather</option>
+                                                <option value="Grandmother">Grandmother</option>
+                                                <option value="Grandson">Grandon</option>
+                                                <option value="Granddaughter">Granddaughter</option>
+                                                <option value="Uncle">Uncle</option>
+                                                <option value="Aunt">Aunt</option>
+                                                <option value="Nephew">Nephew</option>
+                                                <option value="Niece">Niece</option>
+                                                <option value="Cousin">Cousin</option>
+                                                <option value="Great-Grandfather">Great-Grandfather</option>
+                                                <option value="Great-Grandmother">Great-Grandmother</option>
+                                                <option value="Great-Uncle">Great-Uncle</option>
+                                                <option value="Great-Aunt">Great-Aunt</option>
+                                                <option value="Step relative">Step relative</option>
+                                                <option value="Other relative">Other relative</option>
+                                            </select>
+                                            <label htmlFor={`relationship-${index}`}>Family Relationship</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`membershipNumber-${index}`}
+                                                type="text"
+                                                className="form-control"
+                                                value={extraFields.membershipNumber}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
+                                            />
+                                            <label htmlFor={`membershipNumber-${index}`}>Membership Number</label>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {arrayName === 'beneficiaries' && (
+                                <>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`relationship-${index}`}
+                                                type="text"
+                                                className="form-control"
+                                                value={extraFields.relationship}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'relationship', e.target.value)}
+                                            />
+                                            <label htmlFor={`relationship-${index}`}>Relationship</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`percentage-${index}`}
+                                                type="number"
+                                                step="0.1"
+                                                min="0"
+                                                max="100"
+                                                value={extraFields.percentage}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'percentage', parseFloat(e.target.value) || 0.0)}
+                                                className="form-control"
+                                            />
+                                            <label htmlFor={`percentage-${index}`}>Percentage</label>
+                                        </div>
+                                    </div>
+                                </>
                             )}
                         </div>
                     
@@ -1286,7 +1109,7 @@ const ModifyApplication = (props) => {
                                         <option value="">Select...</option>
                                         <option value="Draft">Draft</option>
                                         <option value="Submitted">Submitted</option>
-                                        <option value="In review">In Review</option>
+                                        <option value="Under review">Under review</option>
                                         <option value="Approved">Approved</option>
                                         <option value="Rejected">Rejected</option>
                                         <option value="Withdrawn">Withdrawn</option>

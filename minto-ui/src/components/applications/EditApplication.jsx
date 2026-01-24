@@ -17,7 +17,7 @@ const EditApplication = () => {
     const [viewApplication, setViewApplication] = useState(false)
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
-    const [formData, setFormData] = useState({...defaultApplication })
+    const [formData, setFormData] = useState({ ...defaultApplication })
 
     useEffect(() => {
         //console.log('selectedApplication:', selectedApplication)
@@ -39,7 +39,8 @@ const EditApplication = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
         setLoading(true)
-        //console.log('FormData:', formData)
+        console.log('[EditApplication]:=> ')
+        console.log('FormData:', formData)
 
         try {
             const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications`, {

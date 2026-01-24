@@ -91,7 +91,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         // TODO: Update person info with deduplication
         //updatePersonalInfo(user.getPerson().getId(), draft.getPerson());
-        updatePersonalInfo(user, draft.getPerson());
+        updatePersonalInfo(application, draft.getPerson());
 
         // Update family members with deduplication
         updateParents(application, draft.getParents());
@@ -254,7 +254,8 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
 
         // TODO: Update person info with deduplication
         //updatePersonalInfo(user.getPerson().getId(), draft.getPerson());
-        updatePersonalInfo(user, draft.getPerson());
+        //updatePersonalInfo(user, draft.getPerson());
+        updatePersonalInfo(application, draft.getPerson());
 
         // Update family members with deduplication
         updateParents(application, draft.getParents());
@@ -277,52 +278,19 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
     // DEDUPLICATION METHODS - Key to preventing duplicates
     // ========================================================================
 
-    private void updatePersonalInfo(User user, PersonDTO data) {
+    private void updatePersonalInfo(Application application, PersonDTO data) {
         if (data == null) return;
 
-        Long personId = 0L;
-        /*
-        try {
-            personId = user.getPerson().getId();
-        } catch (Exception e) {
-            log.error("Error: User does not have a person record.");
-        }
-        */
-        if(user.getPerson() == null) {
-            Person person = createOrUpdatePerson(data);
-            personId = person.getId();
-        }
-        Optional<Person> personOpt = personRepository.findById(personId);
-        if(personOpt.isPresent()) {
-            Person person = personOpt.get();
-            person.setFirstName(data.getFirstName());
-            person.setLastName(data.getLastName());
-            person.setMiddleName(data.getMiddleName());
-            person.setDob(LocalDate.parse(data.getDob()));
-            person.setLifeStatus(data.getLifeStatus());
-            person.setUpdatedAt(LocalDateTime.now());
+        Person person = null;
 
-            // Update or create contact
-            if (data.getContact() != null) {
-                Contact contact = person.getContact();
-                if (contact == null) {
-                    log.debug("Person -> Contact is NULL");
-                    // CREATE new contact
-                    contact = new Contact();
-                    person.setContact(contact);
-                } else {
-                    contact.setUpdatedAt(LocalDateTime.now());
-                }
-
-                // Update addresses
-                updateContactAddresses(contact, data.getContact().getAddresses());
-                // Update email
-                updateContactEmails(contact, data.getContact().getEmails());
-                // Update phone
-                updateContactPhones(contact, data.getContact().getPhones());
-
-            } else {
-                log.debug("PersonDTO -> Contact is NULL");
+        if(application.getPerson() == null) {
+            person = createOrUpdatePerson(data);
+            application.addPerson(person);
+        } else {
+            Optional<Person> personOpt = personRepository.findById(data.getId());
+            if(personOpt.isPresent()) {
+                person = personOpt.get();
+                updatePersonFromRequest(person, data);
             }
         }
     }

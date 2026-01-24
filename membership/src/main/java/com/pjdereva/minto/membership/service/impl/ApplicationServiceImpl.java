@@ -322,6 +322,29 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     /**
+     * Staff/Admin return application
+     */
+    @Transactional
+    public void returnApplication(Long applicationId, String notes) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        if (application.getApplicationStatus() == ApplicationStatus.DRAFT) {
+            throw new IllegalStateException("Draft applications cannot be returned");
+        }
+
+        if (application.getApplicationStatus() == ApplicationStatus.REJECTED) {
+            throw new IllegalStateException("Rejected applications cannot be returned");
+        }
+
+        application.setApplicationStatus(ApplicationStatus.RETURNED);
+        application.setNotes(notes);
+        applicationRepository.save(application);
+
+        log.info("Application {} returned: {}", application.getApplicationNumber(), notes);
+    }
+
+    /**
      * User withdraws application
      */
     @Transactional

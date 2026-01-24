@@ -428,6 +428,8 @@ const DraftApplication = (props) => {
         e.preventDefault()
         setSaving(true)
         setMessage('Saving membership application...')
+        console.log('Saving membership application => ')
+        console.log(formData)
         
         try {
             if(isAuthenticated) {
@@ -701,123 +703,124 @@ const DraftApplication = (props) => {
                                             <option value="">-- Select --</option>
                                             <option value="Brother">Brother</option>
                                             <option value="Sister">Sister</option>
+                                            <option value="Step Brother">Step Brother</option>
+                                            <option value="Step Sister">Step Sister</option>
+                                            <option value="Adopted Brother">Adopted Brother</option>
+                                            <option value="Adopted Sister">Adopted Sister</option>
+                                            <option value="Other">Other</option>
                                         </select>
                                         <label htmlFor={`${arrayName}-${index}-siblingType`}>Sibling Type</label>
                                     </div>
                                 </div>
                             )}
 
-                            {arrayName === 'relatives' && (
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <select
-                                            id={`familyRelationship-${index}`}
-                                            value={extraFields.familyRelationship}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'familyRelationship', e.target.value)}
-                                            className="form-select"
-                                        >
-                                            <option value="">-- Select --</option>
-                                            <option value="Spouse">Spouse</option>
-                                            <option value="Father">Father</option>
-                                            <option value="Mother">Mother</option>
-                                            <option value="Son">Son</option>
-                                            <option value="Daughter">Daughter</option>
-                                            <option value="Brother">Brother</option>
-                                            <option value="Sister">Sister</option>
-                                            <option value="Grandfather">Grandfather</option>
-                                            <option value="Grandmother">Grandmother</option>
-                                            <option value="Grandson">Grandon</option>
-                                            <option value="Granddaughter">Granddaughter</option>
-                                            <option value="Uncle">Uncle</option>
-                                            <option value="Aunt">Aunt</option>
-                                            <option value="Nephew">Nephew</option>
-                                            <option value="Niece">Niece</option>
-                                            <option value="Cousin">Cousin</option>
-                                            <option value="Great-Grandfather">Great-Grandfather</option>
-                                            <option value="Great-Grandmother">Great-Grandmother</option>
-                                            <option value="Great-Uncle">Great-Uncle</option>
-                                            <option value="Great-Aunt">Great-Aunt</option>
-                                            <option value="Step relative">Step relative</option>
-                                            <option value="Other relative">Other relative</option>
-                                        </select>
-                                        <label htmlFor={`familyRelationship-${index}`}>Family Relationship</label>
-                                    </div>
-                                </div>
-                            )}
-
-                            {arrayName === 'beneficiaries' && (
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <input
-                                            id={`percentage-${index}`}
-                                            type="number"
-                                            step="0.1"
-                                            min="0"
-                                            max="100"
-                                            value={extraFields.percentage}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'percentage', parseFloat(e.target.value) || 0.0)}
-                                            className="form-control"
-                                        />
-                                        <label htmlFor={`percentage-${index}`}>Percentage</label>
+                            {arrayName === 'referees' && (
+                                <div className="form-group row">
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`${arrayName}-${index}-membershipNumber`}
+                                                type={"text"}
+                                                className="form-control"
+                                                placeholder="Membership Number"
+                                                value={extraFields.membershipNumber}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
+                                            />
+                                            <label htmlFor={`${arrayName}-${index}-membershipNumber`}>Membership Number*</label>
+                                        </div>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {arrayName === 'referees' && (
-                            <div className="form-group row">
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <input
-                                            id={`${arrayName}-${index}-membershipNumber`}
-                                            type={"text"}
-                                            className="form-control"
-                                            placeholder="Membership Number"
-                                            value={extraFields.membershipNumber}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
-                                        />
-                                        <label htmlFor={`${arrayName}-${index}-membershipNumber`}>Membership Number*</label>
+                        <div className="form-group row">
+                            {arrayName === 'relatives' && (
+                                <>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`${arrayName}-${index}-membershipNumber`}
+                                                type={"text"}
+                                                className="form-control"
+                                                placeholder="Membership Number"
+                                                value={extraFields.membershipNumber}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
+                                            />
+                                            <label htmlFor={`${arrayName}-${index}-membershipNumber`}>Membership Number*</label>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        )}
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <select
+                                                id={`familyRelationship-${index}`}
+                                                value={extraFields.familyRelationship}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'familyRelationship', e.target.value)}
+                                                className="form-select"
+                                            >
+                                                <option value="">-- Select --</option>
+                                                <option value="Spouse">Spouse</option>
+                                                <option value="Father">Father</option>
+                                                <option value="Mother">Mother</option>
+                                                <option value="Son">Son</option>
+                                                <option value="Daughter">Daughter</option>
+                                                <option value="Brother">Brother</option>
+                                                <option value="Sister">Sister</option>
+                                                <option value="Grandfather">Grandfather</option>
+                                                <option value="Grandmother">Grandmother</option>
+                                                <option value="Grandson">Grandon</option>
+                                                <option value="Granddaughter">Granddaughter</option>
+                                                <option value="Uncle">Uncle</option>
+                                                <option value="Aunt">Aunt</option>
+                                                <option value="Nephew">Nephew</option>
+                                                <option value="Niece">Niece</option>
+                                                <option value="Cousin">Cousin</option>
+                                                <option value="Great-Grandfather">Great-Grandfather</option>
+                                                <option value="Great-Grandmother">Great-Grandmother</option>
+                                                <option value="Great-Uncle">Great-Uncle</option>
+                                                <option value="Great-Aunt">Great-Aunt</option>
+                                                <option value="Step relative">Step relative</option>
+                                                <option value="Other relative">Other relative</option>
+                                            </select>
+                                            <label htmlFor={`familyRelationship-${index}`}>Family Relationship</label>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
-                        {arrayName === 'relatives' && (
-                            <div className="form-group row">
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <input
-                                            id={`${arrayName}-${index}-membershipNumber`}
-                                            type={"text"}
-                                            className="form-control"
-                                            placeholder="Membership Number"
-                                            value={extraFields.membershipNumber}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
-                                        />
-                                        <label htmlFor={`${arrayName}-${index}-membershipNumber`}>Membership Number*</label>
+                            {arrayName === 'beneficiaries' && (
+                                <>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`${arrayName}-${index}-relationship`}
+                                                type={"text"}
+                                                className="form-control"
+                                                placeholder="Relationship"
+                                                value={extraFields.relationship}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'relationship', e.target.value)}
+                                            />
+                                            <label htmlFor={`${arrayName}-${index}-relationship`}>Relationship*</label>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {arrayName === 'beneficiaries' && (
-                            <div className="form-group row">
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <input
-                                            id={`${arrayName}-${index}-relationship`}
-                                            type={"text"}
-                                            className="form-control"
-                                            placeholder="Relationship"
-                                            value={extraFields.relationship}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'relationship', e.target.value)}
-                                        />
-                                        <label htmlFor={`${arrayName}-${index}-relationship`}>Relationship*</label>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`percentage-${index}`}
+                                                type="number"
+                                                step="0.1"
+                                                min="0"
+                                                max="100"
+                                                value={extraFields.percentage}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'percentage', parseFloat(e.target.value) || 0.0)}
+                                                className="form-control"
+                                            />
+                                            <label htmlFor={`percentage-${index}`}>Percentage</label>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        )}
-                    
+                                </>
+                            )}
+                        </div>
+                        
                         {/* Contact Details Card */}
                         <div key={index} className='card mb-3'>
                             <div className="card-header">
@@ -1255,7 +1258,7 @@ const DraftApplication = (props) => {
                                         <option value="">-- Select --</option>
                                         <option value="Draft">Draft</option>
                                         <option value="Submitted">Submitted</option>
-                                        <option value="In review">In Review</option>
+                                        <option value="Under review">Under review</option>
                                         <option value="Approved">Approved</option>
                                         <option value="Rejected">Rejected</option>
                                         <option value="Withdrawn">Withdrawn</option>

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "${frontend.url}")
 @RequestMapping("/api/v1/applications")
 public class ApplicationController {
 
@@ -94,7 +94,8 @@ public class ApplicationController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateApplication(@RequestBody Application application) {
+    public ResponseEntity<?> updateApplication(@RequestBody ApplicationDTO applicationDTO) {
+        var application = applicationMapper.toApplication(applicationDTO);
         var app = applicationService.updateApplication(application);
         return ResponseEntity.ok(applicationMapper.toApplicationDTO(app));
     }
@@ -168,7 +169,7 @@ public class ApplicationController {
                         ", is now under review.");
             } else {
                 return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
-                        ", has insufficient access.");
+                        ", has insufficient access to review application.");
             }
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
@@ -186,28 +187,62 @@ public class ApplicationController {
         try {
             if(user.isAdmin() || user.isStaff()) {
                 applicationService.approveApplication(applicationDTO.getId());
-                return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
-                        ", approved by " + user.getFirstName() + " " + user.getLastName() + ".");
             } else {
                 return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
-                        ", has insufficient access.");
+                        ", has insufficient access to approve application.");
             }
             //app = applicationService.createApplicationForUser(application.getUser().getId());
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
+        return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
+                ", approved by " + user.getFirstName() + " " + user.getLastName() + ".");
     }
 
     @PostMapping("/reject")
-    public ResponseEntity<?> rejectApplication(@RequestBody ApplicationDTO applicationDTO) {
+    public ResponseEntity<?> rejectApplication(
+            @RequestBody ApplicationDTO applicationDTO,
+            Principal currentUser
+    ) {
+        // TODO: Fix authorization using security configuration
+        var user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+
         try {
-            applicationService.rejectApplication(applicationDTO.getId(),
-                    applicationDTO.getRejectionReason());
+            if(user.isAdmin() || user.isStaff()) {
+                applicationService.rejectApplication(applicationDTO.getId(),
+                        applicationDTO.getRejectionReason());
+            } else {
+                return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
+                        ", has insufficient access to reject application.");
+            }
         } catch (Exception ex) {
             return ResponseEntity.unprocessableEntity().body(ex.getMessage());
         }
         return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
                 " rejected for the following reason: " + applicationDTO.getRejectionReason());
+    }
+
+    @PostMapping("/return")
+    public ResponseEntity<?> returnApplication(
+            @RequestBody ApplicationDTO applicationDTO,
+            Principal currentUser
+    ) {
+        // TODO: Fix authorization using security configuration
+        var user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+
+        try {
+            if(user.isAdmin() || user.isStaff()) {
+                applicationService.returnApplication(applicationDTO.getId(),
+                        applicationDTO.getNotes());
+            } else {
+                return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
+                        ", has insufficient access to return application.");
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.unprocessableEntity().body(ex.getMessage());
+        }
+        return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
+                " returned for the following reason: " + applicationDTO.getNotes());
     }
 
     @PostMapping("/withdraw")

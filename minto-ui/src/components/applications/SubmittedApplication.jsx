@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import { toast } from 'sonner'
-//import { useEffect, useState } from 'react'
 import { useState } from 'react'
 import { CardChecklist, FolderSymlinkFill, HandThumbsDownFill, HandThumbsUpFill, Heart, People, PeopleFill, PersonArmsUp, PersonCheck, 
     PersonCheckFill, PersonCircle, PersonHeart, PersonHearts, PersonLinesFill, PersonRaisedHand, SignTurnLeftFill, XOctagonFill } from 'react-bootstrap-icons'
@@ -8,71 +7,42 @@ import LoadingSpinner from '../loading/LoadingSpinner'
 import ViewContactCard from '../person/components/ViewContactCard'
 import MemberPersonInfoCard from '../person/components/MemberPersonInfoCard'
 import { useAuth } from '../hooks/useAuth'
-//import useFetch from '../hooks/useFetch'
 import ConfirmationModal from '../misc/modals/ConfirmationModal'
 import useConfirmation from '../hooks/useConfirmation'
 import { useNavigate } from 'react-router-dom'
-//import { defaultApplication } from '../../model/defaultApplication'
+import ConfirmReasonModal from '../misc/modals/ConfirmReasonModal'
+import useConfirmReason from '../hooks/useConfirmReason'
 
 const SubmittedApplication = (props) => {
-    const { formData, onReview, onApprove, onReject, loading } = props
-    //const { formData, onInputChange, onSubmit, loading } = props
+    const { formData, setFormData, onReview, onApprove, onReject, onReturned, loading } = props
     const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
-    //const [viewApplicationData, setViewApplicationData] = useState({ ...defaultApplication})
+    const { showReason, showConfirmReason, handleConfirmReason, handleCancelReason } = useConfirmReason()
     const [showContact, setShowContact] = useState(false)
-    //const [isLoading, setIsLoading] = useState(false)
     const { isAuthenticated } = useAuth()
-    //const { getUser, isAuthenticated } = useAuth()
-    //const { fetchWithAuth } = useFetch()
     const navigate = useNavigate()
-    //let user = getUser()
-/*
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true)
-            try {
-                if((formData.id > 0) && user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/dto/id/${formData.id}`, {
-                        method: 'GET',
-                        credentials: 'include',
-                    })
-                    
-                    if (!response.ok) {
-                        console.log("[SubmittedApplication] - Testing ... line 28")
-                        toast.error('HTTP Error: Network response not OK!')
-                        throw new Error('Network response was not ok!')
-                    }
-                    const data = await response.json()
-                    setViewApplicationData(data)
-                    console.log('[SubmittedApplication] - data: ', data)
-                    toast.success('Application data loaded successfully!')
-                } else {
-                    console.log('User NOT authenticated. Please login.')
-                    toast.warning('User NOT authenticated. Please login.')
-                }
-            } catch(error) {
-                console.log(error)
-                toast.error('Error loading application. ' + error.message)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        fetchData()
-        
-        return () => {
-            console.log("Cleaned up after fetchData in SubmittedApplication!")
-            }
-    }, [formData, user, fetchWithAuth])
-*/
 
     const handleToggle = () => {
         setShowContact(!showContact)
     }
 
+    const onInputChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+
+    const onConfirmReason = (reason) => {
+        // Handle the user's response from the Confirm Reason Modal
+        if(reason) {  
+            setFormData({ ...formData, rejectionReason: reason });
+            console.log("User confirmed the application rejection.")
+        } else {
+            console.log("User cancelled the application rejection.")
+        }
+        handleConfirmReason();
+    }
+
     const cancel = async () => {
         const confirmation = await showConfirmation("Are you sure you want to cancel prosessing this Application?")
         if(confirmation) {
-            //setFormData(DEFAULT_APPLICATION)
             console.log("Processing Application Cancelled! The form is reset.")
             toast.info("'Processing Application' -> Cancelled!", {
                 description: "The application has been reset.",
@@ -87,9 +57,15 @@ const SubmittedApplication = (props) => {
     }
 
     const reject = async (e) => {
-        const confirmation = await showConfirmation("Are you sure you want to reject this Application?")
+        if(formData.notes === '' || formData.notes === null) {
+            toast.error("Rejection Notes Required!", {
+                description: "Please provide notes for rejecting the application.",
+            })
+            return
+        }
+
+        const confirmation = await showConfirmReason()
         if(confirmation) {
-            //setFormData(DEFAULT_APPLICATION)
             onReject(e)
             console.log("Membership Application Rejected! The application status is set to rejected.")
             toast.info("'Membership Application' -> Rejected!", {
@@ -99,6 +75,30 @@ const SubmittedApplication = (props) => {
         } else {
             console.log("Reject Aborted! Continue processing the Membership Application.")
             toast.info("Reject -> Aborted!", {
+                description: "Continue processing the 'Membership Application'.",
+            })
+        }
+    }
+
+    const returnApplication = async (e) => {
+        if(formData.notes === '' || formData.notes === null) {
+            toast.error("Return Notes Required!", {
+                description: "Please provide notes for returning the application.",
+            })
+            return
+        }
+
+        const confirmation = await showConfirmReason()
+        if(confirmation) {
+            onReturned(e)
+            console.log("Membership Application Returned! The application status is set to returned.")
+            toast.info("'Membership Application' -> Returned!", {
+                description: "The application has been returned to the applicant.",
+            })
+            navigate('/login')
+        } else {
+            console.log("Return Aborted! Continue processing the Membership Application.")
+            toast.info("Return -> Aborted!", {
                 description: "Continue processing the 'Membership Application'.",
             })
         }
@@ -312,6 +312,25 @@ const SubmittedApplication = (props) => {
                                         personTypeSingle={'Beneficiary'}
                                         priColor={'saddlebrown'}
                                     />
+                                    {/* Application Notes */}
+                                    <div className="form-group row p-2 mt-2 mx-1 bg-light border border-secondary rounded">
+                                        <div className="col-12">
+                                            <h6 className="mb-3"><strong>Application Notes:</strong></h6>
+                                            <div className="form-floating mb-3">
+                                                <textarea 
+                                                    id="notes"
+                                                    name='notes'
+                                                    value={formData.notes || ''}
+                                                    onChange={(e) => onInputChange(e)}
+                                                    rows={5}
+                                                    maxLength={2000}
+                                                    style={{ height: '120px' }}
+                                                    className="form-control"
+                                                />
+                                                <label htmlFor="notes">Notes</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div className="text-center my-3">
                                         {
                                             (formData.applicationStatus === 'Under review' || formData.applicationStatus === 'Approved') && (
@@ -322,11 +341,10 @@ const SubmittedApplication = (props) => {
                                                         </span>
                                                         <HandThumbsDownFill size={20} className="m-0 ms-sm-1 mb-1" />
                                                     </button>
-                                                    <ConfirmationModal
-                                                        show={show}
-                                                        message={confirmMsg}
-                                                        onConfirm={handleConfirm}
-                                                        onCancel={handleCancel}
+                                                    <ConfirmReasonModal
+                                                        showReason={showReason}
+                                                        onConfirmReason={onConfirmReason}
+                                                        onCancelReason={handleCancelReason}
                                                     />
                                                 </>
                                             )
@@ -334,12 +352,20 @@ const SubmittedApplication = (props) => {
                                         {/*TODO: Create method to change status to 'Returned' and allow user to re-submit the a draft application */}
                                         {
                                             (formData.applicationStatus === 'Submitted' || formData.applicationStatus === 'Under review') && (
-                                                <button type="submit" onClick={(e) => onReview(e)} className="btn btn-primary mx-3" title='Return Membership Application'>
-                                                    <span className="d-none d-sm-inline-block">
-                                                        { loading ? 'Updating...' : 'Return to User' }
-                                                    </span>
-                                                    <SignTurnLeftFill size={20} className="m-0 ms-sm-1 mb-1" />
-                                                </button>
+                                                <>
+                                                    <button type="submit" onClick={returnApplication} className="btn btn-primary mx-3" title='Return Membership Application'>
+                                                        <span className="d-none d-sm-inline-block">
+                                                            { loading ? 'Updating...' : 'Return to User' }
+                                                        </span>
+                                                        <SignTurnLeftFill size={20} className="m-0 ms-sm-1 mb-1" />
+                                                    </button>
+                                                    <ConfirmationModal
+                                                        show={show}
+                                                        message={confirmMsg}
+                                                        onConfirm={handleConfirm}
+                                                        onCancel={handleCancel}
+                                                    />
+                                                </>
                                             )
                                         }
                                         <button type='button' onClick={cancel} className="btn btn-outline-danger mx-3" title='Cancel Application Review'>
@@ -375,7 +401,7 @@ const SubmittedApplication = (props) => {
                                     </div>
                                 </div>
                             </div>
-                          </>
+                        </>
                     )
                 )
             }
@@ -386,10 +412,12 @@ const SubmittedApplication = (props) => {
 
 SubmittedApplication.propTypes = {
     formData: PropTypes.object,
+    setFormData: PropTypes.func,
     onInputChange: PropTypes.func,
     onReview: PropTypes.func,
     onApprove: PropTypes.func,
     onReject: PropTypes.func,
+    onReturned: PropTypes.func,
     loading: PropTypes.bool,
 }
 

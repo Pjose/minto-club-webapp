@@ -176,6 +176,41 @@ const ReviewApplications = () => {
         }
     }
 
+    const onReturned = async (e) => {
+        e.preventDefault();
+        setLoading(true)
+        //console.log('FormData:', formData)
+
+        try {
+            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/return`, {
+                method: 'POST',
+                credentials: "include",
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if(!response.ok) {
+                console.log(`HTTP error! status: ${response.status}`)
+                toast.error('HTTP error!')
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const jsonData = await response.json();
+            setFormData(jsonData)
+            //console.log(jsonData);
+            setMessage('Application set to returned successfully')
+            toast.success('Application set to returned successfully')
+            navigate('/login')
+        } catch (error) {
+            console.log(error)
+            toast.error('Error setting application to returned. ' + error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const onInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     }
@@ -216,11 +251,13 @@ const ReviewApplications = () => {
                             { console.log('selectedApplication:', formData)}
                             {<SubmittedApplication 
                                 formData={formData} 
+                                setFormData={setFormData}
                                 loading={loading}
                                 onInputChange={onInputChange}
                                 onReview={onReview}
                                 onApprove={onApprove}
                                 onReject={onReject}
+                                onReturned={onReturned}
                             />}
                             {/* <SubmittedApplication 
                                 formData={formData} 
