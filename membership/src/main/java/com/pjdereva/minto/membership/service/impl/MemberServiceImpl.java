@@ -3,6 +3,7 @@ package com.pjdereva.minto.membership.service.impl;
 import com.pjdereva.minto.membership.dto.MemberDTO;
 import com.pjdereva.minto.membership.exception.ApplicationIdNotFoundException;
 import com.pjdereva.minto.membership.exception.MemberIdNotFoundException;
+import com.pjdereva.minto.membership.exception.UserEmailNotFoundException;
 import com.pjdereva.minto.membership.exception.UserIdNotFoundException;
 import com.pjdereva.minto.membership.mapper.MemberMapper;
 import com.pjdereva.minto.membership.model.Person;
@@ -207,6 +208,35 @@ public class MemberServiceImpl implements MemberService {
                      .orElseThrow(() -> new UserIdNotFoundException(existingUser.getId()));
          }
         return member;
+    }
+
+    @Override
+    public MemberDTO findByEmail(String email) {
+        MemberDTO memberDTO = null;
+        var user = userRepository.findByEmail(email);
+        if(user.isPresent()) {
+            User existingUser = user.get();
+            var member = memberRepository.findByUserId(existingUser.getId());
+            if(member.isPresent()) {
+                Member existingMember = member.get();
+                memberDTO = memberMapper.toMemberDTO(existingMember);
+            } else {
+                throw new MemberIdNotFoundException(existingUser.getId());
+            }
+        } else {
+            throw new UserEmailNotFoundException(email);
+        }
+        return memberDTO;
+    }
+
+    @Override
+    public List<Member> findAllByStatus(MembershipStatus status) {
+        return memberRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<Member> findAllByStatusIn(List<MembershipStatus> statuses) {
+        return memberRepository.findByStatusIn(statuses);
     }
 
     @Override

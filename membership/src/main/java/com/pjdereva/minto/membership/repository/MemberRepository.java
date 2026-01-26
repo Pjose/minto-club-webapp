@@ -33,6 +33,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // Find by status
     List<Member> findByStatus(MembershipStatus status);
+    List<Member> findByStatusIn(List<MembershipStatus> statuses);
 
     // Count by status
     Long countByStatus(MembershipStatus status);

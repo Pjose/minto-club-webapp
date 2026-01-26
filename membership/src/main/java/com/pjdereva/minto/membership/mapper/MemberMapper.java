@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {PersonMapper.class})
+@Mapper(componentModel = "spring", uses = {PersonMapper.class, UserMapper.class, ApplicationMapper.class})
 public interface MemberMapper {
 
     //MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);

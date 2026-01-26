@@ -44,7 +44,7 @@ const MemberProfileCard = (props) => {
                                         {memberData.application.person.contact.phones.map((phone, index) => (
                                             <div key={index} className="mb-3">
                                                 <Telephone className="text-secondary" />
-                                                <span className="fs-6 text-secondary mx-2">{phone.type} Phone:</span>
+                                                <span className="fs-6 text-secondary mx-2">{phone.phoneType} Phone:</span>
                                                 <span className="fs-6">{phone.countryCode} {phone.number}</span>
                                             </div>
                                         ))}
@@ -52,7 +52,7 @@ const MemberProfileCard = (props) => {
                                         {memberData.application.person.contact.emails.map((email, index) => (
                                             <div key={index} className="mb-3">
                                                 <EnvelopeAt className="text-secondary" />
-                                                <span className="text-secondary mx-2">{email.type} Email:</span>
+                                                <span className="text-secondary mx-2">{email.emailType} Email:</span>
                                                 <span className="">{email.address}</span>
                                             </div>
                                         ))}
@@ -161,7 +161,7 @@ const MemberProfileCard = (props) => {
                             <div className="row row-cols-auto mb-3">
                                 {memberData.application.person.contact.addresses.map((address, index) => (
                                     <div key={index} className="col-md-6 mb-3">
-                                        <h6 className="my-2"><strong>{address.type} Address</strong></h6>
+                                        <h6 className="my-2"><strong>{address.addressType} Address</strong></h6>
                                         <div className="mb-3">
                                             <HouseDoor className="text-secondary" />
                                             <span className="text-secondary mx-2">Street:</span>

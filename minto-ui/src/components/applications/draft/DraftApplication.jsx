@@ -443,9 +443,10 @@ const DraftApplication = (props) => {
                 })
 
                 if(!response.ok) {
-                    console.log(`HTTP error! status: ${response.status}`)
-                    toast.error('HTTP error!')
-                    throw new Error(`HTTP error! status: ${response.status}`)
+                    const respObj = await response.json()
+                    console.log(`Error: ${respObj.message}`)
+                    toast.error(respObj.message)
+                    throw new Error(respObj.message)
                 }
 
                 const jsonData = await response.json();

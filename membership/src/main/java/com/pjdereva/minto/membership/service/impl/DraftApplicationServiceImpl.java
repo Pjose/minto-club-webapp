@@ -395,7 +395,7 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
             person = createOrUpdatePerson(data);
             application.addPerson(person);
         } else {
-            Optional<Person> personOpt = personRepository.findById(data.getId());
+            Optional<Person> personOpt = personRepository.findById(application.getPerson().getId());
             if(personOpt.isPresent()) {
                 person = personOpt.get();
                 updatePersonFromRequest(person, data);
@@ -756,7 +756,6 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
      * Create or update person - prevents duplicate person records
      */
     private Person createOrUpdatePerson(PersonDTO request) {
-
         Person person;
 
         if (request.getId() != null) {

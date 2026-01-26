@@ -20,7 +20,7 @@ const MembersGrid = (props) => {
             setIsLoading(true);
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/members", {
+                    const response = await fetchWithAuth("http://localhost:8080/api/v1/members/dto", {
                         method: 'GET',
                         credentials: "include",
                     });

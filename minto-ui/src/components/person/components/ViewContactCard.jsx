@@ -47,7 +47,7 @@ const ViewContactCard = (props) => {
                                                 name={`address-type-${index}`} id={`address-type-${index}`}
                                                 type="text" 
                                                 className="form-control"
-                                                value={address.type}
+                                                value={address.addressType}
                                                 disabled
                                                 readOnly
                                             />
@@ -142,7 +142,7 @@ const ViewContactCard = (props) => {
                                         <div className="form-floating">
                                             <input name={`email-type-${index}`} id={`email-type-${index}`}
                                                 className="form-control"
-                                                value={email.type}
+                                                value={email.emailType}
                                                 disabled
                                                 readOnly
                                             />
@@ -182,7 +182,7 @@ const ViewContactCard = (props) => {
                                         <div className="form-floating">
                                             <input name={`phone-type-${index}`} id={`phone-type-${index}`}
                                                 className="form-control"
-                                                value={phone.type}
+                                                value={phone.phoneType}
                                                 disabled
                                                 readOnly
                                             />

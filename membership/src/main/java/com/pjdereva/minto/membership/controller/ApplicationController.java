@@ -6,6 +6,7 @@ import com.pjdereva.minto.membership.model.User;
 import com.pjdereva.minto.membership.model.transaction.Application;
 import com.pjdereva.minto.membership.model.transaction.ApplicationStatus;
 import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
+import com.pjdereva.minto.membership.payload.response.ApplicationResponse;
 import com.pjdereva.minto.membership.service.impl.ApplicationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -147,11 +148,24 @@ public class ApplicationController {
         try {
             applicationService.submitApplication(applicationDTO.getId(),
                     applicationDTO.getUser().getId());
+
+            ApplicationResponse response = ApplicationResponse.builder()
+                    .success(true)
+                    .message("Application " + applicationDTO.getApplicationNumber() + " submitted successfully.")
+                    .applicationId(applicationDTO.getId())
+                    .applicationNumber(applicationDTO.getApplicationNumber())
+                    .userId(applicationDTO.getUser().getId())
+                    .build();
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+            log.error("Error submitting application ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApplicationResponse.builder()
+                            .success(false)
+                            .message("Failed to submit application: " + e.getMessage())
+                            .build());
         }
-        return ResponseEntity.ok("Application " + applicationDTO.getApplicationNumber() +
-                " submitted successfully.");
     }
 
     @PostMapping("/review")
@@ -165,14 +179,31 @@ public class ApplicationController {
         try {
             if(user.isAdmin() || user.isStaff()) {
                 applicationService.setApplicationUnderReview(applicationDTO.getId());
-                return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber()  +
-                        ", is now under review.");
             } else {
-                return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
-                        ", has insufficient access to review application.");
+                log.error("Error: User is unauthorized to set application status to under review.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(ApplicationResponse.builder()
+                                .success(false)
+                                .message("Unauthorized access. User can't set application status to under review.")
+                                .build());
             }
+
+            ApplicationResponse response = ApplicationResponse.builder()
+                    .success(true)
+                    .message("Application successfully set to under review.")
+                    .applicationId(applicationDTO.getId())
+                    .applicationNumber(applicationDTO.getApplicationNumber())
+                    .userId(applicationDTO.getUser().getId())
+                    .build();
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+            log.error("Error setting application status to under review. ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApplicationResponse.builder()
+                            .success(false)
+                            .message("Failed to set application status to under review: " + e.getMessage())
+                            .build());
         }
     }
 
@@ -188,15 +219,31 @@ public class ApplicationController {
             if(user.isAdmin() || user.isStaff()) {
                 applicationService.approveApplication(applicationDTO.getId());
             } else {
-                return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
-                        ", has insufficient access to approve application.");
+                log.error("Error: User is unauthorized to approve application.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(ApplicationResponse.builder()
+                                .success(false)
+                                .message("User unauthorized to approve application.")
+                                .build());
             }
-            //app = applicationService.createApplicationForUser(application.getUser().getId());
+
+            ApplicationResponse response = ApplicationResponse.builder()
+                .success(true)
+                .message("Application approved successfully.")
+                .applicationId(applicationDTO.getId())
+                .applicationNumber(applicationDTO.getApplicationNumber())
+                .userId(applicationDTO.getUser().getId())
+                .build();
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+            log.error("Error approving application. ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApplicationResponse.builder()
+                            .success(false)
+                            .message("Failed to approve application: " + e.getMessage())
+                            .build());
         }
-        return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
-                ", approved by " + user.getFirstName() + " " + user.getLastName() + ".");
     }
 
     @PostMapping("/reject")
@@ -212,14 +259,31 @@ public class ApplicationController {
                 applicationService.rejectApplication(applicationDTO.getId(),
                         applicationDTO.getRejectionReason());
             } else {
-                return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
-                        ", has insufficient access to reject application.");
+                log.error("Error: User is unauthorized to reject application.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(ApplicationResponse.builder()
+                                .success(false)
+                                .message("User unauthorized to reject application.")
+                                .build());
             }
-        } catch (Exception ex) {
-            return ResponseEntity.unprocessableEntity().body(ex.getMessage());
+
+            ApplicationResponse response = ApplicationResponse.builder()
+                    .success(true)
+                    .message("Application rejected successfully. Rejection reason:" + applicationDTO.getRejectionReason())
+                    .applicationId(applicationDTO.getId())
+                    .applicationNumber(applicationDTO.getApplicationNumber())
+                    .userId(applicationDTO.getUser().getId())
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error rejecting application. ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApplicationResponse.builder()
+                            .success(false)
+                            .message("Failed to reject application: " + e.getMessage())
+                            .build());
         }
-        return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
-                " rejected for the following reason: " + applicationDTO.getRejectionReason());
     }
 
     @PostMapping("/return")
@@ -235,14 +299,31 @@ public class ApplicationController {
                 applicationService.returnApplication(applicationDTO.getId(),
                         applicationDTO.getNotes());
             } else {
-                return ResponseEntity.ok("User: " + user.getFirstName() + " " + user.getLastName() +
-                        ", has insufficient access to return application.");
+                log.error("Error: User is unauthorized to return application.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(ApplicationResponse.builder()
+                                .success(false)
+                                .message("User unauthorized to return application.")
+                                .build());
             }
-        } catch (Exception ex) {
-            return ResponseEntity.unprocessableEntity().body(ex.getMessage());
+
+            ApplicationResponse response = ApplicationResponse.builder()
+                    .success(true)
+                    .message("Application returned successfully. Reason:" + applicationDTO.getNotes())
+                    .applicationId(applicationDTO.getId())
+                    .applicationNumber(applicationDTO.getApplicationNumber())
+                    .userId(applicationDTO.getUser().getId())
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error returning application. ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApplicationResponse.builder()
+                            .success(false)
+                            .message("Failed to return application: " + e.getMessage())
+                            .build());
         }
-        return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
-                " returned for the following reason: " + applicationDTO.getNotes());
     }
 
     @PostMapping("/withdraw")
@@ -250,11 +331,24 @@ public class ApplicationController {
         try {
             applicationService.withdrawApplication(applicationDTO.getId(),
                     applicationDTO.getUser().getId());
+
+            ApplicationResponse response = ApplicationResponse.builder()
+                    .success(true)
+                    .message("Application withdrawn successfully.")
+                    .applicationId(applicationDTO.getId())
+                    .applicationNumber(applicationDTO.getApplicationNumber())
+                    .userId(applicationDTO.getUser().getId())
+                    .build();
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+            log.error("Error withdrawing application. ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApplicationResponse.builder()
+                            .success(false)
+                            .message("Failed to withdraw application: " + e.getMessage())
+                            .build());
         }
-        return ResponseEntity.ok("Application: " + applicationDTO.getApplicationNumber() +
-                ", withdrawn by the user.");
     }
 
 }

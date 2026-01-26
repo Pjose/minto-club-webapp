@@ -110,79 +110,136 @@ const ViewPersonCard = (props) => {
                                     <label htmlFor="updatedAt">Updated At</label>
                                 </div>
                             </div>
-                        </div>
 
                         {arrayPerson.maritalStatus && (
-                            <div className="form-group row row-cols-auto">
-                                <div className="col-6 col-xxl-3">
-                                    <div className="form-floating mb-3">
-                                        <input 
-                                            id="maritalStatus"
-                                            type="text" 
-                                            className="form-control"
-                                            value={arrayPerson.maritalStatus}
-                                            disabled
-                                            readOnly
-                                        />
-                                        <label htmlFor="dob">Sibling Type</label>
-                                    </div>
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="maritalStatus"
+                                        type="text" 
+                                        className="form-control"
+                                        value={arrayPerson.maritalStatus}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="maritalStatus">Marital Status</label>
+                                </div>
+                            </div>
+                        ) }
+
+                        {arrayPerson.childType && (
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="childType"
+                                        type="text" 
+                                        className="form-control"
+                                        value={arrayPerson.childType}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="childType">Child Type</label>
+                                </div>
+                            </div>
+                        ) }
+
+
+                        {arrayPerson.parentType && (
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="parentType"
+                                        type="text" 
+                                        className="form-control"
+                                        value={arrayPerson.parentType}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="parentType">Parent Type</label>
                                 </div>
                             </div>
                         ) }
 
                         {arrayPerson.siblingType && (
-                            <div className="form-group row row-cols-auto">
-                                <div className="col-6 col-xxl-3">
-                                    <div className="form-floating mb-3">
-                                        <input 
-                                            id="siblingType"
-                                            type="text" 
-                                            className="form-control"
-                                            value={arrayPerson.siblingType}
-                                            disabled
-                                            readOnly
-                                        />
-                                        <label htmlFor="dob">Sibling Type</label>
-                                    </div>
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="siblingType"
+                                        type="text" 
+                                        className="form-control"
+                                        value={arrayPerson.siblingType}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="siblingType">Sibling Type</label>
+                                </div>
+                            </div>
+                        ) }
+
+                        {arrayPerson.familyRelationship && (
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="familyRelationship"
+                                        type="text" 
+                                        className="form-control"
+                                        value={arrayPerson.familyRelationship}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="familyRelationship">Family Relationship</label>
                                 </div>
                             </div>
                         ) }
 
                         {arrayPerson.relationship && (
-                            <div className="form-group row row-cols-auto">
-                                <div className="col-6 col-xxl-3">
-                                    <div className="form-floating mb-3">
-                                        <input 
-                                            id="relationship"
-                                            type="text" 
-                                            className="form-control"
-                                            value={arrayPerson.relationship}
-                                            disabled
-                                            readOnly
-                                        />
-                                        <label htmlFor="dob">Relationship</label>
-                                    </div>
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="relationship"
+                                        type="text" 
+                                        className="form-control"
+                                        value={arrayPerson.relationship}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="relationship">Relationship</label>
+                                </div>
+                            </div>
+                        ) }
+
+                        {arrayPerson.membershipNumber && (
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="membershipNumber"
+                                        type="text" 
+                                        className="form-control"
+                                        value={arrayPerson.membershipNumber}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="membershipNumber">Membership Number</label>
                                 </div>
                             </div>
                         ) }
 
                         {arrayPerson.percentage && (
-                            <div className="form-group row row-cols-auto">
-                                <div className="col-6 col-xxl-3">
-                                    <div className="form-floating mb-3">
-                                        <input 
-                                            id="percentage"
-                                            type="text" 
-                                            className="form-control"
-                                            value={`${arrayPerson.percentage} %`}
-                                            disabled
-                                            readOnly
-                                        />
-                                        <label htmlFor="dob">Percentage</label>
-                                    </div>
+                            <div className="col-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="percentage"
+                                        type="text" 
+                                        className="form-control"
+                                        value={`${arrayPerson.percentage} %`}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="percentage">Percentage</label>
                                 </div>
                             </div>
                         ) }
+                        </div>
 
                         <div className="d-flex mb-3 justify-content-end">
                             <button onClick={handleToggle} className="btn btn-dark">

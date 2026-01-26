@@ -22,9 +22,17 @@ const MemberPersonInfoCard = (props) => {
                             className="btn text-white ms-auto"
                         >
                             { 
-                                isOpen ? 
-                                <span><CaretUpFill size={22} className="me-1" />Show Less</span> : 
-                                <span><CaretDownFill size={22} className="me-1" />Show More</span>
+                                isOpen ? (
+                                    <>
+                                        <span className="d-sm-none"><CaretUpFill size={22} className="me-1" /></span>
+                                        <span className="d-none d-md-block"><CaretUpFill size={22} className="me-1" />Show Less</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="d-sm-none"><CaretDownFill size={22} className="me-1" /></span>
+                                        <span className="d-none d-md-block"><CaretDownFill size={22} className="me-1" />Show More</span>
+                                    </>
+                                )
                             }
                         </button>
                     </div>

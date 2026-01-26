@@ -85,7 +85,7 @@ const MemberProfile = () => {
                     toast.success('User profile data loaded successfully!')
 
                     // Second fetch call
-                    const response2 = await fetchWithAuth(`http://localhost:8080/api/v1/members/email/${user.decoded.sub}`, {
+                    const response2 = await fetchWithAuth(`http://localhost:8080/api/v1/members/dto/email/${user.decoded.sub}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -93,9 +93,9 @@ const MemberProfile = () => {
                     })
                     
                     if (!response2.ok) {
-                        console.log("[Profile] - Testing ... line 96")
-                        toast.error('HTTP Error: Network response not OK!')
-                        throw new Error('Network response was not ok!')
+                        const responseObject = await response2.json()
+                        toast.error('Error: ' + responseObject.message)
+                        throw new Error(responseObject.message)
                     }
                     const memberResponse = await response2.json()
                     setMemberData(memberResponse);
