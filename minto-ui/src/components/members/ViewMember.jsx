@@ -7,47 +7,11 @@ import ViewContactCard from '../person/components/ViewContactCard'
 import MemberPersonInfoCard from '../person/components/MemberPersonInfoCard'
 import { useAuth } from '../hooks/useAuth'
 import useFetch from '../hooks/useFetch'
-
-const DEFAULT_MEMBER = {
-    id: 0,
-    userId: 0,
-    memberCreatedAt: "",
-    memberUpdatedAt: "",
-    application: {
-        id: 0,
-        appCreatedAt: "",
-        appUpdatedAt: "",
-        applicationStatus: "",
-        maritalStatus: "",
-        person: {
-            id: 0,
-            firstName: "",
-            middleName: "",
-            lastName: "",
-            dob: "",
-            lifeStatus: "",
-            createdAt: "",
-            updatedAt: "",
-            contact: {
-                 id: 0,
-                addresses: [{ id: 0, type: "", street: "", city: "", state: "", zipcode: "", country: "" }],
-                emails: [{ id: 0, type: "", address: "" }],
-                phones: [{ id: 0, type: "", countryCode: "", number: "" }]
-            }
-        },
-        beneficiaries: [],
-        children: [],
-        parents: [],
-        referees: [],
-        relatives: [],
-        siblings: [],
-        spouses: [],
-    }
-}
+import { defaultMember } from '../../model/defaultMember'
 
 const ViewMember = (props) => {
     const { formData } = props
-    const [viewMemberData, setViewPersonData] = useState(DEFAULT_MEMBER)
+    const [viewMemberData, setViewPersonData] = useState({ ...defaultMember })
     const [showContact, setShowContact] = useState(false)
     const { getUser, isAuthenticated } = useAuth()
     const [isLoading, setIsLoading] = useState(false)
@@ -59,7 +23,7 @@ const ViewMember = (props) => {
             setIsLoading(true)
             try {
                 if((formData.id > 0) && user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/members/${formData.id}`, {
+                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/members/dto/id/${formData.id}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -67,9 +31,10 @@ const ViewMember = (props) => {
                     })
                     
                     if (!response.ok) {
-                        console.log("[ViewMember] - Testing ... line 28")
-                        toast.error('HTTP Error: Network response not OK!')
-                        throw new Error('Network response was not ok!')
+                        const respError = await response.json()
+                        console.log("[ViewMember] - " + respError.message)
+                        toast.error('HTTP Error: Network response not OK! ' + respError.message)
+                        throw new Error('Network response was not ok! ' + respError.message)
                     }
                     const data = await response.json()
                     setViewPersonData(data)
@@ -126,7 +91,7 @@ const ViewMember = (props) => {
                                     {/* Member Details */}
                                     <h5 className="text-danger mb-3"><strong>Member Details</strong></h5>
                                     <div className="form-group row row-cols-auto">
-                                        <div className="col-6 col-xxl-3">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="memberId"
@@ -139,20 +104,20 @@ const ViewMember = (props) => {
                                                 <label htmlFor="memberId">Member Id</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xxl-3">
+                                        <div className="col-12 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
-                                                    id="userId"
+                                                    id="membershipNumber"
                                                     type="text" 
                                                     className="form-control"
-                                                    value={viewMemberData.userId}
+                                                    value={viewMemberData.membershipNumber}
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="userId">User Id</label>
+                                                <label htmlFor="membershipNumber">Membership Number</label>
                                             </div>
                                         </div>
-                                        <div className="col-12 col-md-6 col-xxl-3">
+                                        <div className="col-12 col-md-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="memberCreatedAt"
@@ -165,7 +130,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="memberCreatedAt">Member Created At</label>
                                             </div>
                                         </div>
-                                        <div className="col-12 col-md-6 col-xxl-3">
+                                        <div className="col-12 col-md-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="memberUpdatedAt"
@@ -177,8 +142,20 @@ const ViewMember = (props) => {
                                                 />
                                                 <label htmlFor="memberUpdatedAt">Member Updated At</label>
                                             </div>
+                                        </div><div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                            <div className="form-floating mb-3">
+                                                <input 
+                                                    id="membershipStatus"
+                                                    type="text" 
+                                                    className="form-control"
+                                                    value={viewMemberData.status}
+                                                    disabled
+                                                    readOnly
+                                                />
+                                                <label htmlFor="membershipStatus">Membership Status</label>
+                                            </div>
                                         </div>
-                                        <div className="col-6 col-xxl-4">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="maritalStatus"
@@ -191,7 +168,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="maritalStatus">Marital Status</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xxl-4">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="dob"
@@ -204,7 +181,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="dob">Date Of Birth</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xxl-4">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="lifeStatus"
@@ -221,7 +198,7 @@ const ViewMember = (props) => {
                                     {/* Application Details */}
                                     <h5 className="text-danger mb-3"><strong>Application Details</strong></h5>
                                     <div className="form-group row row-cols-auto">
-                                        <div className="col-6 col-xxl-3">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="applicationId"
@@ -234,7 +211,20 @@ const ViewMember = (props) => {
                                                 <label htmlFor="applicationId">Application Id</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xxl-3">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                            <div className="form-floating mb-3">
+                                                <input 
+                                                    id="applicationNumber"
+                                                    type="text" 
+                                                    className="form-control"
+                                                    value={viewMemberData.application.applicationNumber}
+                                                    disabled
+                                                    readOnly
+                                                />
+                                                <label htmlFor="applicationNumber">Application Number</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="applicationStatus"
@@ -247,7 +237,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="applicationStatus">Application Status</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xxl-3">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="appCreatedAt"
@@ -260,7 +250,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="appCreatedAt">App Created At</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xxl-3">
+                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="appUpdatedAt"

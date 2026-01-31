@@ -387,7 +387,8 @@ const DraftApplication = (props) => {
             setLoading(true)
             try {
                 if(user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/draft`, {
+                    //const response = await fetchWithAuth(`${API_BASE_URL}/applications/draft`, {
+                    const response = await fetchWithAuth('http://localhost:8080/api/v1/applications/draft', {
                         method: 'GET',
                         credentials: "include",
                     })

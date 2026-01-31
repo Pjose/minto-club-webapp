@@ -41,6 +41,7 @@ const UserGrid = (props) => {
                 }
             } catch (error) {
                 console.log('[User Grid]:- '+ error.message)
+                console.log(error)
                 toast.error('[User Grid]:- ' + error.message)
             } finally {
                 setIsLoading(false)

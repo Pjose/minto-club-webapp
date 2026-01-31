@@ -4,16 +4,45 @@ import { toast } from "sonner"
 import PropTypes from 'prop-types'
 import AuthenticationContext from "../context/AuthenticationContext"
 
+// Token refresh state manager to handle concurrent requests
+class TokenRefreshManager {
+    constructor() {
+        this.refreshPromise = null;
+        this.isRefreshing = false;
+    }
+
+    async refresh(refreshFn) {
+        // If already refreshing, return the existing promise
+        if (this.isRefreshing && this.refreshPromise) {
+            return this.refreshPromise;
+        }
+
+        // Start a new refresh
+        this.isRefreshing = true;
+        this.refreshPromise = refreshFn()
+        .finally(() => {
+            this.isRefreshing = false;
+            this.refreshPromise = null;
+        });
+
+        return this.refreshPromise;
+    }
+
+    reset() {
+        this.refreshPromise = null;
+        this.isRefreshing = false;
+    }
+}
+
 const AuthenticationProvider = ({ children }) => {
+    const tokenRefreshManager = useRef(new TokenRefreshManager());
     const userRef = useRef(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    let isRefreshing = false;
-    let refreshPromise = null;
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
+        const storedUser = localStorage.getItem('user')
         if(storedUser) {
             userRef.current = JSON.parse(storedUser)
             setIsAuthenticated(true)
@@ -96,57 +125,51 @@ const AuthenticationProvider = ({ children }) => {
         }
     }
 
+    // Refresh the access token
     const refreshJwt = async () => {
-        console.log('Refreshing JWT token...')
-        try {
-            if (isRefreshing && refreshPromise) {
-                console.log('Token refresh already in progress, waiting for it to complete...')
-                await refreshPromise;
-                //return;
-            }
+        // Use the token refresh manager to prevent concurrent refresh calls
+        return tokenRefreshManager.current.refresh(async () => {
+            try {
+                const storedUser = JSON.parse(localStorage.getItem('user'));
+                const refreshToken = storedUser?.refreshToken;
+                
+                if (!storedUser || !refreshToken) {
+                    throw new Error('No refresh token available');
+                }
 
-            if (!isRefreshing) {
-                isRefreshing = true; 
-            }
-                const storedUser = JSON.parse(localStorage.getItem('user'))
-                refreshPromise = await fetch('http://localhost:8080/api/v1/auth/refresh-token', {
+                const response = await fetch('http://localhost:8080/api/v1/auth/refresh-token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${storedUser.refreshToken}`
+                        'Authorization': `Bearer ${refreshToken}`
                     },
-                })
-        
-                if (!refreshPromise.ok) {
-                    console.log('Failed to refresh token, logging out.')
-                    console.log(refreshPromise)
-                    throw new Error(`HTTP error! status: ${refreshPromise.status}`);
+                });
+
+                if (!response.ok) {
+                throw new Error('Failed to refresh token');
                 }
 
-                const jsonData = await refreshPromise.json()
-                const accessToken = jsonData['access_token']
-                const refreshToken = jsonData['refresh_token']
+                const data = await response.json();
+                const accessToken = data['access_token']
+                const newRefreshToken = data['refresh_token']
                 const decoded = parseJwt(accessToken)
 
                 const authenticatedUser = { 
                     decoded: decoded, 
                     accessToken: accessToken, 
-                    refreshToken: refreshToken,
+                    refreshToken: newRefreshToken,
                 }
 
                 userRef.current = authenticatedUser
                 localStorage.setItem('user', JSON.stringify(authenticatedUser))
-                console.log('New refresh-token successful')
-                refreshPromise = null;
-                isRefreshing = false;
-            //}
-        } catch (error) {
-            refreshPromise = null;
-            isRefreshing = false;
-            console.error('[Error refreshing token]:', error.message);
-            logout();
-        }
-    }
+                return data['access_token'];
+            } catch (err) {
+                // Clear tokens and logout on refresh failure
+                logout();
+                throw err;
+            }
+        });
+    };
 
     const getUser = () => userRef.current
 

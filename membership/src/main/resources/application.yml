@@ -32,7 +32,7 @@ application:
       secret-key: HZbVR3rlJ3E4BWKDoN1O7huUelOsfs5R0WbtGdnGpvOdMTs4rwJK0L0+WLv7RNq0
       expiration: 1200000 # 20 min (a day = 86400000)
       refresh-token:
-        expiration: 21600000 # 6 hrs (7 days = 604800000)
+        expiration: 86400000 # 1 day (7 days = 604800000)
 
 frontend:
   url: http://localhost:3000

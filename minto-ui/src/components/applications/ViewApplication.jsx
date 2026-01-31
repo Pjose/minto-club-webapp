@@ -7,41 +7,11 @@ import ViewContactCard from '../person/components/ViewContactCard'
 import MemberPersonInfoCard from '../person/components/MemberPersonInfoCard'
 import { useAuth } from '../hooks/useAuth'
 import useFetch from '../hooks/useFetch'
-
-const DEFAULT_APPLICATION = {
-    id: 0,
-    appCreatedAt: "",
-    appUpdatedAt: "",
-    applicationStatus: "",
-    maritalStatus: "",
-    person: {
-        id: 0,
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        dob: "",
-        lifeStatus: "",
-        createdAt: "",
-        updatedAt: "",
-        contact: {
-                id: 0,
-            addresses: [{ id: 0, type: "", street: "", city: "", state: "", zipcode: "", country: "" }],
-            emails: [{ id: 0, type: "", address: "" }],
-            phones: [{ id: 0, type: "", countryCode: "", number: "" }]
-        }
-    },
-    beneficiaries: [],
-    children: [],
-    parents: [],
-    referees: [],
-    relatives: [],
-    siblings: [],
-    spouses: [],
-}
+import { defaultApplication } from '../../model/defaultApplication'
 
 const ViewApplication = (props) => {
     const { formData } = props
-    const [viewApplicationData, setViewApplicationData] = useState(DEFAULT_APPLICATION)
+    const [viewApplicationData, setViewApplicationData] = useState({ ...defaultApplication })
     const [showContact, setShowContact] = useState(false)
     const { fetchWithAuth } = useFetch()
     const { getUser, isAuthenticated } = useAuth()
@@ -53,19 +23,19 @@ const ViewApplication = (props) => {
             setIsLoading(true)
             try {
                 if((formData.id > 0) && user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/${formData.id}`, {
+                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/dto/id/${formData.id}`, {
                         method: 'GET',
                         credentials: 'include',
                     })
                     
                     if (!response.ok) {
-                        console.log("[ViewApplication] - Testing ... line 28")
-                        toast.error('HTTP Error: Network response not OK!')
-                        throw new Error('Network response was not ok!')
+                        const respError = await response.text()
+                        console.log("[ViewApplication] - HTTP Error: " + respError)
+                        toast.error('HTTP Error: ' + respError)
+                        throw new Error('Network response was not ok! ' + respError)
                     }
                     const data = await response.json()
                     setViewApplicationData(data)
-                    //console.log('[ViewApplication] - data: ', data)
                     toast.success('Application data loaded successfully!')
                 } else {
                     console.log('User NOT authenticated. Please login.')
@@ -135,14 +105,55 @@ const ViewApplication = (props) => {
                                         <div className="col-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
-                                                    id="applicationStatus"
+                                                    id="applicationNumber"
                                                     type="text" 
                                                     className="form-control"
-                                                    value={viewApplicationData.applicationStatus}
+                                                    value={viewApplicationData.applicationNumber}
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="applicationStatus">Application Status</label>
+                                                <label htmlFor="applicationNumber">Application Number</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-6 col-xxl-3">
+                                            <div className="form-floating mb-3">
+                                                <input 
+                                                    id="dob"
+                                                    type="text" 
+                                                    className="form-control"
+                                                    value={viewApplicationData.person.dob}
+                                                    disabled
+                                                    readOnly
+                                                />
+                                                <label htmlFor="dob">Date Of Birth</label>
+                                            </div>
+                                        </div>
+                                        <div className="col-6 col-xxl-3">
+                                            <div className="form-floating mb-3">
+                                                <input 
+                                                    id="lifeStatus"
+                                                    type="text" 
+                                                    className="form-control"
+                                                    value={viewApplicationData.person.lifeStatus}
+                                                    disabled
+                                                    readOnly
+                                                />
+                                                <label htmlFor="lifeStatus">Life Status</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row row-cols-auto">
+                                        <div className="col-6 col-xxl-3">
+                                            <div className="form-floating mb-3">
+                                                <input 
+                                                    id="maritalStatus"
+                                                    type="text" 
+                                                    className="form-control"
+                                                    value={viewApplicationData.maritalStatus}
+                                                    disabled
+                                                    readOnly
+                                                />
+                                                <label htmlFor="maritalStatus">Marital Status</label>
                                             </div>
                                         </div>
                                         <div className="col-6 col-xxl-3">
@@ -171,45 +182,17 @@ const ViewApplication = (props) => {
                                                 <label htmlFor="appUpdatedAt">App Updated At</label>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group row row-cols-auto">
-                                        <div className="col-6 col-xxl-4">
+                                        <div className="col-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
-                                                    id="maritalStatus"
+                                                    id="applicationStatus"
                                                     type="text" 
                                                     className="form-control"
-                                                    value={viewApplicationData.maritalStatus}
+                                                    value={viewApplicationData.applicationStatus}
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="maritalStatus">Marital Status</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-6 col-xxl-4">
-                                            <div className="form-floating mb-3">
-                                                <input 
-                                                    id="dob"
-                                                    type="text" 
-                                                    className="form-control"
-                                                    value={viewApplicationData.person.dob}
-                                                    disabled
-                                                    readOnly
-                                                />
-                                                <label htmlFor="dob">Date Of Birth</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-6 col-xxl-4">
-                                            <div className="form-floating mb-3">
-                                                <input 
-                                                    id="lifeStatus"
-                                                    type="text" 
-                                                    className="form-control"
-                                                    value={viewApplicationData.person.lifeStatus}
-                                                    disabled
-                                                    readOnly
-                                                />
-                                                <label htmlFor="lifeStatus">Life Status</label>
+                                                <label htmlFor="applicationStatus">Application Status</label>
                                             </div>
                                         </div>
                                     </div>

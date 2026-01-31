@@ -248,7 +248,6 @@ const ReviewApplications = () => {
                     { 
                         selectedApplication && !viewApplication && (
                             <>
-                            { console.log('selectedApplication:', formData)}
                             {<SubmittedApplication 
                                 formData={formData} 
                                 setFormData={setFormData}
