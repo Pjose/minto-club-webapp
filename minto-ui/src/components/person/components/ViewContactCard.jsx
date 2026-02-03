@@ -25,15 +25,15 @@ const ViewContactCard = (props) => {
             <div className="card mb-3">
                 <div className="card-header bg-light">
                     <div className="d-flex text-primary">
-                        <EnvelopeFill size={28} className='me-2'/>
-                        <h4 className='text-bold'>Contact Details</h4>
+                        <EnvelopeFill size={24} className='me-2'/>
+                        <h5 className='text-bold'>Contact Details</h5>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">
                     <div className="container px-1 px-sm-3">
                         <div className="d-flex items-center mb-3">
                             <GeoAlt size={22} className='mt-1 mx-1' />
-                            <h4 className="text-lg font-semibold"><strong>Addresses</strong></h4>
+                            <h5 className="text-lg font-semibold"><strong>Addresses</strong></h5>
                         </div>
                         { viewContactData.addresses.map((address, index) => (
                             <div key={index} className="px-1 px-md-3 pt-2 mb-3 border bg-light">
@@ -130,7 +130,7 @@ const ViewContactCard = (props) => {
                         
                         <div className="d-flex items-center my-3 pt-2">
                             <EnvelopeAt size={22} className='mt-1 mx-1' />
-                            <h4 className="text-lg font-semibold"><strong>Emails</strong></h4>
+                            <h5 className="text-lg font-semibold"><strong>Emails</strong></h5>
                         </div>
                         { viewContactData.emails.map((email, index) => (
                             <div key={index}  className="px-1 px-md-3 pt-2 mb-3 border bg-light">
@@ -170,7 +170,7 @@ const ViewContactCard = (props) => {
                         
                         <div className="d-flex items-center my-3 pt-1">
                             <Telephone size={22} className='mt-1 mx-1' />
-                            <h4 className="text-lg font-semibold"><strong>Phones</strong></h4>
+                            <h5 className="text-lg font-semibold"><strong>Phones</strong></h5>
                         </div>
                         { viewContactData.phones.map((phone, index) => (
                             <div key={index}  className="px-1 px-md-3 pt-2 mb-3 border bg-light">

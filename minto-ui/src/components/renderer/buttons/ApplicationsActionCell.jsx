@@ -20,7 +20,7 @@ const ApplicationsActionCell = (params) => {
             </button>
             { 
                 (params.user.decoded.role === 'Admin') && (
-                    <button className="btn btn-outline-primary btn-sm mx-2" 
+                    <button className="btn btn-outline-success btn-sm mx-2" 
                         title="Edit Application"
                         onClick={() => {
                             params.setViewApplication(false)

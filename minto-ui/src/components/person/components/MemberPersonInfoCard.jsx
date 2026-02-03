@@ -15,8 +15,8 @@ const MemberPersonInfoCard = (props) => {
             <div className='card px-0 mb-3'>
                 <div className="card-header text-white" style={{ backgroundColor: priColor }}>
                     <div className="d-flex">
-                        <HeaderIconComponent size={28} className='me-2 text-white' />
-                        <h3 className='text-bold text-white'>{ headerTitle }</h3>
+                        <HeaderIconComponent size={22} className='mt-2 me-2 text-white' />
+                        <h4 className='mt-1 text-bold text-white'>{ headerTitle }</h4>
                         <button type="button"
                             onClick={() => setIsOpen(!isOpen)}
                             className="btn text-white ms-auto"
@@ -40,15 +40,15 @@ const MemberPersonInfoCard = (props) => {
                 <div className="card-body px-1 px-sm-3">
                     { isOpen ? (
                         <div className="container py-6 px-1 px-sm-6 mb-4 rounded-lg border">
-                            <div className="d-flex justify-content-between p-2 mt-2 mb-4">
+                            <div className="d-flex justify-content-between p-2 mt-2 mb-2">
                                 <div className="d-flex items-center">
-                                    <BodyIconComponent size={32} className='mt-1 mx-1' style={{ color: priColor }} />
-                                    <h3 
+                                    <BodyIconComponent size={26} className='mt-1 mx-1' style={{ color: priColor }} />
+                                    <h4 
                                         className="text-lg font-semibold"
                                         style={{ color: priColor }}
                                     >
                                         <strong>{ personTypeMultiple }</strong>
-                                    </h3>
+                                    </h4>
                                 </div>
                             </div>
                         

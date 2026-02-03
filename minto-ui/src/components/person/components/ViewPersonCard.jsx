@@ -42,11 +42,11 @@ const ViewPersonCard = (props) => {
 
     return (
         <>
-            <div className="card my-3 border shadow">
+            <div className="card mb-3 border shadow">
                 <div className="card-header"  style={{ background: '#a6a9b1'}} >
                     <div className="d-flex">
-                        <PersonFill size={28} className='text-primary me-2' />
-                        <h4 className="text-primary"><strong>{ title }</strong></h4>
+                        <PersonFill size={24} className='text-primary me-2' />
+                        <h5 className="text-primary"><strong>{ title }</strong></h5>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">

@@ -87,7 +87,7 @@ const ReviewMembers = () => {
                         <div className="card-header bg-danger text-white">
                             <div className="d-flex">
                                 <Search size={26} className='text-white me-2' />
-                                <h4 className="card-title">Search Submitted Application</h4>
+                                <h4 className="card-title">Search Approved Application</h4>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>
@@ -98,9 +98,9 @@ const ReviewMembers = () => {
                             <ApplicationsGrid 
                                 setSelectedApplication={setSelectedApplication} 
                                 setViewApplication={setViewApplication}  
-                                url={"http://localhost:8080/api/v1/applications/status/in/approved,rejected,withdrawn"}
+                                url={"http://localhost:8080/api/v1/members/approved/inactive"}
                             />
-                                
+                                {/* "http://localhost:8080/api/v1/applications/status/in/approved,rejected,withdrawn" */}
                         </div>
                     </div>
                     {

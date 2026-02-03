@@ -14,7 +14,7 @@ const UserActionCell = (props) => {
                 <Binoculars />
             </Link>
             <Link
-                className="btn btn-outline-primary btn-sm mx-2"
+                className="btn btn-outline-success btn-sm mx-2"
                 to={`/edit-user`}
             >
                 <PenFill />

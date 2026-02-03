@@ -59,10 +59,12 @@ const MembersGrid = (props) => {
         };
         return [
             { field: 'id', headerName: 'Id', filter: true, floatingFilter: true },
+            { field: 'membershipNumber', headerName: 'Membership No.', filter: true, floatingFilter: true },
             { field: 'application.person.firstName', headerName: 'First Name', filter: true, floatingFilter: true },
             { field: 'application.person.middleName', headerName: 'Middle Name', filter: true, floatingFilter: true },
             { field: 'application.person.lastName', headerName: 'Last Name', filter: true, floatingFilter: true },
             { field: 'application.person.dob', headerName: 'DOB', filter: true, floatingFilter: true },
+            { field: 'status', headerName: 'Status', filter: true, floatingFilter: true },
             { field: 'memberCreatedAt', headerName: 'Created At', filter: true, floatingFilter: true },
             { field: 'memberUpdatedAt', headerName: 'Updated At', filter: true, floatingFilter: true },
             {
@@ -80,6 +82,10 @@ const MembersGrid = (props) => {
         type: 'fitGridWidth',
         defaultMinWidth: 105,
         columnLimits: [
+            {
+                colId: 'membershipNumber',
+                minWidth: 170
+            },
             {
                 colId: 'application.person.dob',
                 minWidth: 120

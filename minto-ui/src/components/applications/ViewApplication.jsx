@@ -102,7 +102,7 @@ const ViewApplication = (props) => {
                                                 <label htmlFor="applicationId">Application Id</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-xxl-3">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="applicationNumber"

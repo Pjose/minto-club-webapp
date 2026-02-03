@@ -75,6 +75,7 @@ const ApplicationsGrid = (props) => {
         };
         return [
             { field: 'id', headerName: 'Id', filter: true, floatingFilter: true },
+            { field: 'applicationNumber', headerName: 'Application No.', filter: true, floatingFilter: true },
             { field: 'person.firstName', headerName: 'First Name', filter: true, floatingFilter: true },
             { field: 'person.middleName', headerName: 'Middle Name', filter: true, floatingFilter: true },
             { field: 'person.lastName', headerName: 'Last Name', filter: true, floatingFilter: true },
@@ -97,6 +98,10 @@ const ApplicationsGrid = (props) => {
         type: 'fitGridWidth',
         defaultMinWidth: 105,
         columnLimits: [
+            {
+                colId: 'applicationNumber',
+                minWidth: 160
+            },
             {
                 colId: 'appCreatedAt',
                 minWidth: 160

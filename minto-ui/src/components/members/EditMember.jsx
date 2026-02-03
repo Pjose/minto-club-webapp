@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import useFetch from "../hooks/useFetch";
 import UpdateMember from "./UpdateMember";
+import { defaultMember } from "../../model/defaultMember";
 
 const EditMember = () => {
     const navigate = useNavigate()
@@ -17,42 +18,7 @@ const EditMember = () => {
     const [viewMember, setViewMember] = useState(false)
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
-    const [formData, setFormData] = useState({
-        id: 0,
-        userId: 0,
-        memberCreatedAt: "",
-        memberUpdatedAt: "",
-        application: {
-            id: 0,
-            appCreatedAt: "",
-            appUpdatedAt: "",
-            applicationStatus: "",
-            maritalStatus: "",
-            person: {
-                id: 0,
-                firstName: "",
-                middleName: "",
-                lastName: "",
-                dob: "",
-                lifeStatus: "",
-                createdAt: "",
-                updatedAt: "",
-                contact: {
-                    id: 0,
-                    addresses: [{ id: 0, type: "", street: "", city: "", state: "", zipcode: "", country: "" }],
-                    emails: [{ id: 0, type: "", address: "" }],
-                    phones: [{ id: 0, type: "", countryCode: "", number: "" }],
-                },
-            },
-            beneficiaries: [],
-            children: [],
-            parents: [],
-            referees: [],
-            relatives: [],
-            siblings: [],
-            spouses: [],
-        }
-    })
+    const [formData, setFormData] = useState({ ...defaultMember })
 
     useEffect(() => {
         if(selectedMember) {

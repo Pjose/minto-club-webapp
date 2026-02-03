@@ -91,7 +91,7 @@ const ViewMember = (props) => {
                                     {/* Member Details */}
                                     <h5 className="text-danger mb-3"><strong>Member Details</strong></h5>
                                     <div className="form-group row row-cols-auto">
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="memberId"
@@ -104,7 +104,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="memberId">Member Id</label>
                                             </div>
                                         </div>
-                                        <div className="col-12 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="membershipNumber"
@@ -114,10 +114,10 @@ const ViewMember = (props) => {
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="membershipNumber">Membership Number</label>
+                                                <label htmlFor="membershipNumber">Membership No.</label>
                                             </div>
                                         </div>
-                                        <div className="col-12 col-md-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="memberCreatedAt"
@@ -127,10 +127,10 @@ const ViewMember = (props) => {
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="memberCreatedAt">Member Created At</label>
+                                                <label htmlFor="memberCreatedAt">Created At</label>
                                             </div>
                                         </div>
-                                        <div className="col-12 col-md-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="memberUpdatedAt"
@@ -140,9 +140,10 @@ const ViewMember = (props) => {
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="memberUpdatedAt">Member Updated At</label>
+                                                <label htmlFor="memberUpdatedAt">Updated At</label>
                                             </div>
-                                        </div><div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        </div>
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="membershipStatus"
@@ -155,7 +156,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="membershipStatus">Membership Status</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="maritalStatus"
@@ -168,7 +169,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="maritalStatus">Marital Status</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="dob"
@@ -181,7 +182,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="dob">Date Of Birth</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="lifeStatus"
@@ -198,7 +199,7 @@ const ViewMember = (props) => {
                                     {/* Application Details */}
                                     <h5 className="text-danger mb-3"><strong>Application Details</strong></h5>
                                     <div className="form-group row row-cols-auto">
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="applicationId"
@@ -211,7 +212,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="applicationId">Application Id</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="applicationNumber"
@@ -221,10 +222,10 @@ const ViewMember = (props) => {
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="applicationNumber">Application Number</label>
+                                                <label htmlFor="applicationNumber">Application No.</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="applicationStatus"
@@ -237,7 +238,7 @@ const ViewMember = (props) => {
                                                 <label htmlFor="applicationStatus">Application Status</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="appCreatedAt"
@@ -247,10 +248,10 @@ const ViewMember = (props) => {
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="appCreatedAt">App Created At</label>
+                                                <label htmlFor="appCreatedAt">Created At</label>
                                             </div>
                                         </div>
-                                        <div className="col-6 col-sm-4 col-lg-3 col-xxl-2">
+                                        <div className="col-12 col-sm-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 
                                                     id="appUpdatedAt"
@@ -260,7 +261,7 @@ const ViewMember = (props) => {
                                                     disabled
                                                     readOnly
                                                 />
-                                                <label htmlFor="appUpdatedAt">App Updated At</label>
+                                                <label htmlFor="appUpdatedAt">Updated At</label>
                                             </div>
                                         </div>
                                     </div>

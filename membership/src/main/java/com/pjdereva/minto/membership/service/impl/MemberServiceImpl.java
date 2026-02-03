@@ -1,14 +1,17 @@
 package com.pjdereva.minto.membership.service.impl;
 
 import com.pjdereva.minto.membership.dto.MemberDTO;
+import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
 import com.pjdereva.minto.membership.exception.ApplicationIdNotFoundException;
 import com.pjdereva.minto.membership.exception.MemberIdNotFoundException;
 import com.pjdereva.minto.membership.exception.UserEmailNotFoundException;
 import com.pjdereva.minto.membership.exception.UserIdNotFoundException;
+import com.pjdereva.minto.membership.mapper.ApplicationMapper;
 import com.pjdereva.minto.membership.mapper.MemberMapper;
 import com.pjdereva.minto.membership.model.Person;
 import com.pjdereva.minto.membership.model.User;
 import com.pjdereva.minto.membership.model.transaction.Application;
+import com.pjdereva.minto.membership.model.transaction.ApplicationStatus;
 import com.pjdereva.minto.membership.model.transaction.Member;
 import com.pjdereva.minto.membership.model.transaction.MembershipStatus;
 import com.pjdereva.minto.membership.payload.response.MemberStatistics;
@@ -24,9 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
     private final MemberMapper memberMapper;
+    private final ApplicationMapper applicationMapper;
 
     /**
      * Convert approved application to membership
@@ -258,5 +261,21 @@ public class MemberServiceImpl implements MemberService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<ApplicationDTO> findAllInactiveApprovedApplications() {
+        List<ApplicationStatus> statuses = new ArrayList<>(Arrays.asList(
+                ApplicationStatus.APPROVED,
+                ApplicationStatus.REJECTED,
+                ApplicationStatus.WITHDRAWN
+        ));
+        List<Application> applications = applicationRepository.findAllByApplicationStatusIn(statuses);
+        List<Member> members = memberRepository.findAll();
+        List<Application> memberApplications = members.stream()
+                .map(Member::getApplication)
+                .toList();
+        applications.removeAll(memberApplications);
+        return applicationMapper.toApplicationDTOs(applications);
     }
 }

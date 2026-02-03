@@ -9,14 +9,14 @@ const MemberProfileCard = (props) => {
 
     return (
         <>
-            <div className='card mb-3'>
+            <div className='card'>
                 <div className="card-header" style={{ background: 'maroon'}}>
                     <div className="d-flex">
                         <h3 className='ms-1 text-white'>Member Profile</h3>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">
-                    <div className="form-group row mb-3">
+                    <div className="form-group row">
                         {/* Side Panel */}
                         <div className="col-xl-4 mb-3 border-end border-light border-1">
                             <div className="row">
@@ -212,7 +212,7 @@ const MemberProfileCard = (props) => {
                         </div>
 
                         {/* Main Panel */}
-                        <div className="col-xl-8 pt-3 mb-3 border-bottom border-light border-1">
+                        <div className="col-xl-8 pt-3 border-bottom border-light border-1">
                             {/* Address */}
                             <h5 className="my-2"><strong>Address</strong></h5>
                             <div className="row row-cols-auto mb-3">
@@ -248,7 +248,7 @@ const MemberProfileCard = (props) => {
                                 ))}
                             </div>
                             <h5 className="my-2"><strong>Relatives, Referees & Beneficiaries</strong></h5>
-                            <div className="row row-cols-auto mb-3">
+                            <div className="row row-cols-auto">
                                 <MemberPersonInfoCard
                                     peopleData={memberData.application.spouses}
                                     headerIcon={Heart}

@@ -20,7 +20,7 @@ const PersonActionCell = (params) => {
             </button>
             { 
                 (params.user.decoded.role === 'Admin') && (
-                    <button className="btn btn-outline-primary btn-sm mx-2" 
+                    <button className="btn btn-outline-success btn-sm mx-2" 
                         title="Edit Person"
                         onClick={() => {
                             params.setViewPerson(false)

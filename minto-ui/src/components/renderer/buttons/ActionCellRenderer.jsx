@@ -18,7 +18,7 @@ const ActionCellRenderer = (params) => {
             >
                 <Binoculars />
             </button>
-            <button className="btn btn-outline-primary btn-sm mx-2" 
+            <button className="btn btn-outline-success btn-sm mx-2" 
                 title="Edit User"
                 onClick={() => {
                     params.setViewUser(false)

@@ -1,6 +1,7 @@
 package com.pjdereva.minto.membership.service;
 
 import com.pjdereva.minto.membership.dto.MemberDTO;
+import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
 import com.pjdereva.minto.membership.model.transaction.Member;
 import com.pjdereva.minto.membership.model.transaction.MembershipStatus;
 import com.pjdereva.minto.membership.payload.response.MemberStatistics;
@@ -27,5 +28,7 @@ public interface MemberService {
     boolean existById(Long id);
     Member updateMember(Member member);
     boolean deleteMemberById(Long id);
+
+    List<ApplicationDTO> findAllInactiveApprovedApplications();
 
 }

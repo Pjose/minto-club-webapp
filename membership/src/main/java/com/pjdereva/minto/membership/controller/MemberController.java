@@ -1,6 +1,7 @@
 package com.pjdereva.minto.membership.controller;
 
 import com.pjdereva.minto.membership.dto.MemberDTO;
+import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
 import com.pjdereva.minto.membership.mapper.MemberMapper;
 import com.pjdereva.minto.membership.model.User;
 import com.pjdereva.minto.membership.model.transaction.Member;
@@ -162,6 +163,22 @@ public class MemberController {
             return ResponseEntity.ok(memberMapper.toMemberDTOs(members));
         } catch (Exception e) {
             log.error("Error getting all membership records with membership status in the status list.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    /**
+     * Get all approved applications that are yet to be activated for membership.
+     * Also include all rejected and withdrawn applications to the list.
+     * GET /api/vi/members/approved/inactive
+     */
+    @GetMapping("/approved/inactive")
+    public ResponseEntity<?> getAllApprovedInactiveApplications() {
+        try {
+            List<ApplicationDTO> applications = memberService.findAllInactiveApprovedApplications();
+            return ResponseEntity.ok(applications);
+        } catch (Exception e) {
+            log.error("Error getting all approved but inactive applications.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
