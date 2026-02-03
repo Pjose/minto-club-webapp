@@ -100,7 +100,11 @@ const ApplicationsGrid = (props) => {
         columnLimits: [
             {
                 colId: 'applicationNumber',
-                minWidth: 160
+                minWidth: 165
+            },
+            {
+                colId: 'applicationStatus',
+                minWidth: 115
             },
             {
                 colId: 'appCreatedAt',

@@ -88,7 +88,7 @@ const AllApplicationsGrid = (props) => {
                 <LoadingSpinner caption={'Applications List'} clsTextColor={"text-primary"} />
             ) : (
                 isAuthenticated ? (
-                    <div className='card mx-auto my-2 border shadow' style={{height: '100%'}} >
+                    <div className='card mx-auto my-3 border border-primary shadow' style={{height: '100%'}} >
                         <div className='card-header text-white bg-primary'>
                             <h3>List of All Applications</h3>
                         </div> 

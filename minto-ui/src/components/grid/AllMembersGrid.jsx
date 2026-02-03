@@ -90,7 +90,7 @@ const AllMembersGrid = (props) => {
                     <LoadingSpinner caption={'Members List'} clsTextColor={"text-danger"} />
                 ) : (
                     isAuthenticated ? (
-                        <div className='card mx-auto my-2 border shadow' style={{height: '100%'}} >
+                        <div className='card mx-auto my-3 border border-danger shadow' style={{height: '100%'}} >
                             <div className='card-header text-white bg-danger'>
                                 <h3>List of All Members</h3>
                             </div> 

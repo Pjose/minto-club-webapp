@@ -97,7 +97,7 @@ const AllPeopleGrid = (props) => {
                 <LoadingSpinner caption={'View all people'} clsTextColor={"text-info"} />
             ) : (
                 isAuthenticated && isAdminOrStaff ? (
-                    <div className='card mx-auto mb-3 border border-info shadow' style={{height: '100%'}} >
+                    <div className='card mx-auto my-3 border border-info shadow' style={{height: '100%'}} >
                         <div className='card-header bg-info'>
                             <div className="d-flex">
                                 <PeopleFill size={28} className='me-2' />

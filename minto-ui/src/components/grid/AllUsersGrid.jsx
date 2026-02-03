@@ -96,10 +96,10 @@ const AllUsersGrid = (props) => {
                 <LoadingSpinner caption={'View all users'} clsTextColor={"text-black"} />
             ) : (
                 isAuthenticated ? (
-                    <div className='card mx-auto mb-2 border border-dark shadow' style={{height: '100%'}} >
+                    <div className='card mx-auto my-3 border border-dark shadow' style={{height: '100%'}} >
                         <div className='card-header text-white bg-dark'>
                             <h3>List of Users</h3>
-                        </div> 
+                        </div>
                         <div className='card-body'>
                             <h5 className='text-center'>User Details</h5>
                             <div className="ag-theme-quartz" style={{ width: '100%' }} >
@@ -111,8 +111,8 @@ const AllUsersGrid = (props) => {
                                             rowData={rowData}
                                             columnDefs={columnDefs}
                                             pagination={true}
-                                            paginationPageSize={10}
-                                            paginationPageSizeSelector={[10, 20, 50]}
+                                            paginationPageSize={defaultPageSize}
+                                            paginationPageSizeSelector={[defaultPageSize, 20, 50]}
                                         />
                                     ) : (
                                         <AgGridReact 
