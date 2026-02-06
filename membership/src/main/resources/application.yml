@@ -35,7 +35,10 @@ application:
         expiration: 21600000 # 6 hrs (7 days = 604800000)
 
 frontend:
-  url: http://localhost:3000
+  url: https://minto-app-eta.vercel.app/
+
+#frontend:
+  #url: http://localhost:3000
 
 server:
   port: 8080
