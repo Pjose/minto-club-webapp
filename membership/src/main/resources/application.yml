@@ -34,6 +34,9 @@ application:
       refresh-token:
         expiration: 86400000 # 1 day (7 days = 604800000)
 
+# frontend:
+  # url: https://minto-app-eta.vercel.app/
+
 frontend:
   url: http://localhost:3000
 
