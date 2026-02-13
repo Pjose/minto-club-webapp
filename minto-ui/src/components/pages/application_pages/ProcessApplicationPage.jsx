@@ -1,11 +1,11 @@
-import MainComponent from '../../misc/MainComponent'
-import SelectReferee from '../../applications/SelectReferee'
+import ReviewApplications from "../../applications/ReviewApplications"
 
 const ProcessApplicationPage = () => {
     return (
         <>
-            <SelectReferee />
-            <MainComponent />
+            <div className="container mt-5 pt-2">
+                <ReviewApplications />
+            </div>
         </>
     )
 }

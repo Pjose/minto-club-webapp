@@ -87,7 +87,7 @@ const ReviewMembers = () => {
                         <div className="card-header bg-danger text-white">
                             <div className="d-flex">
                                 <Search size={26} className='text-white me-2' />
-                                <h4 className="card-title">Search Approved Application</h4>
+                                <h4 className="card-title">Review Applications</h4>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>
@@ -111,7 +111,7 @@ const ReviewMembers = () => {
                     { 
                         selectedApplication && !viewApplication && (
                             <>
-                            { console.log('formData:', formData)}
+                            {/* console.log('formData:', formData) */}
                             { <ActivateMember 
                                 formData={formData} 
                                 setFormData={setFormData}

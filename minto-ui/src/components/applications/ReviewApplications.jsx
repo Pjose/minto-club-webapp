@@ -224,7 +224,7 @@ const ReviewApplications = () => {
                         <div className="card-header text-white bg-primary">
                             <div className="d-flex">
                                 <Search size={26} className='text-white me-2' />
-                                <h4 className="card-title">Search Submitted Application</h4>
+                                <h4 className="card-title">Process Applications</h4>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>

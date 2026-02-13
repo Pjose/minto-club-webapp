@@ -220,6 +220,46 @@ public class MemberController {
     }
 
     /**
+     * Update member
+     * PATCH /api/v1/members/draft
+     */
+    @PatchMapping("/draft")
+    public ResponseEntity<MemberResponse> updateDraft(
+            @RequestBody MemberDTO draft,
+            Principal currentUser) {
+
+        var user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+
+        log.info("Updating member by: {} {}", user.getFirstName(), user.getLastName());
+
+        try {
+            MemberDTO memberDTO = memberService.saveMember(draft);
+
+            String fullName = memberDTO.getApplication().getPerson().getFirstName() + " " +
+                    memberDTO.getApplication().getPerson().getMiddleName() + " " +
+                    memberDTO.getApplication().getPerson().getLastName();
+
+            MemberResponse response = MemberResponse.builder()
+                    .success(true)
+                    .message("Member " + memberDTO.getMembershipNumber() + " updated successfully")
+                    .membershipNumber(memberDTO.getMembershipNumber())
+                    .memberId(memberDTO.getId())
+                    .applicationId(memberDTO.getApplication().getId())
+                    .userFullName(fullName)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error updating member. {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MemberResponse.builder()
+                            .success(false)
+                            .message("Failed to update member: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
      * Activate membership
      * POST /api/v1/members/draft/activate
      */

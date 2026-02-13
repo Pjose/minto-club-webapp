@@ -41,8 +41,8 @@ const EditMember = () => {
         setLoading(true)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/members`, {
-                method: 'PUT',
+            const response = await fetchWithAuth(`http://localhost:8080/api/v1/members/draft`, {
+                method: 'PATCH',
                 credentials: "include",
                 headers: { 
                     'Content-Type': 'application/json',
@@ -57,10 +57,10 @@ const EditMember = () => {
             }
 
             const jsonData = await response.json();
-            setFormData(jsonData)
+            //setFormData(jsonData)
             //console.log(jsonData);
-            setMessage('Update successful')
-            toast.success('Update successful')
+            setMessage(jsonData['message'])
+            toast.success(jsonData['message'])
             navigate('/login')
         } catch (error) {
             console.log(error)

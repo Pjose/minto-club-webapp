@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeftCircleFill, ArrowRightCircleFill, EnvelopeAt, EnvelopeFill, GeoAlt, Heart, People, PeopleFill, Person, PersonArmsUp, PersonCheck, PersonCheckFill, PersonCircle, PersonFill, PersonHeart, PersonHearts, PersonLinesFill, Plus, Send, SendCheck, Telephone, Trash, XCircleFill } from 'react-bootstrap-icons';
+import { ArrowLeftCircleFill, ArrowRightCircleFill, Award, EnvelopeAt, EnvelopeFill, GeoAlt, Heart, People, PeopleFill, 
+    Person, PersonArmsUp, PersonCheck, PersonCheckFill, PersonCircle, PersonFill, PersonHeart, PersonHearts, PersonLinesFill, 
+    Plus, Send, SendCheck, Telephone, Trash, XCircleFill } from 'react-bootstrap-icons';
 import { ProgressBar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import countriesData from '../../assets/data/countries.json';
@@ -9,17 +11,16 @@ import { toast } from 'sonner';
 import useConfirmation from '../hooks/useConfirmation';
 import UserSelectionModal from '../users/UserSelectionModal';
 import MemberSelectionModal from './MemberSelectionModal';
-
-const DEFAULT_USER = {
-    id: 0,
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    role: '',
-    source: '',
-    picture: ''
-}
+import { defaultParent } from '../../model/defaultParent';
+import { defaultSpouse } from '../../model/defaultSpouse';
+import { defaultChild } from '../../model/defaultChild';
+import { defaultSibling } from '../../model/defaultSibling';
+import { defaultReferee } from '../../model/defaultReferee';
+import { defaultRelative } from '../../model/defaultRelative';
+import { defaultBeneficiary } from '../../model/defaultBeneficiary';
+import { defaultPerson } from '../../model/defaultPerson';
+//import { defaultUser } from '../../model/defaultUser';
+import { defaultMember } from '../../model/defaultMember';
 
 /**
  * Update member details by admin or staff users with higher permissions and priviledges.
@@ -28,7 +29,7 @@ const UpdateMember = (props) => {
     const { formData, setFormData, loading, onSubmit } = props
     const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
     const navigate = useNavigate()
-    const [selectedUser, setSelectedUser] = useState(DEFAULT_USER)
+    //const [selectedUser, setSelectedUser] = useState({ ...defaultUser })
     const [showUsersModal, setShowUsersModal] = useState(false)
     const [showRefereesModal, setShowRefereesModal] = useState(false)
     const [showRelativesModal, setShowRelativesModal] = useState(false)
@@ -36,6 +37,8 @@ const UpdateMember = (props) => {
     const [selectedRelatives, setSelectedRelatives] = useState([])
     const [message, setMessage] = useState('')
     const [currentStep, setCurrentStep] = useState(0)
+
+    let originalFormData = formData || { ...defaultMember };
 
     const steps = [
         { number: 1, title: "Applicant's Info", icon: Person },
@@ -47,101 +50,37 @@ const UpdateMember = (props) => {
         { number: 7, title: "Beneficiaries Info", icon: PersonHearts },
     ]
 
-    const createEmptyPerson = () => ({
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        dob: "",
-        lifeStatus: "",
-        contact: {
-            addresses: [{ type: "", street: "", city: "", state: "", zipcode: "", country: "" }],
-            emails: [{ type: "", address: "" }],
-            phones: [{ type: "", countryCode: "", number: "" }]
-        }
-    })
-
-    const createNewReferee = () => ({
-        id: 0,
-        member: {
-            id: 0,
-            userId: 0,
-            memberCreatedAt: "",
-            memberUpdatedAt: "",
-            application: {
-                id: 0,
-                applicationStatus: "",
-                maritalStatus: "",
-                appCreatedAt: "",
-                appUpdatedAt: "",
-                person: {
-                    id: 0,
-                    firstName: "",
-                    middleName: "",
-                    lastName: "",
-                    dob: "",
-                    lifeStatus: "",
-                    createdAt: "",
-                    updatedAt: "",
-                    contact: {
-                        id: 0,
-                        addresses: [{ id: 0, type: "", street: "", city: "", state: "", zipcode: "", country: "" }],
-                        emails: [{ id: 0, type: "", address: "" }],
-                        phones: [{ id: 0, type: "", countryCode: "", number: "" }],
-                    },
-                },
-                parents: [],
-                spouses: [],
-                children: [],
-                siblings: [],
-                referees: [],
-                relatives: [],
-                beneficiaries: [],
-            }
-        }  
-    })
-
-    const createEmptyParent = () => ({ person: createEmptyPerson() })
-    const createEmptySpouse = () => ({ person: createEmptyPerson(), maritalStatus: "" })
-    const createEmptyChild = () => ({ person: createEmptyPerson() })
-    const createEmptySibling = () => ({ person: createEmptyPerson(), siblingType: "" })
-    const createEmptyReferee = () => ( createNewReferee() )
-    const createEmptyRelative = () => ({ person: createEmptyPerson(), relationship: "" })
-    const createEmptyBeneficiary = () => ({ person: createEmptyPerson(), percentage: 0.0 })
-
     const addPersonToArray = (arrayName) => {
         let newEntry
         switch (arrayName) {
         case 'parents': 
-            newEntry = createEmptyParent() 
+            newEntry = { ...defaultParent } 
             break
         case 'spouses': 
-            newEntry = createEmptySpouse() 
+            newEntry = { ...defaultSpouse } 
             break
         case 'children': 
-            newEntry = createEmptyChild() 
+            newEntry = { ...defaultChild } 
             break
         case 'siblings': 
-            newEntry = createEmptySibling() 
+            newEntry = { ...defaultSibling } 
             break
         case 'referees': 
-            newEntry = createEmptyReferee() 
+            newEntry =  { ...defaultReferee }
             break
         case 'relatives': 
-            newEntry = createEmptyRelative()
+            newEntry = { ...defaultRelative }
             break
         case 'beneficiaries': 
-            newEntry = createEmptyBeneficiary()
+            newEntry = { ...defaultBeneficiary }
             break
         default: 
-            newEntry = createEmptyPerson()
+            newEntry = { ...defaultPerson }
         }
         
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-                [arrayName]: [...prev.application[arrayName], newEntry]
-            }
+            [arrayName]: [...prev[arrayName], newEntry]
         }))
     }
 
@@ -172,145 +111,121 @@ const UpdateMember = (props) => {
     const updatePersonInArray = (arrayName, index, field, value, subField = null) => {
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-                [arrayName]: prev.application[arrayName].map((entry, i) => {
-                    if (i === index) {
-                        switch (arrayName) {
-                            case 'parents':
-                            case 'children':
-                                if (subField) {
-                                    return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
-                                }
-                                return { ...entry, person: { ...entry.person, [field]: value } };
-                            
-                            case 'referees':
-                                if (subField) {
-                                    return { 
-                                        ...entry, member: {
-                                            ...entry.member, application: {
-                                                ...entry.member.application, person: {
-                                                    ...entry.member.application.person, [field]: {
-                                                        ...entry.member.application.person[field], [subField]: value
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    };
-                                }
-                                return { 
-                                    ...entry, member: { 
-                                        ...entry.member, application: { 
-                                            ...entry.member.application, person: { 
-                                                ...entry.member.application.person, [field]: value 
-                                            } 
-                                        } 
-                                    } 
-                                }
-                                
-                            case 'siblings':
-                                if (field === 'siblingType') {
-                                    return { ...entry, siblingType: value }
-                                }
-                                if (subField) {
-                                    return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
-                                }
-                                return { ...entry, person: { ...entry.person, [field]: value } }
-                            
-                            case 'spouses':
-                                if (field === 'maritalStatus') {
-                                    return { ...entry, maritalStatus: value }
-                                }
-                                if (subField) {
-                                    return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
-                                }
-                                return { ...entry, person: { ...entry.person, [field]: value } }
-                            
-                            case 'relatives':
-                                if (field === 'relationship') {
-                                    return { ...entry, relationship: value }
-                                }
-                                if (subField) {
-                                    return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
-                                }
-                                return { ...entry, person: { ...entry.person, [field]: value } }
-                            
-                            case 'beneficiaries':
-                                if (field === 'percentage') {
-                                    return { ...entry, percentage: value }
-                                }
-                                if (subField) {
-                                    return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
-                                }
-                                return { ...entry, person: { ...entry.person, [field]: value } }
-                            
-                            default:
-                                return entry
-                        }
+            [arrayName]: prev[arrayName].map((entry, i) => {
+                if (i === index) {
+                    switch (arrayName) {
+                        case 'parents':
+                            if (field === 'parentType') {
+                                return { ...entry, parentType: value }
+                            }
+                            if (subField) {
+                                return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                            }
+                            return { ...entry, person: { ...entry.person, [field]: value } }
+                        
+                        case 'children':
+                            if (field === 'childType') {
+                                return { ...entry, childType: value }
+                            }
+                            if (subField) {
+                                return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                            }
+                            return { ...entry, person: { ...entry.person, [field]: value } }
+                        
+                        case 'referees':
+                            if (field === 'membershipNumber') {
+                                return { ...entry, membershipNumber: value }
+                            }
+                            if (subField) {
+                                return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                            }
+                            return { ...entry, person: { ...entry.person, [field]: value } }
+                        
+                        case 'siblings':
+                            if (field === 'siblingType') {
+                                return { ...entry, siblingType: value }
+                            }
+                            if (subField) {
+                                return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                            }
+                            return { ...entry, person: { ...entry.person, [field]: value } }
+                        
+                        case 'spouses':
+                            if (field === 'maritalStatus') {
+                                return { ...entry, maritalStatus: value }
+                            }
+                            if (subField) {
+                                return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                            }
+                            return { ...entry, person: { ...entry.person, [field]: value } }
+                        
+                        case 'relatives':
+                            if (field === 'membershipNumber') {
+                                return { ...entry, membershipNumber: value }
+                            }
+                            if (field === 'familyRelationship') {
+                                return { ...entry, familyRelationship: value }
+                            }
+                            if (subField) {
+                                return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                            }
+                            return { ...entry, person: { ...entry.person, [field]: value } }
+                        
+                        case 'beneficiaries':
+                            if (field === 'percentage') {
+                                return { ...entry, percentage: value }
+                            }
+                            if (field === 'relationship') {
+                                return { ...entry, relationship: value }
+                            }
+                            if (subField) {
+                                return { ...entry, person: { ...entry.person, [field]: { ...entry.person[field], [subField]: value } } }
+                            }
+                            return { ...entry, person: { ...entry.person, [field]: value } }
+                        
+                        default:
+                            return entry
                     }
-                    return entry
-                })
-            }
+                }
+                return entry
+            })
         }))
     }
 
     const updateContactForPerson = (arrayName, personIndex, contactType, contactIndex, field, value) => {
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-                [arrayName]: prev.application[arrayName].map((entry, i) => {
-                    if (i === personIndex) {
-                        let personObj;
-                        switch (arrayName) {
-                            case 'parents':
-                            case 'children':
-                            case 'siblings':
-                            case 'spouses':
-                            case 'relatives':
-                            case 'beneficiaries':
-                                personObj = entry.person;
-                                return {
-                                    ...entry,
-                                    person: {
-                                        ...personObj,
-                                        contact: {
-                                            ...personObj.contact,
-                                            [contactType]: personObj.contact[contactType].map((contact, j) =>
-                                                j === contactIndex ? { ...contact, [field]: value } : contact
-                                            )
-                                        }
-                                    }
+            [arrayName]: prev[arrayName].map((entry, i) => {
+                if (i === personIndex) {
+                    let personObj;
+                    switch (arrayName) {
+                        case 'parents':
+                        case 'spouses':
+                        case 'children':
+                        case 'siblings':
+                        case 'referees':
+                        case 'relatives':
+                        case 'beneficiaries':
+                            personObj = entry.person;
+                        return {
+                            ...entry,
+                            person: {
+                                ...personObj,
+                                contact: {
+                                    ...personObj.contact,
+                                    [contactType]: personObj.contact[contactType].map((contact, j) =>
+                                        j === contactIndex ? { ...contact, [field]: value } : contact
+                                    )
                                 }
-                            
-                            case 'referees':
-                                personObj = entry.member.application.person
-                                return {
-                                    ...entry,
-                                    member: {
-                                        ...entry.member,
-                                        application: {
-                                            ...entry.member.application,
-                                            person: {
-                                                ...personObj,
-                                                contact: {
-                                                    ...personObj.contact,
-                                                    [contactType]: personObj.contact[contactType].map((contact, j) =>
-                                                        j === contactIndex ? { ...contact, [field]: value } : contact
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            
-                            default:
-                                return entry
+                            }
                         }
+                        
+                        default:
+                            return entry
                     }
-                    return entry
-                })
-            }
+                }
+                return entry
+            })
         }))
     }
 
@@ -323,178 +238,123 @@ const UpdateMember = (props) => {
 
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-
-                [arrayName]: prev.application[arrayName].map((entry, i) => {
-                    if (i === personIndex) {
-                        let personObj;
-                        switch (arrayName) {
-                            case 'parents':
-                            case 'children':
-                            case 'siblings':
-                            case 'spouses':
-                            case 'relatives':
-                            case 'beneficiaries':
-                                personObj = entry.person
-                                return {
-                                    ...entry,
-                                    person: {
-                                        ...personObj,
-                                        contact: {
-                                            ...personObj.contact,
-                                            [contactType]: [...personObj.contact[contactType], newContact]
-                                        }
+            [arrayName]: prev[arrayName].map((entry, i) => {
+                if (i === personIndex) {
+                    let personObj;
+                    switch (arrayName) {
+                        case 'parents':
+                        case 'spouses':
+                        case 'children':
+                        case 'siblings':
+                        case 'referees':
+                        case 'relatives':
+                        case 'beneficiaries':
+                            personObj = entry.person
+                            return {
+                                ...entry,
+                                person: {
+                                    ...personObj,
+                                    contact: {
+                                        ...personObj.contact,
+                                        [contactType]: [...personObj.contact[contactType], newContact]
                                     }
                                 }
-                            
-                            case 'referees':
-                                personObj = entry.member.application.person
-                                return {
-                                    ...entry,
-                                    member: {
-                                        ...entry.member,
-                                        application: {
-                                            ...entry.member.application,
-                                            person: {
-                                                ...personObj,
-                                                contact: {
-                                                    ...personObj.contact,
-                                                    [contactType]: [...personObj.contact[contactType], newContact]
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            
-                            default:
-                                return entry
-                        }
+                            }
+                        
+                        default:
+                            return entry
                     }
-                    return entry
-                })
-            }
+                }
+                return entry
+            })
         }))
     }
 
     const removeContactForPerson = (arrayName, personIndex, contactType, contactIndex) => {
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-
-                [arrayName]: prev.application[arrayName].map((entry, i) => {
-                    if (i === personIndex) {
-                        let personObj
-                        switch (arrayName) {
-                            case 'parents':
-                            case 'children':
-                            case 'siblings':
-                            case 'spouses':
-                            case 'relatives':
-                            case 'beneficiaries':
-                                personObj = entry.person
-                                return {
-                                    ...entry,
-                                    person: {
-                                        ...personObj,
-                                        contact: {
-                                            ...personObj.contact,
-                                            [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
-                                        }
+            [arrayName]: prev[arrayName].map((entry, i) => {
+                if (i === personIndex) {
+                    let personObj
+                    switch (arrayName) {
+                        case 'parents':
+                        case 'spouses':
+                        case 'children':
+                        case 'siblings':
+                        case 'referees':
+                        case 'relatives':
+                        case 'beneficiaries':
+                            personObj = entry.person
+                            return {
+                                ...entry,
+                                person: {
+                                    ...personObj,
+                                    contact: {
+                                        ...personObj.contact,
+                                        [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
                                     }
                                 }
-                            
-                            case 'referees':
-                                personObj = entry.member.application.person
-                                return {
-                                    ...entry,
-                                    member: {
-                                        ...entry.member,
-                                        application: {
-                                            ...entry.member.application,
-                                            person: {
-                                                ...personObj,
-                                                contact: {
-                                                    ...personObj.contact,
-                                                    [contactType]: personObj.contact[contactType].filter((_, j) => j !== contactIndex)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            
-                            default:
-                                return entry
-                        }
+                            }
+                        
+                        default:
+                            return entry
                     }
-                    return entry
-                })
-            }
+                }
+                return entry
+            })
         }))
     }
+
 
     const removePersonFromArray = (arrayName, index) => {
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-                [arrayName]: prev.application[arrayName].filter((_, i) => i !== index)
-            }
-        }))
-    }
+            [arrayName]: prev[arrayName].filter((_, i) => i !== index)
+        }));
+    };
 
     const addContact = (type) => {
         const newContact = type === 'addresses' 
         ? { type: "", street: "", city: "", state: "", zipcode: "", country: "" }
         : type === 'emails'
         ? { type: "", address: "" }
-        : { type: "", countryCode: "", number: "" }
+        : { type: "", countryCode: "", number: "" };
 
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-                person: {
-                    ...prev.application.person,
-                    contact: {
-                        ...prev.application.person.contact,
-                        [type]: [ ...prev.application.person.contact[type], newContact]
-                    }
+            person: {
+                ...prev.person,
+                contact: {
+                ...prev.person.contact,
+                [type]: [...prev.person.contact[type], newContact]
                 }
             }
-        }))
-    }
+        }));
+    };
 
     const removeContact = (type, index) => {
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-                person: {
-                    ...prev.application.person,
-                    contact: {
-                        ...prev.application.person.contact,
-                        [type]: prev.application.person.contact[type].filter((_, i) => i !== index)
-                    }
+            person: {
+                ...prev.person,
+                contact: {
+                ...prev.person.contact,
+                [type]: prev.person.contact[type].filter((_, i) => i !== index)
                 }
             }
-        }))
-    }
+        }));
+    };
 
     const updateContact = (type, index, field, value) => {
         setFormData(prev => ({
             ...prev,
-            application: {
-                ...prev.application,
-                person: {
-                    ...prev.application.person,
-                    contact: {
-                        ...prev.application.person.contact,
-                        [type]: prev.application.person.contact[type].map((contact, i) =>
-                            i === index ? { ...contact, [field]: value } : contact
-                        )
-                    }
+            person: {
+                ...prev.person,
+                contact: {
+                ...prev.person.contact,
+                [type]: prev.person.contact[type].map((contact, i) => 
+                    i === index ? { ...contact, [field]: value } : contact
+                )
                 }
             }
         }))
@@ -513,6 +373,13 @@ const UpdateMember = (props) => {
         }))
     }
 
+    const updateFormData = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }))
+    }
+    
     const updateApplicationData = (field, value) => {
         setFormData(prev => ({
             ...prev,
@@ -520,13 +387,6 @@ const UpdateMember = (props) => {
                 ...prev.application,
                 [field]: value
             }
-        }))
-    }
-
-    const updateFormData = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
         }))
     }
 
@@ -543,24 +403,24 @@ const UpdateMember = (props) => {
     };
 
     const cancel = async () => {
-        const confirmation = await showConfirmation('Are you sure you want to cancel updating "Membership Application"?')
+        const confirmation = await showConfirmation("Are you sure you want to cancel the update?")
         if(confirmation) {
-            //setFormData(DEFAULT_APPLICATION)
-            console.log('Membership Application update Cancelled! The form is reset.')
-            toast.info('"Membership Application" update -> Cancelled!', {
-                description: 'The form has been reset.',
+            setFormData(originalFormData)
+            console.log("Member update cancelled! The form is reset.")
+            toast.info("Member Update -> Cancelled!", {
+                description: "The form has been reset.",
             })
             navigate('/login')
         } else {
-            console.log('Cancel Aborted! Continue working on the Membership Application.')
-            toast.info('Cancel -> Aborted!', {
-                description: 'Continue working on the "Membership Application".',
+            console.log("Cancel Aborted! Continue updating the Member.")
+            toast.info("Cancel -> Aborted!", {
+                description: "Continue working on the Member Update.",
             })
         }
     }
 
     const handleAddUser = (userToAdd) => {
-        setSelectedUser(userToAdd)
+        //setSelectedUser(userToAdd)
         addUser(userToAdd)
         setShowUsersModal(false)
     }
@@ -583,15 +443,17 @@ const UpdateMember = (props) => {
     }, [message])
 
     const renderPersonForm = (entry, arrayName, index, title) => {
-        let person, extraFields = {};
+        let person = {};
+        let extraFields = {};
         
         switch (arrayName) {
-        case 'parents':
-        case 'children':
-            person = entry.person;
-            break;
         case 'referees':
-            person = entry.member.application.person;
+            person = entry.person;
+            extraFields.membershipNumber = entry.membershipNumber;
+            break;
+        case 'parents':
+            person = entry.person;
+            extraFields.parentType = entry.parentType;
             break;
         case 'siblings':
             person = entry.person;
@@ -601,16 +463,22 @@ const UpdateMember = (props) => {
             person = entry.person;
             extraFields.maritalStatus = entry.maritalStatus;
             break;
+        case 'children':
+            person = entry.person;
+            extraFields.childType = entry.childType;
+            break;
         case 'relatives':
             person = entry.person;
-            extraFields.relationship = entry.relationship;
+            extraFields.membershipNumber = entry.membershipNumber;
+            extraFields.familyRelationship = entry.familyRelationship;
             break;
         case 'beneficiaries':
             person = entry.person;
             extraFields.percentage = entry.percentage;
+            extraFields.relationship = entry.relationship;
             break;
         default:
-            person = entry;
+            person = entry.person;
         }
 
         return (
@@ -692,7 +560,7 @@ const UpdateMember = (props) => {
                                         value={person.lifeStatus}
                                         onChange={(e) => updatePersonInArray(arrayName, index, 'lifeStatus', e.target.value)}
                                     >
-                                        <option value="">Select...</option>
+                                        <option value="">-- Select --</option>
                                         <option value="Living">Living</option>
                                         <option value="Deceased">Deceased</option>
                                     </select>
@@ -709,7 +577,7 @@ const UpdateMember = (props) => {
                                             onChange={(e) => updatePersonInArray(arrayName, index, 'maritalStatus', e.target.value)}
                                             className="form-select"
                                         >
-                                            <option value="">Select...</option>
+                                            <option value="">-- Select --</option>
                                             <option value="Single (Never Married)">Single (Never Married)</option>
                                             <option value="Married">Married</option>
                                             <option value="Living Common-Law">Living Common-Law</option>
@@ -718,6 +586,51 @@ const UpdateMember = (props) => {
                                             <option value="Widowed">Widowed</option>
                                         </select>
                                         <label htmlFor={`${arrayName}-${index}-maritalStatus`}>Marital Status</label>
+                                    </div>
+                                </div>
+                            )}
+
+                            {arrayName === 'children' && (
+                                <div className="col-sm-6 mb-3">
+                                    <div className="form-floating">
+                                        <select
+                                            id={`${arrayName}-${index}-childType`}
+                                            value={extraFields.childType}
+                                            onChange={(e) => updatePersonInArray(arrayName, index, 'childType', e.target.value)}
+                                            className="form-select"
+                                        >
+                                            <option value="">-- Select --</option>
+                                            <option value="Biological">Biological</option>
+                                            <option value="Adopted">Adopted</option>
+                                            <option value="Step Child">Step Child</option>
+                                            <option value="Foster Child">Foster Child</option>
+                                        </select>
+                                        <label htmlFor={`${arrayName}-${index}-childType`}>Child Type</label>
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {arrayName === 'parents' && (
+                                <div className="col-sm-6 mb-3">
+                                    <div className="form-floating">
+                                        <select
+                                            id={`${arrayName}-${index}-parentType`}
+                                            value={extraFields.parentType}
+                                            onChange={(e) => updatePersonInArray(arrayName, index, 'parentType', e.target.value)}
+                                            className="form-select"
+                                        >
+                                            <option value="">-- Select --</option>
+                                            <option value="Biological Mother">Biological Mother</option>
+                                            <option value="Biological Father">Biological Father</option>
+                                            <option value="Adoptive Mother">Adoptive Mother</option>
+                                            <option value="Adoptive Father">Adoptive Father</option>
+                                            <option value="Step Mother">Step Mother</option>
+                                            <option value="Step Father">Step Father</option>
+                                            <option value="Foster Mother">Foster Mother</option>
+                                            <option value="Foster Father">Foster Father</option>
+                                            <option value="Guardian">Guardian</option>
+                                        </select>
+                                        <label htmlFor={`${arrayName}-${index}-parentType`}>Parent Type</label>
                                     </div>
                                 </div>
                             )}
@@ -731,72 +644,127 @@ const UpdateMember = (props) => {
                                             onChange={(e) => updatePersonInArray(arrayName, index, 'siblingType', e.target.value)}
                                             className="form-select"
                                         >
-                                            <option value="">Select...</option>
+                                            <option value="">-- Select --</option>
                                             <option value="Brother">Brother</option>
                                             <option value="Sister">Sister</option>
+                                            <option value="Step Brother">Step Brother</option>
+                                            <option value="Step Sister">Step Sister</option>
+                                            <option value="Adopted Brother">Adopted Brother</option>
+                                            <option value="Adopted Sister">Adopted Sister</option>
+                                            <option value="Other">Other</option>
                                         </select>
                                         <label htmlFor={`${arrayName}-${index}-siblingType`}>Sibling Type</label>
                                     </div>
                                 </div>
                             )}
 
-                            {arrayName === 'relatives' && (
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <select
-                                            id={`relationship-${index}`}
-                                            value={extraFields.relationship}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'relationship', e.target.value)}
-                                            className="form-select"
-                                        >
-                                            <option value="">Select...</option>
-                                            <option value="Spouse">Spouse</option>
-                                            <option value="Father">Father</option>
-                                            <option value="Mother">Mother</option>
-                                            <option value="Son">Son</option>
-                                            <option value="Daughter">Daughter</option>
-                                            <option value="Brother">Brother</option>
-                                            <option value="Sister">Sister</option>
-                                            <option value="Grandfather">Grandfather</option>
-                                            <option value="Grandmother">Grandmother</option>
-                                            <option value="Grandson">Grandon</option>
-                                            <option value="Granddaughter">Granddaughter</option>
-                                            <option value="Uncle">Uncle</option>
-                                            <option value="Aunt">Aunt</option>
-                                            <option value="Nephew">Nephew</option>
-                                            <option value="Niece">Niece</option>
-                                            <option value="Cousin">Cousin</option>
-                                            <option value="Great-Grandfather">Great-Grandfather</option>
-                                            <option value="Great-Grandmother">Great-Grandmother</option>
-                                            <option value="Great-Uncle">Great-Uncle</option>
-                                            <option value="Great-Aunt">Great-Aunt</option>
-                                            <option value="Step relative">Step relative</option>
-                                            <option value="Other relative">Other relative</option>
-                                        </select>
-                                        <label htmlFor={`relationship-${index}`}>Family Relationship</label>
-                                    </div>
-                                </div>
-                            )}
-
-                            {arrayName === 'beneficiaries' && (
-                                <div className="col-sm-6 mb-3">
-                                    <div className="form-floating">
-                                        <input
-                                            id={`percentage-${index}`}
-                                            type="number"
-                                            step="0.1"
-                                            min="0"
-                                            max="100"
-                                            value={extraFields.percentage}
-                                            onChange={(e) => updatePersonInArray(arrayName, index, 'percentage', parseFloat(e.target.value) || 0.0)}
-                                            className="form-control"
-                                        />
-                                        <label htmlFor={`percentage-${index}`}>Percentage</label>
+                            {arrayName === 'referees' && (
+                                <div className="form-group row">
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`${arrayName}-${index}-membershipNumber`}
+                                                type={"text"}
+                                                className="form-control"
+                                                placeholder="Membership Number"
+                                                value={extraFields.membershipNumber}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
+                                            />
+                                            <label htmlFor={`${arrayName}-${index}-membershipNumber`}>Membership Number*</label>
+                                        </div>
                                     </div>
                                 </div>
                             )}
                         </div>
-                    
+
+                        <div className="form-group row">
+                            {arrayName === 'relatives' && (
+                                <>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`${arrayName}-${index}-membershipNumber`}
+                                                type={"text"}
+                                                className="form-control"
+                                                placeholder="Membership Number"
+                                                value={extraFields.membershipNumber}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'membershipNumber', e.target.value)}
+                                            />
+                                            <label htmlFor={`${arrayName}-${index}-membershipNumber`}>Membership Number*</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <select
+                                                id={`familyRelationship-${index}`}
+                                                value={extraFields.familyRelationship}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'familyRelationship', e.target.value)}
+                                                className="form-select"
+                                            >
+                                                <option value="">-- Select --</option>
+                                                <option value="Spouse">Spouse</option>
+                                                <option value="Father">Father</option>
+                                                <option value="Mother">Mother</option>
+                                                <option value="Son">Son</option>
+                                                <option value="Daughter">Daughter</option>
+                                                <option value="Brother">Brother</option>
+                                                <option value="Sister">Sister</option>
+                                                <option value="Grandfather">Grandfather</option>
+                                                <option value="Grandmother">Grandmother</option>
+                                                <option value="Grandson">Grandon</option>
+                                                <option value="Granddaughter">Granddaughter</option>
+                                                <option value="Uncle">Uncle</option>
+                                                <option value="Aunt">Aunt</option>
+                                                <option value="Nephew">Nephew</option>
+                                                <option value="Niece">Niece</option>
+                                                <option value="Cousin">Cousin</option>
+                                                <option value="Great-Grandfather">Great-Grandfather</option>
+                                                <option value="Great-Grandmother">Great-Grandmother</option>
+                                                <option value="Great-Uncle">Great-Uncle</option>
+                                                <option value="Great-Aunt">Great-Aunt</option>
+                                                <option value="Step relative">Step relative</option>
+                                                <option value="Other relative">Other relative</option>
+                                            </select>
+                                            <label htmlFor={`familyRelationship-${index}`}>Family Relationship</label>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {arrayName === 'beneficiaries' && (
+                                <>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`${arrayName}-${index}-relationship`}
+                                                type={"text"}
+                                                className="form-control"
+                                                placeholder="Relationship"
+                                                value={extraFields.relationship}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'relationship', e.target.value)}
+                                            />
+                                            <label htmlFor={`${arrayName}-${index}-relationship`}>Relationship*</label>
+                                        </div>
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="form-floating">
+                                            <input
+                                                id={`percentage-${index}`}
+                                                type="number"
+                                                step="0.1"
+                                                min="0"
+                                                max="100"
+                                                value={extraFields.percentage}
+                                                onChange={(e) => updatePersonInArray(arrayName, index, 'percentage', parseFloat(e.target.value) || 0.0)}
+                                                className="form-control"
+                                            />
+                                            <label htmlFor={`percentage-${index}`}>Percentage</label>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        
                         {/* Contact Details Card */}
                         <div key={index} className='card mb-3'>
                             <div className="card-header">
@@ -846,15 +814,16 @@ const UpdateMember = (props) => {
                                                     <div className="form-floating">
                                                         <select
                                                             id={`${arrayName}-${index}-address-type`}
-                                                            value={address.type}
-                                                            onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'type', e.target.value)}
+                                                            value={address.addressType}
+                                                            onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'addressType', e.target.value)}
                                                             className="form-select"
                                                         >
-                                                            <option value="">Select...</option>
+                                                            <option value="">-- Select --</option>
                                                             <option value="Home">Home</option>
                                                             <option value="Work">Work</option>
                                                             <option value="School">School</option>
-                                                            <option value="Mailing">Mailing</option>
+                                                            <option value="Billing">Billing</option>
+                                                            <option value="Shipping">Shipping</option>
                                                             <option value="Other">Other</option>
                                                         </select>
                                                         <label htmlFor={`${arrayName}-${index}-address-type`}>Type</label>
@@ -925,7 +894,7 @@ const UpdateMember = (props) => {
                                                             value={address.country}
                                                             onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'country', e.target.value)}
                                                         >
-                                                            <option key={'nil'} value="">Select...</option>
+                                                            <option key={'nil'} value="">-- Select --</option>
                                                             {countriesData.map((country) => (
                                                                 <option key={country.cca2} value={country.name}>
                                                                     {country.flag} {country.name}
@@ -969,11 +938,11 @@ const UpdateMember = (props) => {
                                                     <div className="form-floating">
                                                         <select
                                                             id={`${arrayName}-${index}-email-type`}
-                                                            value={email.type}
-                                                            onChange={(e) => updateContactForPerson(arrayName, index, 'emails', emailIndex, 'type', e.target.value)}
+                                                            value={email.emailType}
+                                                            onChange={(e) => updateContactForPerson(arrayName, index, 'emails', emailIndex, 'emailType', e.target.value)}
                                                             className="form-select"
                                                         >
-                                                            <option value="">Select...</option>
+                                                            <option value="">-- Select --</option>
                                                             <option value="Personal">Personal</option>
                                                             <option value="Work">Work</option>
                                                             <option value="School">School</option>
@@ -1041,11 +1010,11 @@ const UpdateMember = (props) => {
                                                     <div className="form-floating">
                                                         <select
                                                             id={`${arrayName}-${index}-phone-type`}
-                                                            value={phone.type}
-                                                            onChange={(e) => updateContactForPerson(arrayName, index, 'phones', phoneIndex, 'type', e.target.value)}
+                                                            value={phone.phoneType}
+                                                            onChange={(e) => updateContactForPerson(arrayName, index, 'phones', phoneIndex, 'phoneType', e.target.value)}
                                                             className="form-select"
                                                         >
-                                                            <option value="">Select...</option>
+                                                            <option value="">-- Select --</option>
                                                             <option value="Mobile">Mobile</option>
                                                             <option value="Home">Home</option>
                                                             <option value="Work">Work</option>
@@ -1065,7 +1034,7 @@ const UpdateMember = (props) => {
                                                             value={phone.countryCode}
                                                             onChange={(e) => updateContactForPerson(arrayName, index, 'phones', phoneIndex, 'countryCode', e.target.value)}
                                                         >
-                                                            <option value="">Select...</option>
+                                                            <option value="">-- Select --</option>
                                                             {countriesData.map((country) => (
                                                                 <option key={country.cca2} value={`${country.flag} +${country.code}`}>
                                                                     {country.flag} +{country.code}
@@ -1124,67 +1093,6 @@ const UpdateMember = (props) => {
                         </div>
                     </div>
                     <div className="card-body px-1 px-sm-3">
-                        <div className="form-group row">
-                            <div className="d-flex justify-content-end">
-                                <button 
-                                    onClick={() => setShowUsersModal(true)}
-                                    className="d-flex btn btn-danger text-center me-2"
-                                    title={`Select User to Add`}
-                                >
-                                    <Plus className="mb-1 text-white" size={21} />
-                                    <span className='d-none d-sm-flex text-white'>Select User</span>
-                                </button>
-                            </div>
-                        </div>
-                        {/* User Details */}
-                        <h5 className="text-danger mb-3"><strong>User Details</strong></h5>
-                        <div className="form-group row row-cols-auto">
-                            <div className="col-6 col-xxl-3">
-                                <div className="form-floating mb-3">
-                                    <input 
-                                        id="userId"
-                                        type="text" 
-                                        className="form-control"
-                                        value={formData.userId}
-                                        onChange={(e) => updateFormData('userId', e.target.value)}
-                                        disabled
-                                        readOnly
-                                    />
-                                    <label htmlFor="userId">User Id</label>
-                                </div>
-                            </div>
-                            {/** If selectedUser has a value then show the user role and email. */}
-                            { (selectedUser.id !== 0) && (
-                                <>
-                                    <div className="col-6 col-xxl-3">
-                                        <div className="form-floating mb-3">
-                                            <input 
-                                                id="userRole"
-                                                type="text" 
-                                                className="form-control"
-                                                value={selectedUser.role}
-                                                disabled
-                                                readOnly
-                                            />
-                                            <label htmlFor="userRole">User Role</label>
-                                        </div>
-                                    </div>  
-                                    <div className="col-6 col-xxl-6">
-                                        <div className="form-floating mb-3">
-                                            <input 
-                                                id="userId"
-                                                type="text" 
-                                                className="form-control"
-                                                value={selectedUser.email}
-                                                disabled
-                                                readOnly
-                                            />
-                                            <label htmlFor="userId">Username / Email</label>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-                        </div>
                         <div className="form-group row">
                             <div className="col-sm-4 mb-3">
                                 <div className="form-floating">
@@ -1281,27 +1189,6 @@ const UpdateMember = (props) => {
                                     <label htmlFor={"maritalStatus"}>Marital Status</label>
                                 </div>
                             </div>
-                            <div className="col-sm-6 mb-3">
-                                <div className="form-floating">
-                                    <select
-                                        className="form-select" 
-                                        name="applicationStatus" 
-                                        id="applicationStatus"
-                                        value={formData.application.applicationStatus}
-                                        onChange={(e) => updateApplicationData('applicationStatus', e.target.value)}
-                                        
-                                    >
-                                        <option value="">Select...</option>
-                                        <option value="Draft">Draft</option>
-                                        <option value="Submitted">Submitted</option>
-                                        <option value="In review">In Review</option>
-                                        <option value="Approved">Approved</option>
-                                        <option value="Rejected">Rejected</option>
-                                        <option value="Withdrawn">Withdrawn</option>
-                                    </select>
-                                    <label htmlFor={"applicationStatus"}>Application Status</label>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1354,15 +1241,16 @@ const UpdateMember = (props) => {
                                             <div className="form-floating">
                                                 <select
                                                     id={`address-type-${index}`}
-                                                    value={address.type}
-                                                    onChange={(e) => updateContact('addresses', index, 'type', e.target.value)}
+                                                    value={address.addressType}
+                                                    onChange={(e) => updateContact('addresses', index, 'addressType', e.target.value)}
                                                     className="form-select"
                                                 >
-                                                    <option value="">Select...</option>
+                                                    <option value="">-- Select --</option>
                                                     <option value="Home">Home</option>
                                                     <option value="Work">Work</option>
                                                     <option value="School">School</option>
-                                                    <option value="Mailing">Mailing</option>
+                                                    <option value="Billing">Billing</option>
+                                                    <option value="Shipping">Shipping</option>
                                                     <option value="Other">Other</option>
                                                 </select>
                                                 <label htmlFor={`address-type-${index}`}>Type</label>
@@ -1477,11 +1365,11 @@ const UpdateMember = (props) => {
                                             <div className="form-floating">
                                                 <select
                                                     id={`email-type-${index}`}
-                                                    value={email.type}
-                                                    onChange={(e) => updateContact('emails', index, 'type', e.target.value)}
+                                                    value={email.emailType}
+                                                    onChange={(e) => updateContact('emails', index, 'emailType', e.target.value)}
                                                     className="form-select"
                                                 >
-                                                    <option value="">Select...</option>
+                                                    <option value="">-- Select --</option>
                                                     <option value="Personal">Personal</option>
                                                     <option value="Work">Work</option>
                                                     <option value="School">School</option>
@@ -1549,11 +1437,11 @@ const UpdateMember = (props) => {
                                             <div className="form-floating">
                                                 <select
                                                     id={`phone-type-${index}`}
-                                                    value={phone.type}
-                                                    onChange={(e) => updateContact('phones', index, 'type', e.target.value)}
+                                                    value={phone.phoneType}
+                                                    onChange={(e) => updateContact('phones', index, 'phoneType', e.target.value)}
                                                     className="form-select"
                                                 >
-                                                    <option value="">Select...</option>
+                                                    <option value="">-- Select --</option>
                                                     <option value="Mobile">Mobile</option>
                                                     <option value="Home">Home</option>
                                                     <option value="Work">Work</option>
@@ -1984,6 +1872,214 @@ const UpdateMember = (props) => {
         )
     }
 
+    const renderMembershipInfo = () => {
+        return (
+            <>
+                <div className='card mb-4'>
+                    <div className="card-header bg-light">
+                        <div className="d-flex">
+                            <Award size={30} className='text-danger me-2' />
+                            <h3 className="text-danger">Membership Details</h3>
+                        </div>
+                    </div>
+                    <div className="card-body px-1 px-sm-3">
+                        {/* Member Details */}
+                        <div className="form-group row row-cols-auto">
+                            <div className="col-12 col-sm-6 col-xxl-2">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="memberId"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.id}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="memberId">Member Id</label>
+                                </div>
+                            </div>
+                            <div className="col-12 col-sm-6 col-xxl-4">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="membershipNumber"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.membershipNumber}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="membershipNumber">Member No.</label>
+                                </div>
+                            </div>
+                            <div className="col-12 col-sm-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="status"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.status}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="status">Status</label>
+                                </div>
+                            </div>  
+                            <div className="col-12 col-sm-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="startDate"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.startDate}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="startDate">Start Date</label>
+                                </div>
+                            </div>
+                        </div>
+                        {/* User Details */}
+                        <div className="form-group row row-cols-auto">
+                            <div className="col-12 col-sm-6 col-xxl-2">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="userId"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.user.id}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="userId">User Id</label>
+                                </div>
+                            </div>
+                            <div className="col-12 col-sm-6 col-xxl-4">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="userRole"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.user.role}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="userRole">User Role</label>
+                                </div>
+                            </div>  
+                            <div className="col-12 col-sm-6 col-xxl-6">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="userId"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.user.email}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="userId">Username / Email</label>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Applictaion Details */}
+                        <div className="form-group row row-cols-auto">
+                            <div className="col-12 col-sm-6 col-xxl-2">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="applicationId"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.application.id}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="applicationId">Application Id</label>
+                                </div>
+                            </div>
+                            <div className="col-12 col-sm-6 col-xxl-4">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="applicationNumber"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.application.applicationNumber}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="applicationNumber">Application Number</label>
+                                </div>
+                            </div>  
+                            <div className="col-12 col-sm-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="applicationStatus"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.application.applicationStatus}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="applicationStatus">Application Status</label>
+                                </div>
+                            </div>  
+                            <div className="col-12 col-sm-6 col-xxl-3">
+                                <div className="form-floating mb-3">
+                                    <input 
+                                        id="submittedDate"
+                                        type="text" 
+                                        className="form-control fw-bold"
+                                        value={formData.application.submittedDate}
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="submittedDate">Submitted Date</label>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Application Notes */}
+                        <div className="form-group row p-2 mt-2 mx-1 bg-light border border-secondary rounded">
+                            <div className="col-12">
+                                <h6 className="mb-3"><strong>Application Notes:</strong></h6>
+                                <div className="form-floating mb-3">
+                                    <textarea 
+                                        id="applicationNotes"
+                                        name='notes'
+                                        value={formData.application.notes || ''}
+                                        rows={5}
+                                        maxLength={2000}
+                                        style={{ height: '120px' }}
+                                        className="form-control"
+                                        disabled
+                                        readOnly
+                                    />
+                                    <label htmlFor="applicationNotes">Application Notes</label>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Membership Notes */}
+                        <div className="form-group row p-2 mt-2 mx-1 bg-light border border-secondary rounded">
+                            <div className="col-12">
+                                <h6 className="mb-3"><strong>Membership Notes:</strong></h6>
+                                <div className="form-floating mb-3">
+                                    <textarea 
+                                        id="membershipNotes"
+                                        name='notes'
+                                        value={formData.notes || ''}
+                                        rows={5}
+                                        maxLength={2000}
+                                        style={{ height: '120px' }}
+                                        className="form-control"
+                                        onChange={(e) => updateFormData('notes', e.target.value)}
+                                    />
+                                    <label htmlFor="membershipNotes">Membership Notes</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     const renderStep = () => {
         switch (currentStep) {
             case 0: return renderPersonalInfo()
@@ -2049,7 +2145,7 @@ const UpdateMember = (props) => {
             </div>
             {/* New Progress Bar */}
             <div className='card-body px-1 px-sm-3'>
-                <div className="container mb-8">
+                <div className="container mb-8 position-sticky top-0 bg-white" style={{ zIndex: 100, borderBottom: '1px solid #dee2e6' }}>
                     <div className="row mb-2">
                         {steps.map((step, index) => {
                             const IconComponent = step.icon;
@@ -2075,7 +2171,7 @@ const UpdateMember = (props) => {
                         })}
                     </div>
                     <div className="row mb-0">
-                        <ProgressBar now={`${((currentStep + 1) / steps.length) * 100}`} label={`Step ${currentStep + 1}`} className='bg-white' />
+                        <ProgressBar now={`${((currentStep + 1) / steps.length) * 100}`} label={`Step ${currentStep + 1}`} className='bg-white rounded-0' />
                     </div>
                     <div className="row mb-4">
                         <div className="col">
@@ -2089,6 +2185,7 @@ const UpdateMember = (props) => {
 
                 {/* Form Content */}
                 <div className="p-6">
+                    {renderMembershipInfo()}
                     {renderStep()}
                 </div>
             </div>

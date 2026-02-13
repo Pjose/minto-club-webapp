@@ -3,8 +3,8 @@ import LoadingSpinner from "../loading/LoadingSpinner"
 import { ButtonGroup, ToggleButton } from "react-bootstrap"
 import EditMember from "./EditMember"
 import CreateMember from "../membership/CreateMember"
-import ProcessApplicationPage from "../pages/application_pages/ProcessApplicationPage"
 import ReviewMembers from "./ReviewMembers"
+import ProcessMembers from "./ProcessMembers"
 
 const MembersMain = () => {
     const [radioValue, setRadioValue] = useState('1')
@@ -38,8 +38,8 @@ const MembersMain = () => {
                 )
             case '4':
                 return (
-                    <Suspense fallback={<LoadingSpinner caption={'Process Member'} clsTextColor={"text-danger"} />}>
-                        <ProcessApplicationPage />
+                    <Suspense fallback={<LoadingSpinner caption={'Process Members'} clsTextColor={"text-danger"} />}>
+                        <ProcessMembers />
                     </Suspense>
                 )
             default:

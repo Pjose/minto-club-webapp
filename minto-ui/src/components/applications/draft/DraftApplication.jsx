@@ -1963,7 +1963,7 @@ const DraftApplication = (props) => {
                         </div>
                         {/* New Progress Bar */}
                         <div className='card-body px-1 px-sm-3'>
-                            <div className="container mb-8">
+                            <div className="container mb-8 position-sticky top-0 bg-white" style={{ zIndex: 100, borderBottom: '1px solid #dee2e6' }}>
                                 <div className="row mb-2">
                                     {steps.map((step, index) => {
                                         const IconComponent = step.icon;

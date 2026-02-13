@@ -13,6 +13,12 @@ public interface MemberMapper {
 
     //MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
+    @Mapping(target = "startDate", dateFormat = "yyyy-MM-dd")
+    @Mapping(target = "endDate", dateFormat = "yyyy-MM-dd")
+    @Mapping(target = "renewalDate", dateFormat = "yyyy-MM-dd")
+    @Mapping(target = "terminationDate", dateFormat = "yyyy-MM-dd")
+    @Mapping(target = "memberCreatedAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "memberUpdatedAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
     Member toMember(MemberDTO memberDTO);
 
     @Mapping(target = "startDate", dateFormat = "yyyy-MM-dd")
