@@ -70,7 +70,7 @@ const Profile = () => {
 
     return (
         <>
-            <div>
+            <div style={{  minHeight:'100vh', background:'#f3f4f6' }}>
                 {
                     isLoading ? (
                         <LoadingSpinner caption={'Profile'} clsTextColor={"text-success"} />

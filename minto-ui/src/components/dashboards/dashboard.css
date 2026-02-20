@@ -82,7 +82,7 @@ body {
 }
 .dashboard-container {
     display: grid;
-    width: 96%;
+    width: 98%;
     margin: 0 auto;
     gap: 1.8rem;
     grid-template-columns: 12rem auto 19rem;
@@ -606,7 +606,7 @@ body {
 
 @media screen and (max-width: 1200px) {
     .dashboard-container {
-        width: 94%;
+        width: 99%;
         grid-template-columns: 7rem auto 19rem;
     }
 
@@ -633,7 +633,7 @@ body {
     }
 
     .dashboard-container main .table-panel {
-        width: 94%;
+        width: 99%;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
