@@ -49,7 +49,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private String picture;
+    private String imageName;
+    private String imageType;
+    @Lob
+    private byte[] imageData;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,21 +75,25 @@ public class UserService {
         return userMapper.toUserInfoDTOs(users);
     }
 
-    public UserDto updateUserByEmail(UserUpdateDto userUpdateDto) {
+    public UserDto updateUser(UserUpdateDto userUpdateDto, MultipartFile imageFile) {
         var existingUser = userRepository.findByEmail(userUpdateDto.email())
                 .orElseThrow(() -> new UserEmailNotFoundException(userUpdateDto.email()));
         existingUser.setFirstName(userUpdateDto.firstName());
         existingUser.setLastName(userUpdateDto.lastName());
         existingUser.setPassword(passwordEncoder.encode(userUpdateDto.password()));
         existingUser.setRole(Role.valueOf(userUpdateDto.role()));
-        existingUser.setPicture(userUpdateDto.picture());
+        existingUser.setImageName(imageFile.getOriginalFilename());
+        existingUser.setImageType(imageFile.getContentType());
+        existingUser.setImageData(imageFile.getBytes());
         existingUser.setUpdatedAt(LocalDateTime.now());
         var savedUser = userRepository.save(existingUser);
         return userMapper.toUserDto(savedUser);
     }
 
-    public UserDto patchUserByEmail(String email, Map<String, Object> updates) {
+    public UserDto patchUser(Map<String, Object> updates, MultipartFile imageFile) {
+        String email = (String) updates.get("email");
         Optional<User> userOptional = userRepository.findByEmail(email);
+
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             // Update user fields based on the provided updates
@@ -104,9 +109,12 @@ public class UserService {
             if (updates.containsKey("role")) {
                 user.setRole(Role.valueOf((String) updates.get("role")));
             }
-            if (updates.containsKey("picture")) {
-                user.setPicture((String) updates.get("picture"));
+            if (!(imageFile.isEmpty())) {
+                user.setImageName(imageFile.getOriginalFilename());
+                user.setImageType(imageFile.getContentType());
+                user.setImageData(imageFile.getBytes());
             }
+
             if (updates.containsKey("person")) {
                 ObjectMapper mapper = new ObjectMapper();
                 Person person = mapper.convertValue(updates.get("person"), Person.class);
@@ -132,7 +140,7 @@ public class UserService {
      * STEP 1 & 2: Register new user account (starts as GUEST) and activate account
      */
     @Transactional
-    public UserDto createGuestUser(AddUserDTO addUserDTO) {
+    public UserDto createGuestUser(AddUserDTO addUserDTO, MultipartFile imageFile) {
         log.info("Registering new user: {}", addUserDTO.email());
 
         // Validate
@@ -168,6 +176,9 @@ public class UserService {
                 .password(passwordEncoder.encode(addUserDTO.password()))
                 .role(Role.USER)
                 .source(RegistrationSource.DASHBOARD)
+                .imageName(imageFile.getOriginalFilename())
+                .imageType(imageFile.getContentType())
+                .imageData(imageFile.getBytes())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .accountStatus(AccountStatus.ACTIVE)

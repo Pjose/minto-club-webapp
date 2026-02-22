@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -51,22 +52,32 @@ public class UserController {
     }
 
     @PostMapping("/secure")
-    public ResponseEntity<UserDto> createGuestUser(@RequestBody AddUserDTO addUserDTO) {
-        var userDto = userService.createGuestUser(addUserDTO);
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<?> createGuestUser(@RequestPart AddUserDTO addUserDTO,
+                                             @RequestPart MultipartFile imageFile) {
+        try {
+            var userDto = userService.createGuestUser(addUserDTO, imageFile);
+            return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/secure")
-    public ResponseEntity<UserDto> updateUserByEmail(
-            @RequestBody UserUpdateDto userUpdateDto,
-            Principal principal) {
-        var userDto = userService.updateUserByEmail(userUpdateDto);
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<?> updateUser(
+            @RequestPart UserUpdateDto userUpdateDto,
+            @RequestPart MultipartFile imageFile) {
+        try {
+            var userDto = userService.updateUser(userUpdateDto, imageFile);
+            return new ResponseEntity<>(userDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
-    @PatchMapping("/secure/{email}")
-    public ResponseEntity<?> updateUser(@PathVariable String email, @RequestBody Map<String, Object> updates) {
-        UserDto updatedUser = userService.patchUserByEmail(email, updates);
+    @PatchMapping("/secure")
+    public ResponseEntity<?> patchUser(@RequestPart Map<String, Object> updates,
+                                        @RequestPart MultipartFile imageFile) {
+        UserDto updatedUser = userService.patchUser(updates, imageFile);
         if (updatedUser != null) {
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } else {

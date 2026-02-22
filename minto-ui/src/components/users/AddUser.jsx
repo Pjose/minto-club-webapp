@@ -15,7 +15,9 @@ const DEFAULT_USER = {
     password: '',
     role: '',
     source: 'DASHBOARD',
-    picture: ''
+    imageName: '',
+    imageType: '',
+    imageData: []
 }
 
 const AddUser = () => {

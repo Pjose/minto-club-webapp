@@ -24,7 +24,9 @@ const EditUser = () => {
             email: "",
             password: "",
             role: "",
-            picture: "",
+            imageName: "",
+            imageType: "",
+            imageData: []
         }
     )
 
@@ -74,7 +76,8 @@ const EditUser = () => {
         setLoading(true)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/users/secure/${formData.email}`, {
+            {/*const response = await fetchWithAuth(`http://localhost:8080/api/v1/users/secure/${formData.email}`, { */}
+            const response = await fetchWithAuth(`http://localhost:8080/api/v1/users/secure`, {
                 method: 'PATCH',
                 credentials: "include",
                 headers: { 

@@ -6,7 +6,9 @@ public record UserUpdateDto(
         String email,
         String password,
         String role,
-        String picture
+        String imageName,
+        String imageType,
+        byte[] imageData
 ) {
 
 }

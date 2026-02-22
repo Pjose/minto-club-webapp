@@ -80,11 +80,11 @@ const Profile = () => {
                                 <ProfileCard profileData={profileData} />
 
                                 { userApplications.length > 0 ? (
-                                    <div className="mt-4">
+                                    <div className="my-4">
                                         <h3 className="mb-3" style={{ color: 'darkgreen'}}>Your Applications</h3>
                                         <ul className="list-group">
                                             { userApplications.map((app, index) => (
-                                                <li key={index} className="list-group-item">
+                                                <li key={index} className="list-group-item mb-3">
                                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                                         <span className="fw-bold text-primary">Application {index + 1}</span>
                                                         <span className={`badge ${app.applicationStatus === 'Approved' ? 'bg-success' 
@@ -108,7 +108,7 @@ const Profile = () => {
                                         </ul>
                                     </div>
                                 ) : (
-                                    <p className="text-secondary mt-4">You have no applications yet.</p>
+                                    <p className="text-secondary my-4">You have no applications yet.</p>
                                 )}
                             </div>
                         )
