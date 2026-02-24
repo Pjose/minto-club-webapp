@@ -52,13 +52,6 @@ public class User implements UserDetails {
     // Picture URL
     private String picture;
 
-    //Load Profile Picture to DB
-    private String imageName;
-    private String imageType;
-    @Lob
-    @Column(length = 5242880) //5MB
-    private byte[] imageData;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

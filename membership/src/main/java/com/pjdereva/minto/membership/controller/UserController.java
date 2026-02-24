@@ -53,7 +53,7 @@ public class UserController {
         var userInfoDTO = userService.getUserInfoById(id);
         return ResponseEntity.ok(userInfoDTO);
     }
-
+/*
     @GetMapping("/secure/{email}/image")
     public ResponseEntity<byte[]> getImageByEmail(@PathVariable String email) {
         try {
@@ -67,6 +67,7 @@ public class UserController {
             return new ResponseEntity<>("".getBytes(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+ */
 
     @PostMapping("/secure")
     public ResponseEntity<?> createGuestUser(@RequestPart AddUserDTO addUserDTO,
