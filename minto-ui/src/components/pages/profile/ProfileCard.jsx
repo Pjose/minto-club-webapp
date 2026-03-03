@@ -86,15 +86,15 @@ const ProfileCard = (props) => {
                                             <div style={s.infoItem}>
                                                 <CalendarCheck size={24} className="text-secondary" />
                                                 <div>
-                                                    <p style={s.infoLabel}>Created At:</p>
-                                                    <p style={s.infoValue}>{profileData.createdAt}</p>
+                                                    <p style={s.infoLabel}>Created On</p>
+                                                    <p style={s.infoValue}>{new Date(profileData.createdAt).toLocaleDateString()}</p>
                                                 </div>
                                             </div>
                                             <div style={s.infoItem}>
                                                 <CalendarPlus size={24} className="text-secondary" />
                                                 <div>
-                                                    <p style={s.infoLabel}>Updated At:</p>
-                                                    <p style={s.infoValue}>{profileData.updatedAt}</p>
+                                                    <p style={s.infoLabel}>Updated On</p>
+                                                    <p style={s.infoValue}>{new Date(profileData.updatedAt).toLocaleDateString()}</p>
                                                 </div>
                                             </div>
                                         </div>

@@ -34,7 +34,8 @@ class TokenRefreshManager {
     }
 }
 
-const AuthenticationProvider = ({ children }) => {
+const AuthenticationProvider = (props) => {
+    const { children } = props
     const tokenRefreshManager = useRef(new TokenRefreshManager());
     const userRef = useRef(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)

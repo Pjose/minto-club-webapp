@@ -47,7 +47,7 @@ const ViewContactCard = (props) => {
                                                 name={`address-type-${index}`} id={`address-type-${index}`}
                                                 type="text" 
                                                 className="form-control"
-                                                value={address.addressType}
+                                                value={address.addressType || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -61,7 +61,7 @@ const ViewContactCard = (props) => {
                                                 className="form-control"
                                                 placeholder="Enter street address"
                                                 name={`street-${index}`}
-                                                value={address.street}
+                                                value={address.street || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -75,7 +75,7 @@ const ViewContactCard = (props) => {
                                                 className="form-control"
                                                 placeholder="Enter city"
                                                 name={`city-${index}`}
-                                                value={address.city}
+                                                value={address.city || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -89,7 +89,7 @@ const ViewContactCard = (props) => {
                                                 className="form-control"
                                                 placeholder="Enter state"
                                                 name={`state-${index}`}
-                                                value={address.state}
+                                                value={address.state || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -103,7 +103,7 @@ const ViewContactCard = (props) => {
                                                 className="form-control"
                                                 placeholder="Enter zip code"
                                                 name={`zipcode-${index}`}
-                                                value={address.zipcode}
+                                                value={address.zipcode || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -116,7 +116,7 @@ const ViewContactCard = (props) => {
                                                 className="form-control"
                                                 id={`country-${index}`}
                                                 name={`country-${index}`}
-                                                value={address.country}
+                                                value={address.country || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -142,7 +142,7 @@ const ViewContactCard = (props) => {
                                         <div className="form-floating">
                                             <input name={`email-type-${index}`} id={`email-type-${index}`}
                                                 className="form-control"
-                                                value={email.emailType}
+                                                value={email.emailType || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -156,7 +156,7 @@ const ViewContactCard = (props) => {
                                                 className="form-control"
                                                 placeholder="Email address"
                                                 name={`address-${index}`}
-                                                value={email.address}
+                                                value={email.address || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -182,7 +182,7 @@ const ViewContactCard = (props) => {
                                         <div className="form-floating">
                                             <input name={`phone-type-${index}`} id={`phone-type-${index}`}
                                                 className="form-control"
-                                                value={phone.phoneType}
+                                                value={phone.phoneType || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -195,7 +195,7 @@ const ViewContactCard = (props) => {
                                                 id={`country-code-${index}`}
                                                 className="form-control"
                                                 name={`country-code-${index}`}
-                                                value={phone.countryCode}
+                                                value={phone.countryCode || ''}
                                                 disabled
                                                 readOnly
                                             />
@@ -209,7 +209,7 @@ const ViewContactCard = (props) => {
                                                 className="form-control"
                                                 placeholder="Phone number"
                                                 name={`number-${index}`}
-                                                value={phone.number}
+                                                value={phone.number || ''}
                                                 disabled
                                                 readOnly
                                             />

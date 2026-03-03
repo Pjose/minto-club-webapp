@@ -64,7 +64,7 @@ const ViewPersonCard = (props) => {
                                         id="dob"
                                         type="text" 
                                         className="form-control"
-                                        value={viewPersonData.dob}
+                                        value={viewPersonData.dob || ''}
                                         disabled
                                         readOnly
                                     />
@@ -77,7 +77,7 @@ const ViewPersonCard = (props) => {
                                         id="lifeStatus"
                                         type="text" 
                                         className="form-control"
-                                        value={viewPersonData.lifeStatus}
+                                        value={viewPersonData.lifeStatus || ''}
                                         disabled
                                         readOnly
                                     />
@@ -90,7 +90,7 @@ const ViewPersonCard = (props) => {
                                         id="createdAt"
                                         type="text" 
                                         className="form-control"
-                                        value={viewPersonData.createdAt}
+                                        value={viewPersonData.createdAt || ''}
                                         disabled
                                         readOnly
                                     />
@@ -103,7 +103,7 @@ const ViewPersonCard = (props) => {
                                         id="updatedAt"
                                         type="text" 
                                         className="form-control"
-                                        value={viewPersonData.updatedAt}
+                                        value={viewPersonData.updatedAt || ''}
                                         disabled
                                         readOnly
                                     />
@@ -118,7 +118,7 @@ const ViewPersonCard = (props) => {
                                         id="maritalStatus"
                                         type="text" 
                                         className="form-control"
-                                        value={arrayPerson.maritalStatus}
+                                        value={arrayPerson.maritalStatus || ''}
                                         disabled
                                         readOnly
                                     />
@@ -134,7 +134,7 @@ const ViewPersonCard = (props) => {
                                         id="childType"
                                         type="text" 
                                         className="form-control"
-                                        value={arrayPerson.childType}
+                                        value={arrayPerson.childType || ''}
                                         disabled
                                         readOnly
                                     />
@@ -151,7 +151,7 @@ const ViewPersonCard = (props) => {
                                         id="parentType"
                                         type="text" 
                                         className="form-control"
-                                        value={arrayPerson.parentType}
+                                        value={arrayPerson.parentType || ''}
                                         disabled
                                         readOnly
                                     />
@@ -167,7 +167,7 @@ const ViewPersonCard = (props) => {
                                         id="siblingType"
                                         type="text" 
                                         className="form-control"
-                                        value={arrayPerson.siblingType}
+                                        value={arrayPerson.siblingType || ''}
                                         disabled
                                         readOnly
                                     />
@@ -183,7 +183,7 @@ const ViewPersonCard = (props) => {
                                         id="familyRelationship"
                                         type="text" 
                                         className="form-control"
-                                        value={arrayPerson.familyRelationship}
+                                        value={arrayPerson.familyRelationship || ''}
                                         disabled
                                         readOnly
                                     />
@@ -199,7 +199,7 @@ const ViewPersonCard = (props) => {
                                         id="relationship"
                                         type="text" 
                                         className="form-control"
-                                        value={arrayPerson.relationship}
+                                        value={arrayPerson.relationship || ''}
                                         disabled
                                         readOnly
                                     />
@@ -215,7 +215,7 @@ const ViewPersonCard = (props) => {
                                         id="membershipNumber"
                                         type="text" 
                                         className="form-control"
-                                        value={arrayPerson.membershipNumber}
+                                        value={arrayPerson.membershipNumber || ''}
                                         disabled
                                         readOnly
                                     />

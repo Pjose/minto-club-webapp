@@ -2,10 +2,14 @@ import { Trash } from 'react-bootstrap-icons';
 import PropTypes from 'prop-types';
 import ContactDetails from './ContactDetails';
 import { validators } from '../../validate/validators';
+import ConfirmationModal from '../../misc/modals/ConfirmationModal';
+import useConfirmation from '../../hooks/useConfirmation';
+import { toast } from 'sonner';
 
 const PersonForm = (props) => {
     const { entry, arrayName, index, title, removePersonFromArray, updatePersonInArray, addContactForPerson, 
         updateContactForPerson, removeContactForPerson, formErrors, setFormErrors } = props;
+    const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
     let person = {};
     let extraFields = {};
     
@@ -122,6 +126,48 @@ const PersonForm = (props) => {
         }))
     }
 
+    const deleteContactForPerson = async (arrayName, index, contactType, contactIndex) => {
+        const typeStr = contactType === 'addresses' ? 'address' 
+            : contactType === 'emails' ? 'email' 
+            : 'phone';
+        const confirmation = await showConfirmation(`Are you sure you want to delete this ${typeStr} record?`)
+        if(confirmation) {
+            removeContactForPerson(arrayName, index, contactType, contactIndex);
+            console.log(`${typeStr} record deleted!.`)
+            toast.info("Delete successful!", {
+                description: `${typeStr} record deleted.`,
+            })
+        } else {
+            console.log(`Delete Aborted! Continue working on the ${typeStr} record.`)
+            toast.info(`Delete -> Aborted!`, {
+                description: `Continue working on the ${typeStr} record.`,
+            })
+        }
+    }
+
+    const deletePersonFromArray = async (arrayName, index) => {
+        const personName = arrayName === 'spouses' ? 'spouse' 
+            : arrayName === 'children' ? 'child' 
+            : arrayName === 'parents' ? 'parent' 
+            : arrayName === 'siblings' ? 'sibling' 
+            : arrayName === 'referees' ? 'referee' 
+            : arrayName === 'relatives' ? 'relative' 
+            : 'beneficiary';
+        const confirmation = await showConfirmation(`Are you sure you want to delete the ${personName} record?`)
+        if(confirmation) {
+            removePersonFromArray(arrayName, index);
+            console.log(`${personName} record deleted!.`)
+            toast.info("Delete successful!", {
+                description: `${personName} record deleted.`,
+            })
+        } else {
+            console.log(`Delete Aborted! Continue working on the ${personName} record.`)
+            toast.info(`Delete -> Aborted!`, {
+                description: `Continue working on the ${personName} record.`,
+            })
+        }
+    }
+
     return (
         <>
             <div key={index} className="card mb-2 shadow">
@@ -129,7 +175,7 @@ const PersonForm = (props) => {
                     <h3 className="font-medium"><strong>{title} {index + 1}</strong></h3>
                     <button
                         type="button"
-                        onClick={() => removePersonFromArray(arrayName, index)}
+                        onClick={() => deletePersonFromArray(arrayName, index)}
                         className="bg-light text-danger p-2"
                         title={`Remove ${title} ${index + 1}`}
                     >
@@ -195,7 +241,7 @@ const PersonForm = (props) => {
                                     onBlur={(e) => handleValidate(arrayName, index, 'dob', e.target.value)}
                                     onChange={(e) => updatePersonInArray(arrayName, index, 'dob', e.target.value)}
                                 />
-                                <label htmlFor={`${arrayName}-${index}-dob`}>Date Of Birth</label>
+                                <label htmlFor={`${arrayName}-${index}-dob`}>Date Of Birth*</label>
                             </div>
                             { formErrors[arrayName].length > 0 && formErrors[arrayName][index].person.dob && <div className="text-danger mt-1">{ formErrors[arrayName][index].person.dob}</div>}
                         </div>
@@ -214,7 +260,7 @@ const PersonForm = (props) => {
                                     <option value="Living">Living</option>
                                     <option value="Deceased">Deceased</option>
                                 </select>
-                                <label htmlFor={`${arrayName}-${index}-lifeStatus`}>Life Status</label>
+                                <label htmlFor={`${arrayName}-${index}-lifeStatus`}>Life Status*</label>
                             </div>
                             { formErrors[arrayName].length > 0 && formErrors[arrayName][index].person.lifeStatus && <div className="text-danger mt-1">{ formErrors[arrayName][index].person.lifeStatus}</div>}
                         </div>
@@ -237,7 +283,7 @@ const PersonForm = (props) => {
                                         <option value="Divorced">Divorced</option>
                                         <option value="Widowed">Widowed</option>
                                     </select>
-                                    <label htmlFor={`${arrayName}-${index}-maritalStatus`}>Marital Status</label>
+                                    <label htmlFor={`${arrayName}-${index}-maritalStatus`}>Marital Status*</label>
                                 </div>
                                 { formErrors[arrayName].length > 0 && formErrors[arrayName][index].maritalStatus && <div className="text-danger mt-1">{ formErrors[arrayName][index].maritalStatus}</div>}
                             </div>
@@ -259,7 +305,7 @@ const PersonForm = (props) => {
                                         <option value="Step Child">Step Child</option>
                                         <option value="Foster Child">Foster Child</option>
                                     </select>
-                                    <label htmlFor={`${arrayName}-${index}-childType`}>Child Type</label>
+                                    <label htmlFor={`${arrayName}-${index}-childType`}>Child Type*</label>
                                 </div>
                                 { formErrors[arrayName].length > 0 && formErrors[arrayName][index].childType && <div className="text-danger mt-1">{ formErrors[arrayName][index].childType}</div>}
                             </div>
@@ -286,7 +332,7 @@ const PersonForm = (props) => {
                                         <option value="Foster Father">Foster Father</option>
                                         <option value="Guardian">Guardian</option>
                                     </select>
-                                    <label htmlFor={`${arrayName}-${index}-parentType`}>Parent Type</label>
+                                    <label htmlFor={`${arrayName}-${index}-parentType`}>Parent Type*</label>
                                 </div>
                                 { formErrors[arrayName].length > 0 && formErrors[arrayName][index].parentType && <div className="text-danger mt-1">{ formErrors[arrayName][index].parentType}</div>}
                             </div>
@@ -311,7 +357,7 @@ const PersonForm = (props) => {
                                         <option value="Adopted Sister">Adopted Sister</option>
                                         <option value="Other">Other</option>
                                     </select>
-                                    <label htmlFor={`${arrayName}-${index}-siblingType`}>Sibling Type</label>
+                                    <label htmlFor={`${arrayName}-${index}-siblingType`}>Sibling Type*</label>
                                 </div>
                                 { formErrors[arrayName].length > 0 && formErrors[arrayName][index].siblingType && <div className="text-danger mt-1">{ formErrors[arrayName][index].siblingType}</div>}
                             </div>
@@ -395,7 +441,7 @@ const PersonForm = (props) => {
                                             <option value="Step relative">Step relative</option>
                                             <option value="Other relative">Other relative</option>
                                         </select>
-                                        <label htmlFor={`familyRelationship-${index}`}>Family Relationship</label>
+                                        <label htmlFor={`familyRelationship-${index}`}>Family Relationship*</label>
                                     </div>
                                     { 
                                         formErrors[arrayName].length > 0 && 
@@ -438,7 +484,7 @@ const PersonForm = (props) => {
                                             onChange={(e) => updatePersonInArray(arrayName, index, 'percentage', parseFloat(e.target.value) || 0.0)}
                                             className="form-control"
                                         />
-                                        <label htmlFor={`percentage-${index}`}>Percentage</label>
+                                        <label htmlFor={`percentage-${index}`}>Percentage*</label>
                                     </div>
                                     { formErrors[arrayName].length > 0 && formErrors[arrayName][index].percentage && <div className="text-danger mt-1">{ formErrors[arrayName][index].percentage}</div>}
                                 </div>
@@ -453,11 +499,17 @@ const PersonForm = (props) => {
                         arrayName={arrayName} 
                         person={person} 
                         updateContactForPerson={updateContactForPerson} 
-                        removeContactForPerson={removeContactForPerson} 
+                        deleteContactForPerson={deleteContactForPerson} 
                         addContactForPerson={addContactForPerson} 
                         formErrors={formErrors}
                         setFormErrors={setFormErrors}
                     />  
+                    <ConfirmationModal
+                        show={show}
+                        message={confirmMsg}
+                        onConfirm={handleConfirm}
+                        onCancel={handleCancel}
+                    />
                 </div>
             </div>
         </>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeftCircleFill, ArrowRightCircleFill, Floppy2, Heart, People, Person, PersonArmsUp, 
-    PersonCheck,  PersonHearts, PersonLinesFill, Send, SendCheck, XCircleFill } from 'react-bootstrap-icons';
+    PersonCheck,  PersonHearts, PersonLinesFill, SendCheck, XCircleFill } from 'react-bootstrap-icons';
 import { ProgressBar } from 'react-bootstrap';
 import { toast } from 'sonner';
 import PropTypes from 'prop-types'
@@ -31,6 +31,7 @@ import PersonalInfoForm from '../../person/personal-info-form/PersonalInfoForm';
 import { defaultErrors } from '../../../model/defaultErrors';
 import { validators } from '../../validate/validators';
 import { personErrors } from '../../../model/personErrors';
+import ReviewAndSubmit from '../review/ReviewAndSubmit';
 
 /**
  * Create draft membership application by users with regular user permissions.
@@ -48,7 +49,7 @@ const DraftApplication = (props) => {
     const [currentStep, setCurrentStep] = useState(0)
     const [formData, setFormData] = useState({ ...defaultApplication, applicationStatus: 'Draft' })
     const [formErrors, setFormErrors] = useState({ ...defaultErrors })
-    const [complete, setComplete] = useState(false)
+    const [complete, setComplete] = useState(false) // TODO: No validation errors
     const user = getUser()
 
     const steps = [
@@ -101,9 +102,6 @@ const DraftApplication = (props) => {
             ...prev,
             [arrayName]: [...prev[arrayName], newEntry]
         }))
-
-        console.log('Adding: ', arrayName)
-        console.log('newErrors: ', newErrors)
         
         setFormErrors(prev =>({
             ...prev,
@@ -482,18 +480,18 @@ const DraftApplication = (props) => {
     }
 
     const cancel = async () => {
-        const confirmation = await showConfirmation("Are you sure you want to cancel this 'Membership Application'?")
+        const confirmation = await showConfirmation("Are you sure you want to cancel this application?")
         if(confirmation) {
             setFormData({ ...defaultApplication })
-            console.log("Membership Application Cancelled! The form is reset.")
-            toast.info("'Membership Application' -> Cancelled!", {
+            console.log("Application Cancelled! The form is reset.")
+            toast.info("Application -> Cancelled!", {
                 description: "The form has been reset.",
             })
             navigate('/login')
         } else {
-            console.log("Cancel Aborted! Continue working on the Membership Application.")
+            console.log("Cancel Aborted! Continue working on the application.")
             toast.info("Cancel -> Aborted!", {
-                description: "Continue working on the 'Membership Application'.",
+                description: "Continue working on the application.",
             })
         }
     }
@@ -578,7 +576,7 @@ const DraftApplication = (props) => {
                     console.log(jsonData)
                     setMessage('Membership application saved successfully!')
                     toast.success('Membership application saved successfully!')
-                    setFormErrors({})
+                    setFormErrors({ ...defaultErrors })
                 } else {
                     console.log('Invalid form! Please correct the errors and try again.')
                     console.log(formErrors)
@@ -620,7 +618,7 @@ const DraftApplication = (props) => {
                 setIsSubmitted(true)
                 setMessage('Membership application submitted successfully!')
                 toast.success('Membership application submitted successfully!')
-                setFormErrors({})
+                setFormErrors({ ...defaultErrors })
             }
         } catch (error) {
             console.error('Error submitting application:', error)
@@ -871,7 +869,7 @@ const DraftApplication = (props) => {
             })
         }
         
-        console.log(e)
+        //console.log(e)
         setFormErrors(e);
         return areAllEmptyStrings(e);
     }
@@ -986,24 +984,12 @@ const DraftApplication = (props) => {
     // Review & Submit
     const renderReviewAndSubmit = () => {
         return (
-            <div className='card'>
-                <div className="card-header bg-success text-white">
-                    <div className="d-flex">
-                        <Send size={28} className='me-2 text-white' />
-                        <h3 className='text-bold text-white'>Review & Submit</h3>
-                    </div>
-                </div>
-                <div className="card-body px-1 px-sm-3">
-                    <div className="bg-gray-50 py-6 px-1 px-sm-6 rounded-lg">
-                        <pre className="whitespace-pre-wrap text-sm text-gray-800 overflow-auto max-h-96">
-                            {JSON.stringify(formData, null, 2)}
-                        </pre>
-                    </div>
-                    <div className="align-items-center text-center">
-                        { message && <span className="text-success ms-2 h5">...{message}...</span> }
-                    </div>
-                </div>
-            </div>
+            <>
+                <ReviewAndSubmit 
+                    formData={formData} 
+                    message={message} 
+                />
+            </>
         )
     }
 
@@ -1096,12 +1082,15 @@ const DraftApplication = (props) => {
                                             <ProgressBar now={`${((currentStep + 1) / steps.length) * 100}`} label={`Step ${currentStep + 1}`} className='bg-white' />
                                         </div>
                                         <div className="row mb-4">
-                                            <div className="col">
+                                            <div className="col text-center">
                                                 <span className="small mb-0 fw-bold">Step {currentStep + 1} of {steps.length + 1}</span>
                                             </div>
+                                            {/*
                                             <div className="col">
-                                                <span className="small mb-0 fw-bold">{Math.round(((currentStep) / (steps.length)) * 100)}% Complete</span>
+                                                 <span className="small mb-0 fw-bold">{Math.round(((currentStep) / (steps.length)) * 100)}% Complete</span> 
+                                                <span className="small mb-0 fw-bold">{currentStep + 1} / {steps.length + 1}</span>
                                             </div>
+                                            */}
                                         </div>
                                     </div>
 
