@@ -72,7 +72,8 @@ const EditUser = () => {
 
         try {
             const bodyData = new FormData()
-            bodyData.append("imageFile", image)
+            if(image)
+                bodyData.append("imageFile", image)
             bodyData.append(
                 "updates",
                 new Blob([JSON.stringify(formData)], { type: "application/json" })

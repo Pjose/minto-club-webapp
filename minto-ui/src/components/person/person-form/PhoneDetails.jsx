@@ -7,6 +7,16 @@ const PhoneDetails = (props) => {
     const { index, title, arrayName, person, updateContactForPerson, deleteContactForPerson, 
         addContactForPerson, formErrors, setFormErrors } = props;
     
+    if(person.contact.phones) {
+        person.contact.phones.forEach((element, idx) => {
+            let e = { phoneType: '', countryCode: '', number: '' };
+            e.phoneType = validators.required(element.phoneType);
+            e.countryCode = validators.countryCode(element.countryCode);
+            e.number = validators.phone(element.number);
+            formErrors[arrayName][index].person.contact.phones[idx] = e;
+        });
+    }
+
     const handleValidate = (arrayName, personIndex, contactIndex, field, value) => {
         let contactType = 'phones'
         let errorValue = ''
@@ -75,7 +85,7 @@ const PhoneDetails = (props) => {
                                         value={phone.phoneType || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, phoneIndex, 'phoneType', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'phones', phoneIndex, 'phoneType', e.target.value)}
-                                        className="form-select"
+                                        className={`form-select ${formErrors[arrayName][index].person.contact.phones[phoneIndex].phoneType ? 'is-invalid' : ''}`}
                                     >
                                         <option value="">-- Select --</option>
                                         <option value="Mobile">Mobile</option>
@@ -100,7 +110,7 @@ const PhoneDetails = (props) => {
                                 <div className="form-floating">
                                     <select 
                                         id={`${arrayName}-${index}-phone-country-code`}
-                                        className="form-select"
+                                        className={`form-select ${formErrors[arrayName][index].person.contact.phones[phoneIndex].countryCode ? 'is-invalid' : ''}`}
                                         name={`country-code-${index}`}
                                         value={phone.countryCode || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, phoneIndex, 'countryCode', e.target.value)}
@@ -133,7 +143,7 @@ const PhoneDetails = (props) => {
                                         value={phone.number || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, phoneIndex, 'number', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'phones', phoneIndex, 'number', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors[arrayName][index].person.contact.phones[phoneIndex].number ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`${arrayName}-${index}-phone-number`}>Phone Number*</label>
                                 </div>

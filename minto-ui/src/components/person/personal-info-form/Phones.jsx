@@ -6,6 +6,16 @@ import { validators } from "../../validate/validators";
 const Phones = (props) => {
     const { formData, updateContact, addContact, deleteContact, formErrors, setFormErrors } = props;
     
+    if(formData.person.contact.phones) {
+        formData.person.contact.phones.forEach((element, index) => {
+            let e = { phoneType: '', countryCode: '', number: '' };
+            e.phoneType = validators.required(element.phoneType);
+            e.countryCode = validators.countryCode(element.countryCode);
+            e.number = validators.phone(element.number);
+            formErrors.person.contact.phones[index] = e;
+        });
+    }
+
     const handleValidate = (index, field, value) => {
         let errorValue = ''
         if(field === 'phoneType') {
@@ -65,7 +75,7 @@ const Phones = (props) => {
                                         value={phone.phoneType || ''}
                                         onBlur={(e) => handleValidate(index, 'phoneType', e.target.value)}
                                         onChange={(e) => updateContact('phones', index, 'phoneType', e.target.value)}
-                                        className="form-select"
+                                        className={`form-select ${formErrors.person.contact.phones[index].phoneType ? 'is-invalid' : ''}`}
                                         required
                                     >
                                         <option value="">-- Select --</option>
@@ -86,7 +96,7 @@ const Phones = (props) => {
                                 <div className="form-floating">
                                     <select 
                                         id={`phone-country-code-${index}`}
-                                        className="form-select"
+                                        className={`form-select ${formErrors.person.contact.phones[index].countryCode ? 'is-invalid' : ''}`}
                                         name={`phone-country-code-${index}`}
                                         value={phone.countryCode || ''}
                                         onBlur={(e) => handleValidate(index, 'countryCode', e.target.value)}
@@ -115,7 +125,7 @@ const Phones = (props) => {
                                         value={phone.number || ''}
                                         onBlur={(e) => handleValidate(index, 'number', e.target.value)}
                                         onChange={(e) => updateContact('phones', index, 'number', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors.person.contact.phones[index].number ? 'is-invalid' : ''}`}
                                         required
                                     />
                                     <label htmlFor={`phone-number-${index}`}>Phone Number*</label>

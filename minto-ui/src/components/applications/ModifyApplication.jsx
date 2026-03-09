@@ -1111,6 +1111,7 @@ const ModifyApplication = (props) => {
                                         <option value="Draft">Draft</option>
                                         <option value="Submitted">Submitted</option>
                                         <option value="Under review">Under review</option>
+                                        <option value="Returned">Returned</option>
                                         <option value="Approved">Approved</option>
                                         <option value="Rejected">Rejected</option>
                                         <option value="Withdrawn">Withdrawn</option>

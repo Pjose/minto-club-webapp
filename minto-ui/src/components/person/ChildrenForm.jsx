@@ -1,8 +1,23 @@
 import { PersonCircle, Plus } from 'react-bootstrap-icons';
 import PropTypes from 'prop-types';
+import { personErrors } from '../../model/personErrors';
+import { validators } from '../validate/validators';
 
 const ChildrenForm = (props) => {
     const { formData, addPersonToArray, renderPersonForm, formErrors } = props;
+/*
+    console.log('children: ', formData.children)
+    formData.children.map((element, index) => {
+        let e = { ...personErrors.child() }
+        e.person.firstName = validators.name(element.person.firstName)
+        e.person.middleName = validators.optionalString(2)(element.person.middleName)
+        e.person.lastName = validators.name(element.person.lastName)
+        e.person.dob = validators.required(element.person.dob) || validators.dob(element.person.dob)
+        e.person.lifeStatus = validators.required(element.person.lifeStatus)
+        e.childType = validators.required(element.childType)
+        formErrors.children[index] = e;
+    }) 
+*/
 
     return (
         <>

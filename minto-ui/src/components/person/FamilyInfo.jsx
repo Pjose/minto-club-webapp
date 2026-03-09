@@ -4,7 +4,7 @@ import ChildrenForm from './ChildrenForm';
 import SpousesForm from './SpousesForm';
 
 const FamilyInfo = (props) => {
-    const { formData, addPersonToArray, renderPersonForm, formErrors } = props;
+    const { formData, addPersonToArray, renderPersonForm, formErrors, setFormErrors } = props;
     
     return (
         <>
@@ -23,6 +23,7 @@ const FamilyInfo = (props) => {
                         addPersonToArray={addPersonToArray}
                         renderPersonForm={renderPersonForm}
                         formErrors={formErrors}
+                        setFormErrors={setFormErrors}
                     />
 
                     {/* Children Section */}
@@ -31,6 +32,7 @@ const FamilyInfo = (props) => {
                         addPersonToArray={addPersonToArray} 
                         renderPersonForm={renderPersonForm} 
                         formErrors={formErrors}
+                        setFormErrors={setFormErrors}
                     />
                 </div>
             </div>
@@ -43,6 +45,7 @@ FamilyInfo.propTypes = {
     addPersonToArray: PropTypes.func.isRequired,
     renderPersonForm: PropTypes.func.isRequired,
     formErrors: PropTypes.object,
+    setFormErrors: PropTypes.func,
 }
 
 export default FamilyInfo

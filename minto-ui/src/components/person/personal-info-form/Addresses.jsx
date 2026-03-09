@@ -7,6 +7,19 @@ import { validators } from '../../validate/validators';
 const Addresses = (props) => {
     const { formData, updateContact, addContact, deleteContact, formErrors, setFormErrors } = props;
 
+    if(formData.person.contact.addresses) {
+        formData.person.contact.addresses.forEach((element, index) => {
+            let e = { addressType: '', street: '', city: '', state: '', zipcode: '', country: '' };
+            e.addressType = validators.required(element.addressType);
+            e.street = validators.street(element.street);
+            e.city = validators.name(element.city);
+            e.state = validators.optionalString(2)(element.state);
+            e.zipcode = validators.optionalString(3)(element.zipcode);
+            e.country = validators.required(element.country);
+            formErrors.person.contact.addresses[index] = e;
+        });
+    }
+
     const handleValidate = (index, field, value) => {
         let errorValue = ''
         if (field === 'addressType') { errorValue = validators.required(value) }
@@ -74,7 +87,7 @@ const Addresses = (props) => {
                                         value={address.addressType || ''}
                                         onBlur={(e) => handleValidate(index, 'addressType', e.target.value)}
                                         onChange={(e) => updateContact('addresses', index, 'addressType', e.target.value)}
-                                        className="form-select"
+                                        className={`form-select ${formErrors.person.contact.addresses[index].addressType ? 'is-invalid' : ''}`}
                                         required
                                     >
                                         <option value="">-- Select --</option>
@@ -100,7 +113,7 @@ const Addresses = (props) => {
                                         value={address.street || ''}
                                         onBlur={(e) => handleValidate(index, 'street', e.target.value)}
                                         onChange={(e) => updateContact('addresses', index, 'street', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors.person.contact.addresses[index].street ? 'is-invalid' : ''}`}
                                         required
                                     />
                                     <label htmlFor={`address-street-${index}`}>Street Address*</label>
@@ -120,7 +133,7 @@ const Addresses = (props) => {
                                         value={address.city || ''}
                                         onBlur={(e) => handleValidate(index, 'city', e.target.value)}
                                         onChange={(e) => updateContact('addresses', index, 'city', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors.person.contact.addresses[index].city ? 'is-invalid' : ''}`}
                                         required
                                     />
                                     <label htmlFor={`address-city-${index}`}>City*</label>
@@ -138,7 +151,7 @@ const Addresses = (props) => {
                                         value={address.state || ''}
                                         onBlur={(e) => handleValidate(index, 'state', e.target.value)}
                                         onChange={(e) => updateContact('addresses', index, 'state', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors.person.contact.addresses[index].state ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`address-state-${index}`}>State</label>
                                 </div>
@@ -157,7 +170,7 @@ const Addresses = (props) => {
                                         value={address.zipcode || ''}
                                         onBlur={(e) => handleValidate(index, 'zipcode', e.target.value)}
                                         onChange={(e) => updateContact('addresses', index, 'zipcode', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors.person.contact.addresses[index].zipcode ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`address-zipcode-${index}`}>Zip Code</label>
                                 </div>
@@ -170,7 +183,7 @@ const Addresses = (props) => {
                                     <select 
                                         id={`country-${index}`}
                                         name={`country-${index}`}
-                                        className="form-select"
+                                        className={`form-select ${formErrors.person.contact.addresses[index].country ? 'is-invalid' : ''}`}
                                         value={address.country || ''}
                                         onBlur={(e) => handleValidate(index, 'country', e.target.value)}
                                         onChange={(e) => updateContact('addresses', index, 'country', e.target.value)}

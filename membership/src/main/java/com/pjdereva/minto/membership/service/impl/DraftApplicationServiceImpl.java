@@ -124,6 +124,10 @@ public class DraftApplicationServiceImpl implements DraftApplicationService {
         Optional<Application> draftOpt = applicationRepository
                 .findByUserIdAndApplicationStatus(userId, ApplicationStatus.DRAFT);
 
+        if (draftOpt.isEmpty())
+            draftOpt = applicationRepository.findByUserIdAndApplicationStatus(
+                    userId, ApplicationStatus.RETURNED);
+
         if (draftOpt.isEmpty()) {
             Application newApp = Application.builder()
                     .applicationNumber(generateApplicationNumber())

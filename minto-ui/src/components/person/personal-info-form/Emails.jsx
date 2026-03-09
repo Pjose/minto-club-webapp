@@ -4,7 +4,16 @@ import { validators } from "../../validate/validators";
 
 const Emails = (props) => {
     const { formData, updateContact, addContact, deleteContact, formErrors, setFormErrors } = props;
-    
+
+    if(formData.person.contact.emails) {
+        formData.person.contact.emails.forEach((element, index) => {
+            let e = { emailType: '', address: '' };
+            e.emailType = validators.required(element.emailType);
+            e.address = validators.email(element.address);
+            formErrors.person.contact.emails[index] = e;
+        });
+    }
+
     const handleValidate = (index, field, value) => {
         let errorValue = ''
         if(field === 'emailType') {
@@ -61,7 +70,7 @@ const Emails = (props) => {
                                         value={email.emailType || ''}
                                         onBlur={(e) => handleValidate(index, 'emailType', e.target.value)}
                                         onChange={(e) => updateContact('emails', index, 'emailType', e.target.value)}
-                                        className="form-select"
+                                        className={`form-select ${formErrors.person.contact.emails[index].emailType ? 'is-invalid' : ''}`}
                                         required
                                     >
                                         <option value="">-- Select --</option>
@@ -85,7 +94,7 @@ const Emails = (props) => {
                                         value={email.address || ''}
                                         onBlur={(e) => handleValidate(index, 'address', e.target.value)}
                                         onChange={(e) => updateContact('emails', index, 'address', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors.person.contact.emails[index].address ? 'is-invalid' : ''}`}
                                         required
                                     />
                                     <label htmlFor={`email-address-${index}`}>Email Address*</label>

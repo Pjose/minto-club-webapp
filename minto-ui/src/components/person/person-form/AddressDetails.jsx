@@ -6,6 +6,19 @@ import { validators } from '../../validate/validators';
 const AddressDetails = (props) => {
     const { index, title, arrayName, person, updateContactForPerson, deleteContactForPerson, addContactForPerson, 
         formErrors, setFormErrors } = props;
+
+    if(person.contact.addresses) {
+        person.contact.addresses.forEach((element, idx) => {
+            let e = { addressType: '', street: '', city: '', state: '', zipcode: '', country: '' };
+            e.addressType = validators.required(element.addressType);
+            e.street = validators.street(element.street);
+            e.city = validators.name(element.city);
+            e.state = validators.optionalString(2)(element.state);
+            e.zipcode = validators.optionalString(3)(element.zipcode);
+            e.country = validators.required(element.country);
+            formErrors[arrayName][index].person.contact.addresses[idx] = e;
+        });
+    }
     
     const handleValidate = (arrayName, personIndex, contactIndex, field, value) => {
         let contactType = 'addresses'
@@ -83,7 +96,7 @@ const AddressDetails = (props) => {
                                         value={address.addressType || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, addrIndex, 'addressType', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'addressType', e.target.value)}
-                                        className="form-select"
+                                        className={`form-select ${formErrors[arrayName][index].person.contact.addresses[addrIndex].addressType ? 'is-invalid' : ''}`}
                                     >
                                         <option value="">-- Select --</option>
                                         <option value="Home">Home</option>
@@ -113,7 +126,7 @@ const AddressDetails = (props) => {
                                         value={address.street || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, addrIndex, 'street', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'street', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors[arrayName][index].person.contact.addresses[addrIndex].street ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`${arrayName}-${index}-street`}>Street Address*</label>
                                 </div>
@@ -137,7 +150,7 @@ const AddressDetails = (props) => {
                                         value={address.city || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, addrIndex, 'city', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'city', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors[arrayName][index].person.contact.addresses[addrIndex].city ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`${arrayName}-${index}-city`}>City*</label>
                                 </div>
@@ -159,7 +172,7 @@ const AddressDetails = (props) => {
                                         value={address.state || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, addrIndex, 'state', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'state', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors[arrayName][index].person.contact.addresses[addrIndex].state ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`${arrayName}-${index}-state`}>State</label>
                                 </div>
@@ -183,7 +196,7 @@ const AddressDetails = (props) => {
                                         value={address.zipcode || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, addrIndex, 'zipcode', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'zipcode', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors[arrayName][index].person.contact.addresses[addrIndex].zipcode ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`${arrayName}-${index}-zipcode`}>Zip Code</label>
                                 </div>
@@ -201,7 +214,7 @@ const AddressDetails = (props) => {
                                     <select 
                                         id={`${arrayName}-${index}-country`}
                                         name={`${arrayName}-${index}-country`}
-                                        className="form-select"
+                                        className={`form-select ${formErrors[arrayName][index].person.contact.addresses[addrIndex].country ? 'is-invalid' : ''}`}
                                         value={address.country || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, addrIndex, 'country', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'addresses', addrIndex, 'country', e.target.value)}

@@ -6,6 +6,15 @@ const EmailDetails = (props) => {
     const { index, title, arrayName, person, updateContactForPerson, deleteContactForPerson, 
         addContactForPerson, formErrors, setFormErrors } = props;
     
+    if(person.contact.emails) {
+        person.contact.emails.forEach((element, idx) => {
+            let e = { emailType: '', address: '' };
+            e.emailType = validators.required(element.emailType);
+            e.address = validators.email(element.address);
+            formErrors[arrayName][index].person.contact.emails[idx] = e;
+        });
+    }
+
     const handleValidate = (arrayName, personIndex, contactIndex, field, value) => {
         let contactType = 'emails'
         let errorValue = ''
@@ -71,7 +80,7 @@ const EmailDetails = (props) => {
                                         value={email.emailType || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, emailIndex, 'emailType', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'emails', emailIndex, 'emailType', e.target.value)}
-                                        className="form-select"
+                                        className={`form-select ${formErrors[arrayName][index].person.contact.emails[emailIndex].emailType ? 'is-invalid' : ''}`}
                                     >
                                         <option value="">-- Select --</option>
                                         <option value="Personal">Personal</option>
@@ -99,7 +108,7 @@ const EmailDetails = (props) => {
                                         value={email.address || ''}
                                         onBlur={(e) => handleValidate(arrayName, index, emailIndex, 'address', e.target.value)}
                                         onChange={(e) => updateContactForPerson(arrayName, index, 'emails', emailIndex, 'address', e.target.value)}
-                                        className="form-control"
+                                        className={`form-control ${formErrors[arrayName][index].person.contact.emails[emailIndex].address ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor={`${arrayName}-${index}-email-address`}>Email Address*</label>
                                 </div>

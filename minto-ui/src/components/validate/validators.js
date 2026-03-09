@@ -1,6 +1,16 @@
+/*
+ * Validation methods for form inputs.
+ */
 export const  validators = {
     required: (value) =>
         value === undefined || value === null || value === "" ? "Required!" : "",
+
+    password: (value) =>
+        validators.required(value) || validators.minLen(8)(value) || validators.trim(value) ||
+        (/(?=.*?[A-Z])/.test(value) ? "" : "Must have at least one uppercase letter") ||
+        (/(?=.*?[a-z])/.test(value) ? "" : "Must have at least one lowercase letter") || 
+        (/(?=.*?[0-9])/.test(value) ? "" : "Must have at least one digit") || 
+        (/(?=.*?[!@#$%^&*()_+=[\]{}|;':",./<>?])/.test(value) ? "" : "Must have at least one special character"),
 
     name: (value) =>
         validators.required(value) || validators.minLen(2)(value) || validators.trim(value),

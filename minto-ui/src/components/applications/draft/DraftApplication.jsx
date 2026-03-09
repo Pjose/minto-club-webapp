@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeftCircleFill, ArrowRightCircleFill, Floppy2, Heart, People, Person, PersonArmsUp, 
-    PersonCheck,  PersonHearts, PersonLinesFill, SendCheck, XCircleFill } from 'react-bootstrap-icons';
+import { ArrowLeftCircleFill, ArrowRightCircleFill, Floppy2, Heart, People, Person, PersonCheck,  PersonHearts, 
+    SendCheck, XCircleFill } from 'react-bootstrap-icons';
 import { ProgressBar } from 'react-bootstrap';
 import { toast } from 'sonner';
 import PropTypes from 'prop-types'
@@ -20,18 +20,17 @@ import { defaultRelative } from '../../../model/defaultRelative';
 import { defaultBeneficiary } from '../../../model/defaultBeneficiary';
 import { defaultPerson } from '../../../model/defaultPerson';
 import { defaultApplication } from '../../../model/defaultApplication';
-import PersonForm from '../../person/person-form/PersonForm';
-import RefereesForm from '../../person/RefereesForm';
-import SiblingsForm from '../../person/SiblingsForm';
-import ParentsForm from '../../person/ParentsForm';
-import FamilyInfo from '../../person/FamilyInfo';
-import ClubRelativesForm from '../../person/ClubRelativesForm';
-import BeneficiariesForm from '../../person/BeneficiariesForm';
 import PersonalInfoForm from '../../person/personal-info-form/PersonalInfoForm';
+import PersonForm from '../../person/person-form/PersonForm';
+import FamilyInfo from '../../person/FamilyInfo';
+import RelativesInfo from '../../person/RelativesInfo';
+import ClubReferencesInfo from '../../person/ClubReferencesInfo';
+import BeneficiariesForm from '../../person/BeneficiariesForm';
+import ReviewAndSubmit from '../review/ReviewAndSubmit';
 import { defaultErrors } from '../../../model/defaultErrors';
 import { validators } from '../../validate/validators';
 import { personErrors } from '../../../model/personErrors';
-import ReviewAndSubmit from '../review/ReviewAndSubmit';
+import { areAllEmptyStrings } from '../../validate/stringUtils';
 
 /**
  * Create draft membership application by users with regular user permissions.
@@ -46,67 +45,70 @@ const DraftApplication = (props) => {
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [currentStep, setCurrentStep] = useState(0)
+    const [currentStep, setCurrentStep] = useState(1)
     const [formData, setFormData] = useState({ ...defaultApplication, applicationStatus: 'Draft' })
     const [formErrors, setFormErrors] = useState({ ...defaultErrors })
-    const [complete, setComplete] = useState(false) // TODO: No validation errors
     const user = getUser()
 
     const steps = [
         { number: 1, title: "Applicant's Info", icon: Person },
         { number: 2, title: "Family Info", icon: Heart },
-        { number: 3, title: "Parents Info", icon: People },
-        { number: 4, title: "Siblings Info", icon: PersonArmsUp },
-        { number: 5, title: "Reference Info", icon: PersonCheck },
-        { number: 6, title: "Club Relatives", icon: PersonLinesFill },
-        { number: 7, title: "Beneficiaries Info", icon: PersonHearts },
+        { number: 3, title: "Relatives Info", icon: People },
+        { number: 4, title: "Club References", icon: PersonCheck },
+        { number: 5, title: "Beneficiaries Info", icon: PersonHearts },
+        { number: 6, title: "Review & Submit", icon: SendCheck },
     ]
 
     const addPersonToArray = (arrayName) => {
-        let newEntry, newErrors
-        switch (arrayName) {
-        case 'parents': 
-            newEntry = { ...defaultParent } 
-            newErrors = { ...personErrors.parent() }
-            break
-        case 'spouses': 
-            newEntry = { ...defaultSpouse } 
-            newErrors = { ...personErrors.spouse() }
-            break
-        case 'children': 
-            newEntry = { ...defaultChild } 
-            newErrors = { ...personErrors.child() }
-            break
-        case 'siblings': 
-            newEntry = { ...defaultSibling } 
-            newErrors = { ...personErrors.sibling() }
-            break
-        case 'referees': 
-            newEntry =  { ...defaultReferee }
-            newErrors = { ...personErrors.referee() }
-            break
-        case 'relatives': 
-            newEntry = { ...defaultRelative }
-            newErrors = { ...personErrors.relative() }
-            break
-        case 'beneficiaries': 
-            newEntry = { ...defaultBeneficiary }
-            newErrors = { ...personErrors.beneficiary() }
-            break
-        default: 
-            newEntry = { ...defaultPerson }
-            newErrors = { ...personErrors.person() }
+        if (validateStep(currentStep)) {
+            let newEntry, newErrors
+            switch (arrayName) {
+            case 'parents': 
+                newEntry = { ...defaultParent } 
+                newErrors = { ...personErrors.parent() }
+                break
+            case 'spouses': 
+                newEntry = { ...defaultSpouse } 
+                newErrors = { ...personErrors.spouse() }
+                break
+            case 'children': 
+                newEntry = { ...defaultChild } 
+                newErrors = { ...personErrors.child() }
+                break
+            case 'siblings': 
+                newEntry = { ...defaultSibling } 
+                newErrors = { ...personErrors.sibling() }
+                break
+            case 'referees': 
+                newEntry =  { ...defaultReferee }
+                newErrors = { ...personErrors.referee() }
+                break
+            case 'relatives': 
+                newEntry = { ...defaultRelative }
+                newErrors = { ...personErrors.relative() }
+                break
+            case 'beneficiaries': 
+                newEntry = { ...defaultBeneficiary }
+                newErrors = { ...personErrors.beneficiary() }
+                break
+            default: 
+                newEntry = { ...defaultPerson }
+                newErrors = { ...personErrors.person() }
+            }
+            
+            setFormData(prev => ({
+                ...prev,
+                [arrayName]: [...prev[arrayName], newEntry]
+            }))
+            
+            setFormErrors(prev =>({
+                ...prev,
+                [arrayName]: [...prev[arrayName], newErrors]
+            }))
+        } else {
+            console.log('Invalid form! Please correct the errors and try again.')
+            toast.error('Invalid form! Please correct the errors and try again.')
         }
-        
-        setFormData(prev => ({
-            ...prev,
-            [arrayName]: [...prev[arrayName], newEntry]
-        }))
-        
-        setFormErrors(prev =>({
-            ...prev,
-            [arrayName]: [...prev[arrayName], newErrors]
-        }))
     }
 
     const updatePersonInArray = (arrayName, index, field, value, subField = null) => {
@@ -231,64 +233,69 @@ const DraftApplication = (props) => {
     }
 
     const addContactForPerson = (arrayName, personIndex, contactType) => {
-        const newContact = contactType === 'addresses' 
-        ? { addressType: "", street: "", city: "", state: "", zipcode: "", country: "" }
-        : contactType === 'emails'
-        ? { emailType: "", address: "" }
-        : { phoneType: "", countryCode: "", number: "" };
+        if(validateStep(currentStep)) {
+            const newContact = contactType === 'addresses' 
+            ? { addressType: "", street: "", city: "", state: "", zipcode: "", country: "" }
+            : contactType === 'emails'
+            ? { emailType: "", address: "" }
+            : { phoneType: "", countryCode: "", number: "" };
 
-        setFormData(prev => ({
-            ...prev,
-            [arrayName]: prev[arrayName].map((entry, i) => {
-                if (i === personIndex) {
-                    let personObj;
-                    switch (arrayName) {
-                        case 'parents':
-                        case 'spouses':
-                        case 'children':
-                        case 'siblings':
-                        case 'referees':
-                        case 'relatives':
-                        case 'beneficiaries':
-                            personObj = entry.person
-                            return {
-                                ...entry,
-                                person: {
-                                    ...personObj,
-                                    contact: {
-                                        ...personObj.contact,
-                                        [contactType]: [...personObj.contact[contactType], newContact]
+            setFormData(prev => ({
+                ...prev,
+                [arrayName]: prev[arrayName].map((entry, i) => {
+                    if (i === personIndex) {
+                        let personObj;
+                        switch (arrayName) {
+                            case 'parents':
+                            case 'spouses':
+                            case 'children':
+                            case 'siblings':
+                            case 'referees':
+                            case 'relatives':
+                            case 'beneficiaries':
+                                personObj = entry.person
+                                return {
+                                    ...entry,
+                                    person: {
+                                        ...personObj,
+                                        contact: {
+                                            ...personObj.contact,
+                                            [contactType]: [...personObj.contact[contactType], newContact]
+                                        }
                                     }
                                 }
-                            }
-                        
-                        default:
-                            return entry
+                            
+                            default:
+                                return entry
+                        }
                     }
-                }
-                return entry
-            })
-        }))
+                    return entry
+                })
+            }))
 
-        setFormErrors(prev => ({
-            ...prev,
-            [arrayName]: prev[arrayName].map((entry, i) => {
-                if (i === personIndex) {
-                    let personObj;
-                    personObj = entry.person
-                    return {
-                        ...entry,
-                        person: {
-                            ...personObj,
-                            contact: {
-                                ...personObj.contact,
-                                [contactType]: [...personObj.contact[contactType], newContact]
+            setFormErrors(prev => ({
+                ...prev,
+                [arrayName]: prev[arrayName].map((entry, i) => {
+                    if (i === personIndex) {
+                        let personObj;
+                        personObj = entry.person
+                        return {
+                            ...entry,
+                            person: {
+                                ...personObj,
+                                contact: {
+                                    ...personObj.contact,
+                                    [contactType]: [...personObj.contact[contactType], newContact]
+                                }
                             }
                         }
                     }
-                }
-            })
-        }))
+                })
+            }))
+        } else {
+            console.log('Invalid form! Please correct the errors and try again.')
+            toast.error('Invalid form! Please correct the errors and try again.')
+        }
     }
 
     const removeContactForPerson = (arrayName, personIndex, contactType, contactIndex) => {
@@ -360,33 +367,38 @@ const DraftApplication = (props) => {
     };
 
     const addContact = (contactType) => {
-        const newContact = contactType === 'addresses' 
-        ? { addressType: "", street: "", city: "", state: "", zipcode: "", country: "" }
-        : contactType === 'emails'
-        ? { emailType: "", address: "" }
-        : { phoneType: "", countryCode: "", number: "" };
+        if(validateStep(currentStep)) {
+            const newContact = contactType === 'addresses' 
+            ? { addressType: "", street: "", city: "", state: "", zipcode: "", country: "" }
+            : contactType === 'emails'
+            ? { emailType: "", address: "" }
+            : { phoneType: "", countryCode: "", number: "" };
 
-        setFormData(prev => ({
-            ...prev,
-            person: {
-                ...prev.person,
-                contact: {
-                    ...prev.person.contact,
-                    [contactType]: [...prev.person.contact[contactType], newContact]
+            setFormData(prev => ({
+                ...prev,
+                person: {
+                    ...prev.person,
+                    contact: {
+                        ...prev.person.contact,
+                        [contactType]: [...prev.person.contact[contactType], newContact]
+                    }
                 }
-            }
-        }));
+            }));
 
-        setFormErrors(prev => ({
-            ...prev,
-            person: {
-                ...prev.person,
-                contact: {
-                    ...prev.person.contact,
-                    [contactType]: [...prev.person.contact[contactType], newContact]
+            setFormErrors(prev => ({
+                ...prev,
+                person: {
+                    ...prev.person,
+                    contact: {
+                        ...prev.person.contact,
+                        [contactType]: [...prev.person.contact[contactType], newContact]
+                    }
                 }
-            }
-        }));
+            }));
+        } else {
+            console.log('Invalid form! Please correct the errors and try again.')
+            toast.error('Invalid form! Please correct the errors and try again.')
+        }
     };
 
     const removeContact = (type, index) => {
@@ -576,7 +588,7 @@ const DraftApplication = (props) => {
                     console.log(jsonData)
                     setMessage('Membership application saved successfully!')
                     toast.success('Membership application saved successfully!')
-                    setFormErrors({ ...defaultErrors })
+                    //setFormErrors({ ...defaultErrors })
                 } else {
                     console.log('Invalid form! Please correct the errors and try again.')
                     console.log(formErrors)
@@ -627,69 +639,6 @@ const DraftApplication = (props) => {
             setLoading(false)
         }
     }
-
-    /**
-     * Returns true if any string value within the nested data structure is an empty
-     * string (or a string with only whitespaces), and false otherwise
-     */
-    const hasEmptyString = (data) => {
-        // 1. Check if the current value is a string
-        if (typeof data === 'string') {
-            // Return true if the string is empty or contains only whitespace
-            return data.trim().length === 0;
-        }
-
-        // 2. Check if the current value is an array
-        if (Array.isArray(data)) {
-            // Iterate over the array elements
-            for (const item of data) {
-                // Recursively call the function for each element
-                if (hasEmptyString(item)) {
-                    return true; // Found an empty string in a nested structure
-                }
-            }
-        }
-
-        // 3. Check if the current value is an object (and not null)
-        if (typeof data === 'object' && data !== null) {
-            // Iterate over the object's values
-            for (const value of Object.values(data)) {
-                // Recursively call the function for each value
-                if (hasEmptyString(value)) {
-                    return true; // Found an empty string in a nested structure
-                }
-            }
-        }
-
-        // If none of the above conditions returned true, there are no empty strings
-        return false;
-    };
-
-    /**
-     * Recursively checks if all string values in an array or object are empty strings.
-     * Considers null, undefined, false, 0, and empty arrays/objects as "empty" in this context.
-     * 
-     * @param {*} val The value to check.
-     * @returns {boolean} True if all values are empty, false otherwise.
-     */
-    const areAllEmptyStrings = (val) => {
-        // Check for primitive falsy values (null, undefined, false, 0, "")
-        if (!val && val !== 0 && val !== false) {
-            return true;
-        }
-
-        // If it is an array or object, recursively check its contents
-        if (typeof val === "object" && val !== null) {
-            const values = Array.isArray(val) ? val : Object.values(val);
-            // Use Array.prototype.every() to check if all elements satisfy the condition
-            // For an empty array, every() returns true (vacuously true).
-            return values.every(areAllEmptyStrings);
-        }
-        
-        // For other non-falsy primitive types (like numbers, booleans, or non-empty strings), 
-        // it is not "empty" according to the requirement, so return false.
-        return false;
-    };
 
     const validatePerson = (obj) => {
         let person = { 
@@ -747,7 +696,7 @@ const DraftApplication = (props) => {
     const validateStep = (s = currentStep) => {
         const e = { ...defaultErrors }
         
-        if (s === 0) { // Step 1: Personal Info
+        if (s === 1) { // Step 1: Personal Info
             e.applicationStatus = validators.required(formData.applicationStatus)
             e.person.firstName = validators.name(formData.person.firstName);
             e.person.middleName = validators.optionalString(2)(formData.person.middleName)
@@ -792,7 +741,7 @@ const DraftApplication = (props) => {
             })
         }
         
-        if (s === 1) { // Step 2: Family Info
+        if (s === 2) { // Step 2: Family Info
             e.spouses = []
             formData.spouses.forEach((spouse, index) => {
                 let personErrors = validatePerson(spouse);
@@ -812,7 +761,7 @@ const DraftApplication = (props) => {
             })
         }
         
-        if (s === 2) { // Step 3: Parent Info
+        if (s === 3) { // Step 3: Relatives Info
             e.parents = []
             formData.parents.forEach((parent, index) => {
                 let personErrors = validatePerson(parent);
@@ -821,9 +770,7 @@ const DraftApplication = (props) => {
                 parentErrors.person = personErrors;
                 e.parents[index] = parentErrors;
             })
-        }
-        
-        if (s === 3) { // Step 4: Sibling Info
+
             e.siblings = []
             formData.siblings.forEach((sibling, index) => {
                 let personErrors = validatePerson(sibling);
@@ -834,7 +781,7 @@ const DraftApplication = (props) => {
             })
         }
 
-        if (s === 4) { // Step 5: Reference Info
+        if (s === 4) { // Step 5: Club References Info
             e.referees = []
             formData.referees.forEach((referee, index) => {
                 let personErrors = validatePerson(referee);
@@ -843,9 +790,7 @@ const DraftApplication = (props) => {
                 refereeErrors.person = personErrors;
                 e.referees[index] = refereeErrors;
             })
-        }
-
-        if (s === 5) { // Step 6: Relatives Info
+            
             e.relatives = []
             formData.relatives.forEach((relative, index) => {
                 let personErrors = validatePerson(relative);
@@ -857,7 +802,7 @@ const DraftApplication = (props) => {
             })
         }
 
-        if (s === 6) { // Step 7: Beneficiaries Info
+        if (s === 5) { // Step 5: Beneficiaries Info
             e.beneficiaries = []
             formData.beneficiaries.forEach((beneficiary, index) => {
                 let personErrors = validatePerson(beneficiary);
@@ -917,14 +862,15 @@ const DraftApplication = (props) => {
                 addPersonToArray={addPersonToArray}
                 renderPersonForm={renderPersonForm}
                 formErrors={formErrors}
+                setFormErrors={setFormErrors}
              />
         )
     }
 
-    // Parents Information
-    const renderParentsInfo = () => {
+    // Relatives Info
+    const renderRelativesInfo = () => {
         return (
-            <ParentsForm
+            <RelativesInfo
                 formData={formData}
                 addPersonToArray={addPersonToArray}
                 renderPersonForm={renderPersonForm}
@@ -933,34 +879,10 @@ const DraftApplication = (props) => {
         )
     }
 
-    // Siblings Information
-    const renderSiblingsInfo = () => {
+    // Club Reference Info
+    const renderClubReferencesInfo = () => {
         return (
-            <SiblingsForm
-                formData={formData}
-                addPersonToArray={addPersonToArray}
-                renderPersonForm={renderPersonForm}
-                formErrors={formErrors}
-             />
-        )
-    }
-
-    // Reference Information
-    const renderReferenceInfo = () => {
-        return (
-            <RefereesForm
-                formData={formData}
-                addPersonToArray={addPersonToArray}
-                renderPersonForm={renderPersonForm}
-                formErrors={formErrors}
-            />
-        )
-    }
-
-    // Club Relatives
-    const renderClubRelatives = () => {
-        return (
-            <ClubRelativesForm 
+            <ClubReferencesInfo
                 formData={formData}
                 addPersonToArray={addPersonToArray}
                 renderPersonForm={renderPersonForm}
@@ -995,18 +917,17 @@ const DraftApplication = (props) => {
 
     const renderStep = () => {
         switch (currentStep) {
-            case 0: return renderPersonalInfo()
-            case 1: return renderFamilyInfo()
-            case 2: return renderParentsInfo()
-            case 3: return renderSiblingsInfo()
-            case 4: return renderReferenceInfo()
-            case 5: return renderClubRelatives()
-            case 6: return renderBeneficiaries()
-            case 7: return renderReviewAndSubmit()
+            case 1: return renderPersonalInfo()
+            case 2: return renderFamilyInfo()
+            case 3: return renderRelativesInfo()
+            case 4: return renderClubReferencesInfo()
+            case 5: return renderBeneficiaries()
+            case 6: return renderReviewAndSubmit()
             default:
                 return null;
         }
     };
+
 
     if (isSubmitted) {
         return (
@@ -1029,7 +950,6 @@ const DraftApplication = (props) => {
             {
                 isAuthenticated ? (
                     <>
-                        {/* loading && <LoadingSpinner caption={'Application...'} clsTextColor={"text-primary"} /> */}
                         { loading ? (
                             <LoadingSpinner caption={'Application...'} clsTextColor={"text-primary"} />
                         ) : (
@@ -1048,20 +968,20 @@ const DraftApplication = (props) => {
                                                     <>
                                                         {/* Highlight current and completed steps with a different background color and border */}
                                                         <div key={index} className={`col d-flex px-0 px-md-2 justify-content-center
-                                                            ${(currentStep + 1) >= step.number
+                                                            ${(currentStep) >= step.number
                                                                 ? 'fw-bold border border-3 border-primary rounded'
                                                                 : ''
                                                             }
                                                             `}
                                                             style={{ 
-                                                                backgroundColor: (currentStep + 1) >= step.number ? '#d5f3ff' : '',
+                                                                backgroundColor: (currentStep) >= step.number ? '#d5f3ff' : '',
                                                                 transition: 'background-color 0.3s, border-color 0.3s', 
                                                                 }}
                                                         >
                                                             <div className="d-flex flex-column mb-1">
                                                                 <div className="d-flex justify-content-center">
                                                                     <div className={`rounded-circle mt-1 p-2
-                                                                        ${(currentStep + 1) >= step.number
+                                                                        ${(currentStep) >= step.number
                                                                             ? 'shadow-lg bg-primary text-white'
                                                                             : 'bg-secondary text-white'
                                                                         }
@@ -1079,11 +999,14 @@ const DraftApplication = (props) => {
                                             })}
                                         </div>
                                         <div className="row mb-0">
-                                            <ProgressBar now={`${((currentStep + 1) / steps.length) * 100}`} label={`Step ${currentStep + 1}`} className='bg-white' />
+                                            <ProgressBar 
+                                                now={`${((currentStep) / steps.length) * 100}`} 
+                                                label={`Step ${currentStep}`} 
+                                                className='bg-white p-0' />
                                         </div>
                                         <div className="row mb-4">
                                             <div className="col text-center">
-                                                <span className="small mb-0 fw-bold">Step {currentStep + 1} of {steps.length + 1}</span>
+                                                <span className="small mb-0 fw-bold">Step {currentStep} of {steps.length}</span>
                                             </div>
                                             {/*
                                             <div className="col">

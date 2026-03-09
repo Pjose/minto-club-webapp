@@ -46,7 +46,7 @@ const PersonalInfoForm = (props) => {
                                 <input
                                     id="firstName"
                                     type={"text"}
-                                    className="form-control"
+                                    className={`form-control ${formErrors.person.firstName ? 'is-invalid' : ''}`}
                                     placeholder="First Name"
                                     name="firstName"
                                     value={formData.person.firstName || ''}
@@ -63,7 +63,7 @@ const PersonalInfoForm = (props) => {
                                 <input
                                     id={"middleName"}
                                     type={"text"}
-                                    className="form-control"
+                                    className={`form-control ${formErrors.person.middleName ? 'is-invalid' : ''}`}
                                     placeholder="Middle name"
                                     name="middleName"
                                     value={formData.person.middleName || ''}
@@ -79,7 +79,7 @@ const PersonalInfoForm = (props) => {
                                 <input
                                     id={"lastName"}
                                     type={"text"}
-                                    className="form-control"
+                                    className={`form-control ${formErrors.person.lastName ? 'is-invalid' : ''}`}
                                     placeholder="Last name"
                                     name="lastName"
                                     value={formData.person.lastName || ''}
@@ -98,7 +98,7 @@ const PersonalInfoForm = (props) => {
                                 <input
                                     id={"dob"}
                                     type={"date"}
-                                    className="form-control"
+                                    className={`form-control ${formErrors.person.dob ? 'is-invalid' : ''}`}
                                     name="dob"
                                     value={formData.person.dob || ''}
                                     onBlur={(e) => handleValidate('dob', e.target.value)}
@@ -112,7 +112,7 @@ const PersonalInfoForm = (props) => {
                         <div className="col-sm-6 mb-3">
                             <div className="form-floating">
                                 <select 
-                                    className="form-select" 
+                                    className={`form-select ${formErrors.person.lifeStatus ? 'is-invalid' : ''}`} 
                                     name="lifeStatus" 
                                     id="lifeStatus"
                                     value={formData.person.lifeStatus || ''}
@@ -133,7 +133,7 @@ const PersonalInfoForm = (props) => {
                         <div className="col-sm-6 mb-3">
                             <div className="form-floating">
                                 <select 
-                                    className="form-select" 
+                                    className={`form-select ${formErrors.maritalStatus ? 'is-invalid' : ''}`} 
                                     name="maritalStatus" 
                                     id="maritalStatus"
                                     value={formData.maritalStatus || ''}
@@ -156,7 +156,7 @@ const PersonalInfoForm = (props) => {
                         <div className="col-sm-6 mb-3">
                             <div className="form-floating">
                                 <select
-                                    className="form-select" 
+                                    className={`form-select ${formErrors.applicationStatus ? 'is-invalid' : ''}`} 
                                     name="applicationStatus"
                                     id="applicationStatus"
                                     value={formData.applicationStatus || ''}
@@ -167,6 +167,7 @@ const PersonalInfoForm = (props) => {
                                     <option value="Draft">Draft</option>
                                     <option value="Submitted">Submitted</option>
                                     <option value="Under review">Under review</option>
+                                    <option value="Returned">Returned</option>
                                     <option value="Approved">Approved</option>
                                     <option value="Rejected">Rejected</option>
                                     <option value="Withdrawn">Withdrawn</option>

@@ -18,6 +18,7 @@ const SubmittedApplication = (props) => {
     const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
     const { showReason, showConfirmReason, handleConfirmReason, handleCancelReason } = useConfirmReason()
     const [showContact, setShowContact] = useState(false)
+    const [currAction, setCurrAction] = useState('')
     const { isAuthenticated } = useAuth()
     const navigate = useNavigate()
 
@@ -47,7 +48,8 @@ const SubmittedApplication = (props) => {
             toast.info("'Processing Application' -> Cancelled!", {
                 description: "The application has been reset.",
             })
-            navigate('/login')
+            setCurrAction('cancelled')
+            //navigate('-1')
         } else {
             console.log("Cancel Aborted! Continue processing the Membership Application.")
             toast.info("Cancel -> Aborted!", {
@@ -71,7 +73,8 @@ const SubmittedApplication = (props) => {
             toast.info("'Membership Application' -> Rejected!", {
                 description: "The application has been rejected.",
             })
-            navigate('/login')
+            setCurrAction('rejected')
+            //navigate(-1)
         } else {
             console.log("Reject Aborted! Continue processing the Membership Application.")
             toast.info("Reject -> Aborted!", {
@@ -95,13 +98,30 @@ const SubmittedApplication = (props) => {
             toast.info("'Membership Application' -> Returned!", {
                 description: "The application has been returned to the applicant.",
             })
-            navigate('/login')
+            setCurrAction('returned')
+            //navigate(-1)
         } else {
             console.log("Return Aborted! Continue processing the Membership Application.")
             toast.info("Return -> Aborted!", {
                 description: "Continue processing the 'Membership Application'.",
             })
         }
+    }
+
+    if (currAction) {
+        return (
+        <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '50vh' }}>
+            <h2>Application {currAction}!</h2>
+            <p>You will be redirected to the previous page shortly...</p>
+            {/* Optional: Add a manual "Go Back" button */}
+            <button 
+                onClick={() => navigate(-1)} 
+                className="btn btn-primary mt-3"
+            >
+                Go Back Now
+            </button>
+        </div>
+        );
     }
 
     return (
@@ -380,7 +400,7 @@ const SubmittedApplication = (props) => {
                                         />
                                         {
                                             formData.applicationStatus === 'Submitted' && (
-                                                <button type="submit" onClick={(e) => onReview(e)} className="btn btn-success mx-3" title='Set Membership Application Under Review'>
+                                                <button type="submit" onClick={(e) => {onReview(e); setCurrAction('under review');}} className="btn btn-success mx-3" title='Set Membership Application Under Review'>
                                                     <span className="d-none d-sm-inline-block">
                                                         { loading ? 'Updating...' : 'Set Under Review' }
                                                     </span>
@@ -390,7 +410,7 @@ const SubmittedApplication = (props) => {
                                         }
                                         {
                                             formData.applicationStatus === 'Under review' && (   
-                                                <button type="submit" onClick={(e) => onApprove(e)} className="btn btn-success mx-3" title='Approve Membership Application'>
+                                                <button type="submit" onClick={(e) => {onApprove(e); setCurrAction('approved');}} className="btn btn-success mx-3" title='Approve Membership Application'>
                                                     <span className="d-none d-sm-inline-block">
                                                         { loading ? 'Updating...' : 'Set Approved' }
                                                     </span>

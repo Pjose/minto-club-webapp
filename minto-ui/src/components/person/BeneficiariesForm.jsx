@@ -16,7 +16,7 @@ const BeneficiariesForm = (props) => {
                 <div className="card-body px-1 px-sm-3">
 
                     {/* Beneficiaries Section */}
-                    <div className="container py-6 px-1 px-sm-6 mb-4 rounded-lg border">
+                    <div className="container py-6 px-1 px-sm-6 mb-4 rounded-lg border shadow">
                         <div className="d-flex justify-content-between p-2 mt-2 mb-4">
                             <div className="d-flex items-center">
                                 <PersonHearts size={32} className='mt-1 mx-1' style={{ color: 'saddlebrown' }} />

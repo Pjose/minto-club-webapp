@@ -120,7 +120,7 @@ public class UserService {
             if (updates.containsKey("role")) {
                 user.setRole(Role.valueOf((String) updates.get("role")));
             }
-            if (!(imageFile.isEmpty())) {
+            if (!(imageFile == null || imageFile.isEmpty())) {
                 String pictureUrl = getUploadedFileName(imageFile);
                 user.setPicture(pictureUrl);
             }
@@ -356,7 +356,7 @@ public class UserService {
     private String getUploadedFileName(MultipartFile file) throws IOException {
         String filename = "";
         String pictureUrl = "";
-        if (!(file.isEmpty())) {
+        if (!(file == null || file.isEmpty())) {
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 throw new RuntimeException("Only image files are allowed");

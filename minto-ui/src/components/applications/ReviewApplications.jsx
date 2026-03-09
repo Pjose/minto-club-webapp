@@ -97,7 +97,7 @@ const ReviewApplications = () => {
             //console.log(jsonData);
             setMessage('Application is set under review successfully')
             toast.success('Application is set under review successfully')
-            navigate('/login')
+            //navigate(-1)
         } catch (error) {
             console.log(error)
             toast.error('Error setting application under review. ' + error.message)
@@ -132,7 +132,7 @@ const ReviewApplications = () => {
             //console.log(jsonData);
             setMessage('Application is approved successfully')
             toast.success('Application is approved successfully')
-            navigate('/login')
+            //navigate(-1)
         } catch (error) {
             console.log(error)
             toast.error('Error approving application. ' + error.message)
@@ -167,7 +167,7 @@ const ReviewApplications = () => {
             //console.log(jsonData);
             setMessage('Application set to rejected successfully')
             toast.success('Application set torejected successfully')
-            navigate('/login')
+            //navigate(-1)
         } catch (error) {
             console.log(error)
             toast.error('Error setting application to rejected. ' + error.message)
@@ -202,7 +202,7 @@ const ReviewApplications = () => {
             //console.log(jsonData);
             setMessage('Application set to returned successfully')
             toast.success('Application set to returned successfully')
-            navigate('/login')
+            //navigate(-1)
         } catch (error) {
             console.log(error)
             toast.error('Error setting application to returned. ' + error.message)

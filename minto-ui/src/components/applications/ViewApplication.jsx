@@ -66,7 +66,7 @@ const ViewApplication = (props) => {
                                 formData={viewApplicationData}
                                 headerIcon={CardChecklist}
                                 headerTitle={'Application Details'}
-                                priColor={'blue'}
+                                priColor={'#0d6efd'} // color: primary
                             />
                         </>
                     )

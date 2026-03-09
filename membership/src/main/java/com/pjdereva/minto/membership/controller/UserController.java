@@ -1,20 +1,16 @@
 package com.pjdereva.minto.membership.controller;
 
 import com.pjdereva.minto.membership.dto.*;
-import com.pjdereva.minto.membership.model.User;
 import com.pjdereva.minto.membership.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -71,7 +67,7 @@ public class UserController {
 
     @PostMapping("/secure")
     public ResponseEntity<?> createGuestUser(@RequestPart AddUserDTO addUserDTO,
-                                             @RequestPart MultipartFile imageFile) {
+                                             @RequestPart(required = false) MultipartFile imageFile) {
         try {
             var userDto = userService.createGuestUser(addUserDTO, imageFile);
             return new ResponseEntity<>(userDto, HttpStatus.CREATED);
@@ -83,7 +79,7 @@ public class UserController {
     @PutMapping("/secure")
     public ResponseEntity<?> updateUser(
             @RequestPart UserUpdateDto userUpdateDto,
-            @RequestPart MultipartFile imageFile) {
+            @RequestPart(required = false) MultipartFile imageFile) {
         try {
             var userDto = userService.updateUser(userUpdateDto, imageFile);
             return new ResponseEntity<>(userDto, HttpStatus.OK);
@@ -94,7 +90,7 @@ public class UserController {
 
     @PatchMapping("/secure")
     public ResponseEntity<?> patchUser(@RequestPart Map<String, Object> updates,
-                                        @RequestPart MultipartFile imageFile) {
+                                       @RequestPart(required = false) MultipartFile imageFile) {
         try {
             UserDto updatedUser = userService.patchUser(updates, imageFile);
             if (updatedUser != null) {
