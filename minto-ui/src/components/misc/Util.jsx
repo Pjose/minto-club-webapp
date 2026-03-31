@@ -1,3 +1,5 @@
+import API_BASE_URL from "../../apiConfig";
+
 export function parseJwt(token) {
     if (!token) {
         return
@@ -44,7 +46,7 @@ export const fetchData = async (url, options = {}) => {
         console.log('[fetchData] : DEBUG - response: ', response)
         if (response.status === 401) { // Token expired
             console.log('[fetchData] : DEBUG - Token expired. Fetch refresh-token.')
-            const newAccessTokenResponse = await fetch('http://localhost:8080/api/v1/auth/refresh-token', {
+            const newAccessTokenResponse = await fetch('/auth/refresh-token', {
                 method: 'POST',
                 headers: {
                   'Authorization': `Bearer ${refreshToken}`,
@@ -93,7 +95,7 @@ export const refreshAccessToken = async () => {
     }
 
     try {
-        const response = await fetch('/api/refresh', {
+        const response = await fetch(`${API_BASE_URL}/api/refresh`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +148,7 @@ export const fetchData = async (url, options = {}) => {
     if (response.status === 401) {
       // 4. Attempt Refresh if Refresh Token Exists
       if (refreshToken) {
-        const refreshResponse = await fetch('http://localhost:8080/api/v1/auth/refresh-token', { // Replace with your actual endpoint
+        const refreshResponse = await fetch('/auth/refresh-token', { // Replace with your actual endpoint
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',

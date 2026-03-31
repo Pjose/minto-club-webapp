@@ -40,7 +40,7 @@ const Contact = (props) => {
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">
-                    <Addresses 
+                    <Addresses
                         formData={formData} 
                         updateContact={updateContact} 
                         addContact={addContact} 

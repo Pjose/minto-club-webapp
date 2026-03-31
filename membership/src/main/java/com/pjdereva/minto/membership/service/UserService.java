@@ -2,6 +2,7 @@ package com.pjdereva.minto.membership.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pjdereva.minto.membership.dto.*;
+import com.pjdereva.minto.membership.exception.RecordAlreadyExistsException;
 import com.pjdereva.minto.membership.exception.UserEmailNotFoundException;
 import com.pjdereva.minto.membership.exception.UserIdNotFoundException;
 import com.pjdereva.minto.membership.mapper.UserMapper;
@@ -12,6 +13,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,6 +83,12 @@ public class UserService {
     public List<GetUserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         return userMapper.toGetUserDTOs(users);
+    }
+
+    public Page<GetUserDTO> getUserDTOsPage(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return userMapper.toGetUserDTOsPage(usersPage);
     }
 
     public List<UserInfoDTO> getAllUsersInfo() {
@@ -155,7 +166,7 @@ public class UserService {
 
         // Validate
         if(userRepository.existsByEmail(addUserDTO.email())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new RecordAlreadyExistsException("A user with the email " + addUserDTO.email() + " already exists.");
         }
 
         // Create Person with basic info
@@ -228,7 +239,7 @@ public class UserService {
 
         // Validate
         if(userRepository.existsByEmail(addUserDTO.email())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new RecordAlreadyExistsException("Email " + addUserDTO.email() + " already exists");
         }
 
         // Create basic person
@@ -285,7 +296,7 @@ public class UserService {
         log.info("Creating new ADMIN user: {}", addUserDTO.email());
 
         if (userRepository.existsByEmail(addUserDTO.email())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new RecordAlreadyExistsException("Email " + addUserDTO.email() + " already exists");
         }
 
         Person person = Person.builder()

@@ -3,6 +3,7 @@ import { parseJwt } from "../misc/Util"
 import { toast } from "sonner"
 import PropTypes from 'prop-types'
 import AuthenticationContext from "../context/AuthenticationContext"
+import API_BASE_URL from "../../apiConfig"
 
 // Token refresh state manager to handle concurrent requests
 class TokenRefreshManager {
@@ -55,7 +56,7 @@ const AuthenticationProvider = (props) => {
         setError(null)
 
          try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/authenticate', {
+            const response = await fetch(`${API_BASE_URL}/auth/authenticate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(credentials),
@@ -92,7 +93,7 @@ const AuthenticationProvider = (props) => {
     const logout = async () => {
         try {
             if(userRef.current) {
-                const response = await fetch('http://localhost:8080/api/v1/auth/logout/email', {
+                const response = await fetch(`${API_BASE_URL}/auth/logout/email`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -137,7 +138,7 @@ const AuthenticationProvider = (props) => {
                     throw new Error('No refresh token available');
                 }
 
-                const response = await fetch('http://localhost:8080/api/v1/auth/refresh-token', {
+                const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

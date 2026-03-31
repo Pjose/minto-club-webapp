@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
 import { toast } from 'sonner'
-import { useState } from 'react'
-import { CardChecklist, FolderSymlinkFill, HandThumbsDownFill, HandThumbsUpFill, Heart, People, PeopleFill, PersonArmsUp, PersonCheck, 
-    PersonCheckFill, PersonCircle, PersonHeart, PersonHearts, PersonLinesFill, PersonRaisedHand, SignTurnLeftFill, XOctagonFill } from 'react-bootstrap-icons'
+import { useEffect, useState } from 'react'
+import { CardChecklist, FolderSymlinkFill, HandThumbsDownFill, HandThumbsUpFill, Heart, People, PeopleFill, 
+    PersonArmsUp, PersonCheck, PersonCheckFill, PersonCircle, PersonHeart, PersonHearts, PersonLinesFill, 
+    PersonRaisedHand, SignTurnLeftFill, XOctagonFill } from 'react-bootstrap-icons'
 import LoadingSpinner from '../loading/LoadingSpinner'
 import ViewContactCard from '../person/components/ViewContactCard'
 import MemberPersonInfoCard from '../person/components/MemberPersonInfoCard'
@@ -14,13 +15,24 @@ import ConfirmReasonModal from '../misc/modals/ConfirmReasonModal'
 import useConfirmReason from '../hooks/useConfirmReason'
 
 const SubmittedApplication = (props) => {
-    const { formData, setFormData, onReview, onApprove, onReject, onReturned, loading } = props
+    const { formData, setFormData, onReview, onApprove, onReject, onReturned, 
+        loading, setSelectedApplication } = props
     const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
     const { showReason, showConfirmReason, handleConfirmReason, handleCancelReason } = useConfirmReason()
     const [showContact, setShowContact] = useState(false)
     const [currAction, setCurrAction] = useState('')
     const { isAuthenticated } = useAuth()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if(currAction === 'cancelled') {
+            const timer = setTimeout(() => {
+                setSelectedApplication(null)
+                //navigate(-1) // Go back to the previous page after 3 seconds
+            }, 3000)
+            return () => clearTimeout(timer)
+        }
+    }, [currAction])
 
     const handleToggle = () => {
         setShowContact(!showContact)
@@ -42,18 +54,18 @@ const SubmittedApplication = (props) => {
     }
 
     const cancel = async () => {
-        const confirmation = await showConfirmation("Are you sure you want to cancel prosessing this Application?")
+        const confirmation = await showConfirmation("Are you sure you want to cancel processing this application?")
         if(confirmation) {
-            console.log("Processing Application Cancelled! The form is reset.")
-            toast.info("'Processing Application' -> Cancelled!", {
+            console.log("Processing application cancelled! The form is reset.")
+            toast.info("'Processing application' -> Cancelled!", {
                 description: "The application has been reset.",
             })
             setCurrAction('cancelled')
             //navigate('-1')
         } else {
-            console.log("Cancel Aborted! Continue processing the Membership Application.")
+            console.log("Cancel Aborted! Continue processing the application.")
             toast.info("Cancel -> Aborted!", {
-                description: "Continue processing the 'Membership Application'.",
+                description: "Continue processing the application.",
             })
         }
     }
@@ -69,23 +81,23 @@ const SubmittedApplication = (props) => {
         const confirmation = await showConfirmReason()
         if(confirmation) {
             onReject(e)
-            console.log("Membership Application Rejected! The application status is set to rejected.")
-            toast.info("'Membership Application' -> Rejected!", {
+            console.log("Application Rejected! The application status is set to rejected.")
+            toast.info("Application -> Rejected!", {
                 description: "The application has been rejected.",
             })
             setCurrAction('rejected')
             //navigate(-1)
         } else {
-            console.log("Reject Aborted! Continue processing the Membership Application.")
+            console.log("Reject Aborted! Continue processing the application.")
             toast.info("Reject -> Aborted!", {
-                description: "Continue processing the 'Membership Application'.",
+                description: "Continue processing the application.",
             })
         }
     }
 
     const returnApplication = async (e) => {
         if(formData.notes === '' || formData.notes === null) {
-            toast.error("Return Notes Required!", {
+            toast.error("Return notes required!", {
                 description: "Please provide notes for returning the application.",
             })
             return
@@ -94,16 +106,16 @@ const SubmittedApplication = (props) => {
         const confirmation = await showConfirmReason()
         if(confirmation) {
             onReturned(e)
-            console.log("Membership Application Returned! The application status is set to returned.")
-            toast.info("'Membership Application' -> Returned!", {
+            console.log("Application returned! The application status is set to returned.")
+            toast.info("Application -> Returned!", {
                 description: "The application has been returned to the applicant.",
             })
             setCurrAction('returned')
             //navigate(-1)
         } else {
-            console.log("Return Aborted! Continue processing the Membership Application.")
+            console.log("Return aborted! Continue processing the application.")
             toast.info("Return -> Aborted!", {
-                description: "Continue processing the 'Membership Application'.",
+                description: "Continue processing the application.",
             })
         }
     }
@@ -115,7 +127,8 @@ const SubmittedApplication = (props) => {
             <p>You will be redirected to the previous page shortly...</p>
             {/* Optional: Add a manual "Go Back" button */}
             <button 
-                onClick={() => navigate(-1)} 
+                //onClick={() => navigate(-1)} 
+                onClick={() => setSelectedApplication(null)}
                 className="btn btn-primary mt-3"
             >
                 Go Back Now
@@ -439,6 +452,7 @@ SubmittedApplication.propTypes = {
     onReject: PropTypes.func,
     onReturned: PropTypes.func,
     loading: PropTypes.bool,
+    setSelectedApplication: PropTypes.func,
 }
 
 export default SubmittedApplication

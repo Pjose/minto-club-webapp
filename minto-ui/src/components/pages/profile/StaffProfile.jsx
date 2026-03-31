@@ -20,7 +20,7 @@ const StaffProfile = () => {
     const loadMember = async () => {
         setIsLoading(true)
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/members/dto/email/${user.decoded.sub}`, {
+            const response = await fetchWithAuth(`/members/dto/email/${user.decoded.sub}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

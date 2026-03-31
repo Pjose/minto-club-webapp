@@ -1,7 +1,6 @@
 import { GeoAlt, Plus, Trash } from 'react-bootstrap-icons';
 import PropTypes from 'prop-types';
 import countriesData from '../../../assets/data/countries.json';
-import { useState } from 'react';
 import { validators } from '../../validate/validators';
 
 const Addresses = (props) => {

@@ -73,7 +73,7 @@ const EditPerson = () => {
         //console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/people/${formData.id}`, {
+            const response = await fetchWithAuth(`/people/${formData.id}`, {
                 method: 'PATCH',
                 credentials: "include",
                 headers: { 
@@ -107,11 +107,11 @@ const EditPerson = () => {
             {
                 isAuthenticated && isAdminOrStaff ? (
                     <div className="container my-3 px-0">
-                        <div className="card mb-4 border border-info shadow">
+                        <div className="card border border-info shadow">
                             <div className="card-header bg-info">
                                 <div className="d-flex">
                                     <Search size={26} className='me-2' />
-                                    <h4 className="card-title">Search Person</h4>
+                                    <span className="fs-5" style={{ fontWeight: '700'}}>Search Person</span>
                                 </div>
                             </div>
                             <div className='card-body px-1 px-sm-3'>

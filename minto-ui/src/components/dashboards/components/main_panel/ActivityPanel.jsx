@@ -30,8 +30,12 @@ const ActivityPanel = (props) => {
                 return (
                     <Suspense fallback={<LoadingSpinner caption={'Members'} />}>
                         <MembersPanel />
+                    </Suspense>
+                );
+            case 'Applications':
+                return (
+                    <Suspense fallback={<LoadingSpinner caption={'Applications'} />}>
                         <ApplicationsPanel />
-                        <PeoplePanel />
                     </Suspense>
                 );
             case 'People':

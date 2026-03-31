@@ -23,7 +23,7 @@ const PeopleGrid = (props) => {
             setIsLoading(true);
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/people", {
+                    const response = await fetchWithAuth("/people", {
                         method: 'GET',
                         credentials: "include",
                     });

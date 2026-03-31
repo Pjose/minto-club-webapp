@@ -87,7 +87,11 @@ const UsersMain = () => {
                     </div>
                 ) : (
                     <div className="container my-3 p-2">
-                        <h3 className="text-primary text-center">Unauthorized</h3>
+                        { (!isAuthenticated && !isAdminOrStaff) ? (
+                            <h3 className="text-center">Unauthorized</h3>
+                        ) : (
+                            <h3 className="text-center">Checking authorization...</h3>
+                        )}
                     </div>
                 )
             }

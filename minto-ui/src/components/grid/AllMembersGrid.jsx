@@ -5,6 +5,7 @@ import LoadingSpinner from "../loading/LoadingSpinner";
 import { toast } from "sonner";
 import useFetch from "../hooks/useFetch";
 import { useAuth } from "../hooks/useAuth";
+import { List } from 'react-bootstrap-icons';
 
 const AllMembersGrid = (props) => {
     const { defaultPageSize } = props
@@ -19,7 +20,7 @@ const AllMembersGrid = (props) => {
             setIsLoading(true);
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/members/dto", {
+                    const response = await fetchWithAuth("/members/dto", {
                         method: 'GET',
                         credentials: 'include',
                     })
@@ -92,7 +93,10 @@ const AllMembersGrid = (props) => {
                     isAuthenticated ? (
                         <div className='card mx-auto my-3 border border-danger shadow' style={{height: '100%'}} >
                             <div className='card-header text-white bg-danger'>
-                                <h3>List of All Members</h3>
+                                <div className="d-flex">
+                                    <List size={26} className='text-whiye me-2' />
+                                    <span className="fs-5" style={{ fontWeight: '700'}}>List All Members</span>
+                                </div>
                             </div> 
                             <div className='card-body'>
                                 <h5 className='text-center'>Member Details</h5>

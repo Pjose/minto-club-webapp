@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeftCircleFill, ArrowRightCircleFill, Floppy2, Heart, People, Person, PersonCheck,  PersonHearts, 
     SendCheck, XCircleFill } from 'react-bootstrap-icons';
-import { ProgressBar } from 'react-bootstrap';
 import { toast } from 'sonner';
 import PropTypes from 'prop-types'
 import useConfirmation from '../../hooks/useConfirmation';
@@ -31,6 +30,9 @@ import { defaultErrors } from '../../../model/defaultErrors';
 import { validators } from '../../validate/validators';
 import { personErrors } from '../../../model/personErrors';
 import { areAllEmptyStrings } from '../../validate/stringUtils';
+import ApplicationProgressBar from '../components/ApplicationProgressBar';
+
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Create draft membership application by users with regular user permissions.
@@ -482,7 +484,7 @@ const DraftApplication = (props) => {
 
     const prevStep = () => {
         if(validateStep(currentStep)) {
-            if (currentStep > 0) {
+            if (currentStep > 1) {
                 setCurrentStep(currentStep - 1);
             }
         } else {
@@ -513,14 +515,13 @@ const DraftApplication = (props) => {
             //setLoading(true)
             try {
                 if(user) {
-                    //const response = await fetchWithAuth(`${API_BASE_URL}/applications/draft`, {
-                    const response = await fetchWithAuth('http://localhost:8080/api/v1/applications/draft', {
+                    const response = await fetchWithAuth('/applications/draft', {
                         method: 'GET',
                         credentials: "include",
                     })
                     
                     if (!response.ok) {
-                        console.log("[ApplicationsGrid] - Network response was not ok")
+                        console.log("[DraftApplication] - Network response was not ok")
                         toast.error('HTTP Error: Network response was NOT ok!')
                         throw new Error('Network response was not ok')
                     }
@@ -568,7 +569,7 @@ const DraftApplication = (props) => {
             if(isAuthenticated) {
                 if (validateStep(currentStep)) {
                     toast.success('Application form is valid!')
-                    const response = await fetchWithAuth('http://localhost:8080/api/v1/applications/draft', {
+                    const response = await fetchWithAuth('/applications/draft', {
                         method: 'POST',
                         credentials: "include",
                         headers: { 
@@ -610,7 +611,7 @@ const DraftApplication = (props) => {
         
         try {
             if(isAuthenticated) {
-                const response = await fetchWithAuth('http://localhost:8080/api/v1/applications/draft/submit', {
+                const response = await fetchWithAuth('/applications/draft/submit', {
                     method: 'POST',
                     credentials: "include",
                     headers: { 
@@ -879,7 +880,7 @@ const DraftApplication = (props) => {
         )
     }
 
-    // Club Reference Info
+    // Club References Info
     const renderClubReferencesInfo = () => {
         return (
             <ClubReferencesInfo
@@ -931,17 +932,17 @@ const DraftApplication = (props) => {
 
     if (isSubmitted) {
         return (
-        <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '50vh' }}>
-            <h2>Application Submitted Successfully!</h2>
-            <p>You will be redirected to the previous page shortly...</p>
-            {/* Optional: Add a manual "Go Back" button */}
-            <button 
-                onClick={() => navigate(-1)} 
-                className="btn btn-primary mt-3"
-            >
-                Go Back Now
-            </button>
-        </div>
+            <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '50vh' }}>
+                <h2>Application Submitted Successfully!</h2>
+                <p>You will be redirected to the previous page shortly...</p>
+                {/* Optional: Add a manual "Go Back" button */}
+                <button 
+                    onClick={() => navigate(-1)} 
+                    className="btn btn-primary mt-3"
+                >
+                    Go Back Now
+                </button>
+            </div>
         );
     }
 
@@ -958,64 +959,9 @@ const DraftApplication = (props) => {
                                     <h5 className="card-title">{title}</h5>
                                     <span>App No.: {formData.applicationNumber}</span>
                                 </div>
-                                {/* New Progress Bar */}
                                 <div className='card-body px-1 px-sm-3'>
-                                    <div className="container pt-2 mb-8 position-sticky bg-white"  style={{ top: '129px', zIndex: 100, borderBottom: '1px solid #dee2e6' }}>
-                                        <div className="row mb-2">
-                                            {steps.map((step, index) => {
-                                                const IconComponent = step.icon;
-                                                return (
-                                                    <>
-                                                        {/* Highlight current and completed steps with a different background color and border */}
-                                                        <div key={index} className={`col d-flex px-0 px-md-2 justify-content-center
-                                                            ${(currentStep) >= step.number
-                                                                ? 'fw-bold border border-3 border-primary rounded'
-                                                                : ''
-                                                            }
-                                                            `}
-                                                            style={{ 
-                                                                backgroundColor: (currentStep) >= step.number ? '#d5f3ff' : '',
-                                                                transition: 'background-color 0.3s, border-color 0.3s', 
-                                                                }}
-                                                        >
-                                                            <div className="d-flex flex-column mb-1">
-                                                                <div className="d-flex justify-content-center">
-                                                                    <div className={`rounded-circle mt-1 p-2
-                                                                        ${(currentStep) >= step.number
-                                                                            ? 'shadow-lg bg-primary text-white'
-                                                                            : 'bg-secondary text-white'
-                                                                        }
-                                                                        `}>
-                                                                        <IconComponent size={20}/>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="d-none d-md-flex text-center">
-                                                                    <p className="small mb-0">{step.title}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </>
-                                                )
-                                            })}
-                                        </div>
-                                        <div className="row mb-0">
-                                            <ProgressBar 
-                                                now={`${((currentStep) / steps.length) * 100}`} 
-                                                label={`Step ${currentStep}`} 
-                                                className='bg-white p-0' />
-                                        </div>
-                                        <div className="row mb-4">
-                                            <div className="col text-center">
-                                                <span className="small mb-0 fw-bold">Step {currentStep} of {steps.length}</span>
-                                            </div>
-                                            {/*
-                                            <div className="col">
-                                                 <span className="small mb-0 fw-bold">{Math.round(((currentStep) / (steps.length)) * 100)}% Complete</span> 
-                                                <span className="small mb-0 fw-bold">{currentStep + 1} / {steps.length + 1}</span>
-                                            </div>
-                                            */}
-                                        </div>
-                                    </div>
+                                    {/* Progress Bar */}
+                                    <ApplicationProgressBar steps={steps} currentStep={currentStep} />
 
                                     {/* Form Content */}
                                     <div className="p-6">
@@ -1026,7 +972,7 @@ const DraftApplication = (props) => {
                                 </div>
                                 <div className="card-footer">
                                     <div className="text-center my-2">
-                                        <button type="button" onClick={prevStep} className="btn btn-outline-primary mx-2 mx-xl-3" disabled={(currentStep === 0) || loading || saving} title='Previous Step'>
+                                        <button type="button" onClick={prevStep} className="btn btn-outline-primary mx-2 mx-xl-3" disabled={(currentStep === 1) || loading || saving} title='Previous Step'>
                                             <ArrowLeftCircleFill size={20} className="m-0 me-sm-1 mb-1" />
                                             <span className="d-none d-sm-inline-block">Prev</span>
                                         </button>

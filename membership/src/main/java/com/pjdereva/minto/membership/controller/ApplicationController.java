@@ -1,12 +1,15 @@
 package com.pjdereva.minto.membership.controller;
 
+import com.pjdereva.minto.membership.dto.GetUserDTO;
 import com.pjdereva.minto.membership.exception.ApplicationIdNotFoundException;
 import com.pjdereva.minto.membership.mapper.ApplicationMapper;
+import com.pjdereva.minto.membership.mapper.UserMapper;
 import com.pjdereva.minto.membership.model.User;
 import com.pjdereva.minto.membership.model.transaction.Application;
 import com.pjdereva.minto.membership.model.transaction.ApplicationStatus;
 import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
 import com.pjdereva.minto.membership.payload.response.ApplicationResponse;
+import com.pjdereva.minto.membership.payload.response.DraftResponse;
 import com.pjdereva.minto.membership.service.impl.ApplicationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -28,6 +30,7 @@ public class ApplicationController {
 
     private final ApplicationServiceImpl applicationService;
     private final ApplicationMapper applicationMapper;
+    private final UserMapper userMapper;
 
     @GetMapping
     public ResponseEntity<List<Application>> getAllApplications() {
@@ -94,6 +97,85 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationMapper.toApplicationDTOs(applications));
     }
 
+    /**
+     * Get all applications by user.
+     * GET /api/v1/applications/user?id=
+     */
+    @GetMapping("/user")
+    public ResponseEntity<?> getAllByUser(@RequestParam Long id) {
+        try {
+            List<ApplicationDTO> applications = applicationService.findAllByUser(id);
+
+            return ResponseEntity.ok(applications);
+
+        } catch (Exception e) {
+            log.error("Error getting all applications for user.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Load draft application
+     * GET /api/v1/applications/load?userId=
+     */
+    @GetMapping("/load")
+    public ResponseEntity<ApplicationDTO> loadApplicationByUserId(
+            @RequestParam Long userId,
+            Principal currentUser
+    ) {
+        var principal = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+
+        log.info("Loading application for user with id: {}, by {} {}.",
+                userId, principal.getFirstName(), principal.getLastName());
+
+        try {
+            ApplicationDTO draft = applicationService.loadDraft(userId, principal);
+
+            return ResponseEntity.ok(draft);
+
+        } catch (Exception e) {
+            log.error("Error loading application", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Save or update draft application
+     * POST /api/v1/applications
+     */
+    @PostMapping
+    public ResponseEntity<DraftResponse> saveApplication(@RequestBody ApplicationDTO applicationDTO,
+                                                         Principal currentUser
+    ) {
+        var principal = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+        var user = userMapper.toUser(applicationDTO.getUser());
+        log.info("Saving application for user: {} {}, by {} {}.",
+                user.getFirstName(), user.getLastName(),
+                principal.getFirstName(), principal.getLastName());
+
+        try {
+            ApplicationDTO application = applicationService.saveDraft(user, applicationDTO);
+
+            DraftResponse response = DraftResponse.builder()
+                    .success(true)
+                    .message("Application saved successfully")
+                    .applicationId(application.getId())
+                    .applicationNumber(application.getApplicationNumber())
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("Error saving application", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(DraftResponse.builder()
+                            .success(false)
+                            .message("Failed to save application: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /*
     @PostMapping
     public ResponseEntity<?> createApplication(@RequestBody Application application) {
         Optional<Application> app = Optional.empty();
@@ -103,6 +185,45 @@ public class ApplicationController {
             return ResponseEntity.unprocessableEntity().body(ex.getMessage());
         }
         return ResponseEntity.ok(app);
+    }
+     */
+
+    /**
+     * Submit draft application
+     * POST /api/v1/applications/submit
+     */
+    @PostMapping("/submit")
+    public ResponseEntity<DraftResponse> submitDraft(
+            @RequestBody ApplicationDTO applicationDTO,
+            Principal currentUser
+    ) {
+        var principal = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+        var user = userMapper.toUser(applicationDTO.getUser());
+
+        log.info("Submitting application for user: {} {}, by {} {}.",
+                user.getFirstName(), user.getLastName(),
+                principal.getFirstName(), principal.getLastName());
+
+        try {
+            ApplicationDTO application = applicationService.submitDraft(user, applicationDTO, principal);
+            log.info("✓ Application submitted: {}", application.getApplicationNumber());
+
+            DraftResponse response = DraftResponse.builder()
+                    .success(true)
+                    .message("Application submitted successfully")
+                    .applicationId(application.getId())
+                    .applicationNumber(application.getApplicationNumber())
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error saving application", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(DraftResponse.builder()
+                            .success(false)
+                            .message("Failed to submit application: " + e.getMessage())
+                            .build());
+        }
     }
 
     @PatchMapping
@@ -154,6 +275,7 @@ public class ApplicationController {
                 applicationDTO.getApplicationNumber());
     }
 
+    /*
     @PostMapping("/submit")
     public ResponseEntity<?> submitApplication(@RequestBody ApplicationDTO applicationDTO) {
         try {
@@ -178,6 +300,7 @@ public class ApplicationController {
                             .build());
         }
     }
+    */
 
     @PostMapping("/review")
     public ResponseEntity<?> setApplicationUnderReview(

@@ -6,6 +6,7 @@ import { parseJwt } from "../misc/Util";
 import ErrorPage from "./errors/ErrorPage";
 import TextSeparator from "../misc/TextSeparator";
 import { toast } from 'sonner'
+import API_BASE_URL from "../../apiConfig";
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -126,7 +127,7 @@ const SignUp = () => {
         if (validateForm()) {
             toast.success('Valid sign-up form!')
             try {
-                const response = await fetch('http://localhost:8080/api/v1/auth/register', {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

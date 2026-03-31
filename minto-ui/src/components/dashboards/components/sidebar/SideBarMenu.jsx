@@ -1,4 +1,5 @@
-import { CashCoin, CreditCard, Envelope, Gear, GraphUpArrow, Journals, People, PersonSlash, PersonVcard, UiChecksGrid } from "react-bootstrap-icons"
+import { CardChecklist, CashCoin, CreditCard, Envelope, Gear, GraphUpArrow, Journals, People, PersonBoundingBox, 
+    PersonSlash, PersonVcard, UiChecksGrid } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
 import PropTypes from 'prop-types';
 import { useState } from "react";
@@ -36,7 +37,7 @@ const SideBarMenu = (props) => {
                     className={activeLink === 'users-panel' ? 'active' : ''}
                 >
                     <span>
-                        <People size={20} />
+                        <PersonBoundingBox size={20} />
                         <h3>Users</h3>
                     </span>
                 </Link>
@@ -49,7 +50,31 @@ const SideBarMenu = (props) => {
                 >
                     <span>
                         <PersonVcard size={20} />
-                        <h3>Membership</h3>
+                        <h3>Members</h3>
+                    </span>
+                </Link>
+                <Link 
+                    onClick={() => {
+                        onMenuClick('Applications')
+                        handleLinkClick('applications-panel')
+                    }}
+                    className={activeLink === 'applications-panel' ? 'active' : ''}
+                >
+                    <span>
+                        <CardChecklist size={20} />
+                        <h3>Applications</h3>
+                    </span>
+                </Link>
+                <Link 
+                    onClick={() => {
+                        onMenuClick('People')
+                        handleLinkClick('people-panel')
+                    }}
+                    className={activeLink === 'people-panel' ? 'active' : ''}
+                >
+                    <span>
+                        <People size={20} />
+                        <h3>People</h3>
                     </span>
                 </Link>
                 <Link 

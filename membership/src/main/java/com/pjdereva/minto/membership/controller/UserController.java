@@ -1,8 +1,11 @@
 package com.pjdereva.minto.membership.controller;
 
 import com.pjdereva.minto.membership.dto.*;
+import com.pjdereva.minto.membership.exception.RecordAlreadyExistsException;
+import com.pjdereva.minto.membership.payload.response.ErrorResponse;
 import com.pjdereva.minto.membership.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +52,14 @@ public class UserController {
         var userInfoDTO = userService.getUserInfoById(id);
         return ResponseEntity.ok(userInfoDTO);
     }
+
+    @GetMapping("/page")
+    public Page<GetUserDTO> getUsersPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        return userService.getUserDTOsPage(page, size, sortBy);
+    }
 /*
     @GetMapping("/secure/{email}/image")
     public ResponseEntity<byte[]> getImageByEmail(@PathVariable String email) {
@@ -71,8 +82,18 @@ public class UserController {
         try {
             var userDto = userService.createGuestUser(addUserDTO, imageFile);
             return new ResponseEntity<>(userDto, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RecordAlreadyExistsException e) {
+            ErrorResponse error = ErrorResponse.builder()
+                    .message(e.getMessage())
+                    .statusCode(HttpStatus.CONFLICT.value())
+                    .build();
+            return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        } catch (IOException e) {
+            ErrorResponse err = ErrorResponse.builder()
+                    .message(e.getMessage())
+                    .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .build();
+            return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

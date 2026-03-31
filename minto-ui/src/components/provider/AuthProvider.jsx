@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import PropTypes from 'prop-types';
 import { parseJwt } from "../misc/Util";
+import API_BASE_URL from "../../apiConfig";
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -37,7 +38,7 @@ const AuthProvider = ({ children }) => {
             console.log('Call => refreshAccessToken')
            
             try {
-                const response = await fetch('http://localhost:8080/api/v1/auth/refresh-token', {
+                const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

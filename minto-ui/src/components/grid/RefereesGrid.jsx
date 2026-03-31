@@ -24,7 +24,7 @@ const RefereesGrid = (props) => {
             setIsLoading(true)
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/members", {
+                    const response = await fetchWithAuth("/members", {
                         method: 'GET',
                         credentials: "include",
                     })

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import PropTypes from 'prop-types'
 import useFetch from '../../hooks/useFetch';
 
-const API_BASE_URL = "http://localhost:8080";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ProfilePictureUpload = (props) => {
     const { currentPicture, onUploadSuccess } = props;
@@ -41,7 +41,7 @@ const ProfilePictureUpload = (props) => {
             const formData = new FormData();
             formData.append('file', selectedFile, selectedFile.name);
             console.log('Calling fetch to upload picture')
-            const response = await fetchWithAuth('http://localhost:8080/api/v1/profile/picture', {
+            const response = await fetchWithAuth('/profile/picture', {
                 method: 'POST',
                 body: formData,
             })
@@ -64,7 +64,7 @@ const ProfilePictureUpload = (props) => {
 
     const cancel = () => { setPreview(null); setSelectedFile(null); setError(''); };
 
-    const currentProfilePic = currentPicture ? `${API_BASE_URL}${currentPicture}` : '';
+    const currentProfilePic = currentPicture ? `${BASE_URL}${currentPicture}` : '';
     const displayPicture = preview || currentProfilePic;
 
     return (

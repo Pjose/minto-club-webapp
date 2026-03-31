@@ -5,6 +5,7 @@ import useFetch from "../hooks/useFetch"
 import { useAuth } from "../hooks/useAuth"
 import { toast } from "sonner"
 import LoadingSpinner from "../loading/LoadingSpinner"
+import { List } from 'react-bootstrap-icons'
 
 const AllUsersGrid = (props) => {
     const { defaultPageSize } = props
@@ -20,7 +21,7 @@ const AllUsersGrid = (props) => {
             try {
                 if(user) {
                     const token = user.accessToken
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/users", {
+                    const response = await fetchWithAuth("/users", {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -98,7 +99,10 @@ const AllUsersGrid = (props) => {
                 isAuthenticated ? (
                     <div className='card mx-auto my-3 border border-dark shadow' style={{height: '100%'}} >
                         <div className='card-header text-white bg-dark'>
-                            <h3>List of Users</h3>
+                            <div className="d-flex">
+                                <List size={26} className='text-white me-2' />
+                                <span className="fs-5" style={{ fontWeight: '700'}}>List All Users</span>
+                            </div>
                         </div>
                         <div className='card-body'>
                             <h5 className='text-center'>User Details</h5>

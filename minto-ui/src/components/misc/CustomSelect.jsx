@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { useAuth } from "../hooks/useAuth";
+import API_BASE_URL from "../../apiConfig";
 
 const CustomSelect = (props) => {
     const { className, name, value, placeholder, onChange, url, required } = props;
@@ -9,12 +10,13 @@ const CustomSelect = (props) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     let user = getUser()
+    let apiUrl = API_BASE_URL + url;
   
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(url);
+                const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

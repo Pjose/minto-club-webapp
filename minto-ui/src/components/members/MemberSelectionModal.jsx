@@ -26,7 +26,7 @@ const MemberSelectionModal = (props) => {
             setIsLoading(true)
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/members", {
+                    const response = await fetchWithAuth("/members/dto", {
                         method: 'GET',
                         credentials: 'include',
                     })

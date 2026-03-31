@@ -58,4 +58,13 @@ export const  validators = {
 
     percentage: (value) =>
         validators.required(value) || validators.number(value) || validators.minNumber(0)(value) || validators.maxNumber(100)(value),
+
+    imageFile: (value) =>
+        value && value.type.startsWith('image/') ? "" : "Please select a valid image file.",
+
+    lessThan5MB: (value) =>
+        value && value.size <= (5 * 1024 * 1024) ? "" : "File size must be less than 5MB.",
+
+    picture: (value) =>
+        value === undefined || value === null || value === "" ? "" : validators.imageFile(value) || validators.lessThan5MB(value),
 };

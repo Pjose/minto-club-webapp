@@ -3,7 +3,7 @@ import { AgGridReact } from "ag-grid-react"
 import { useEffect, useMemo, useState } from "react"
 import LoadingSpinner from "../loading/LoadingSpinner"
 import { toast } from 'sonner'
-import { PeopleFill } from "react-bootstrap-icons"
+import { People } from "react-bootstrap-icons"
 import { useAuth } from "../hooks/useAuth"
 import useFetch from "../hooks/useFetch"
 
@@ -30,7 +30,7 @@ const AllPeopleGrid = (props) => {
             setIsLoading(true)
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/people", {
+                    const response = await fetchWithAuth("/people", {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -100,8 +100,8 @@ const AllPeopleGrid = (props) => {
                     <div className='card mx-auto my-3 border border-info shadow' style={{height: '100%'}} >
                         <div className='card-header bg-info'>
                             <div className="d-flex">
-                                <PeopleFill size={28} className='me-2' />
-                                <h4>List All People</h4>
+                                <People size={26} className='me-2' />
+                                <span className="fs-5" style={{ fontWeight: '700'}}>List All People</span>
                             </div>
                         </div> 
                         <div className='card-body'>

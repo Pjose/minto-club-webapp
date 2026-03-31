@@ -67,7 +67,7 @@ const MemberProfile = () => {
             try {
                 if(user) {
                     // First fetch call
-                    const response1 = await fetchWithAuth(`http://localhost:8080/api/v1/users/${user.decoded.sub}`, {
+                    const response1 = await fetchWithAuth(`/users/${user.decoded.sub}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ const MemberProfile = () => {
                     toast.success('User profile data loaded successfully!')
 
                     // Second fetch call
-                    const response2 = await fetchWithAuth(`http://localhost:8080/api/v1/members/dto/email/${user.decoded.sub}`, {
+                    const response2 = await fetchWithAuth(`/members/dto/email/${user.decoded.sub}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ const MemberProfile = () => {
         fetchData()
         
         return () => {
-            console.log("Cleaned up after fetchData in Profile!");
+            console.log("Cleaned up after fetch Profile!");
           }
     }, [user, fetchWithAuth])
 

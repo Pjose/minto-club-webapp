@@ -1,15 +1,16 @@
 import { Suspense, useState } from "react"
 import LoadingSpinner from "../loading/LoadingSpinner"
-import MembershipForm from "../membership/MembershipForm"
 import { ButtonGroup, ToggleButton } from "react-bootstrap"
 import EditApplication from "./EditApplication"
 import ReviewApplications from "./ReviewApplications"
+import NewApplication from "./NewApplication"
+import CreateApplication from "./CreateApplication"
 
 const ApplicationsMain = () => {
     const [radioValue, setRadioValue] = useState('1')
                 
     const appRadios = [
-        { name: 'Search/Edit', value: '1' },
+        { name: 'Search/ Edit', value: '1' },
         { name: 'Add New', value: '2' },
         { name: 'Process Applications', value: '3' },
     ]
@@ -25,7 +26,7 @@ const ApplicationsMain = () => {
             case '2':
                 return (
                     <Suspense fallback={<LoadingSpinner caption={'New Application'} clsTextColor={"text-primary"} />}>
-                        <MembershipForm title={'New Membership Application'} headerBgColor={'bg-primary'} cardBorderColor={'border-primary'} />
+                        <CreateApplication />
                     </Suspense>
                 )
             case '3':

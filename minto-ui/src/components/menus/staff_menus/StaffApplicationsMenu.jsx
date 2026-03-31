@@ -13,8 +13,8 @@ const StaffApplicationsMenu = () => {
                     <Dropdown.Item as={Link} to="/applications" title="Main Applications Page">
                         Main Applications Page
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/add-application" title="Add Membership Application">
-                        Add Membership Application
+                    <Dropdown.Item as={Link} to="/new-application" title="New Application">
+                        New Application
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to="/edit-application" title="Search / Edit Application">
                         Search / Edit Application

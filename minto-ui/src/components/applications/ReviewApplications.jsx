@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Search } from "react-bootstrap-icons"
+import { ArrowLeftRight, Search } from "react-bootstrap-icons"
 import { toast } from "sonner"
 import ViewApplication from "./ViewApplication"
 import ApplicationsGrid from "../grid/ApplicationsGrid"
@@ -42,7 +42,7 @@ const ReviewApplications = () => {
         //console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications`, {
+            const response = await fetchWithAuth(`/applications`, {
                 method: 'PUT',
                 credentials: "include",
                 headers: { 
@@ -77,7 +77,7 @@ const ReviewApplications = () => {
         //console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/review`, {
+            const response = await fetchWithAuth(`/applications/review`, {
                 method: 'POST',
                 credentials: "include",
                 headers: { 
@@ -112,7 +112,7 @@ const ReviewApplications = () => {
         //console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/approve`, {
+            const response = await fetchWithAuth(`/applications/approve`, {
                 method: 'POST',
                 credentials: "include",
                 headers: { 
@@ -147,7 +147,7 @@ const ReviewApplications = () => {
         //console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/reject`, {
+            const response = await fetchWithAuth(`/applications/reject`, {
                 method: 'POST',
                 credentials: "include",
                 headers: { 
@@ -182,7 +182,7 @@ const ReviewApplications = () => {
         //console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/return`, {
+            const response = await fetchWithAuth(`/applications/return`, {
                 method: 'POST',
                 credentials: "include",
                 headers: { 
@@ -223,8 +223,8 @@ const ReviewApplications = () => {
                     <div className="card mb-4 border border-primary shadow">
                         <div className="card-header text-white bg-primary">
                             <div className="d-flex">
-                                <Search size={26} className='text-white me-2' />
-                                <h4 className="card-title">Process Applications</h4>
+                                <ArrowLeftRight size={26} className='text-white me-2' />
+                                <span className="fs-5" style={{ fontWeight: '700'}}>Process Applications</span>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>
@@ -235,7 +235,7 @@ const ReviewApplications = () => {
                             <ApplicationsGrid 
                                 setSelectedApplication={setSelectedApplication} 
                                 setViewApplication={setViewApplication} 
-                                url={"http://localhost:8080/api/v1/applications/status/in/submitted,under%20review,returned"} 
+                                url={"/applications/status/in/submitted,under%20review,returned"} 
                             />
                                 
                         </div>
@@ -257,6 +257,7 @@ const ReviewApplications = () => {
                                 onApprove={onApprove}
                                 onReject={onReject}
                                 onReturned={onReturned}
+                                setSelectedApplication={setSelectedApplication}
                             />}
                             {/* <SubmittedApplication 
                                 formData={formData} 

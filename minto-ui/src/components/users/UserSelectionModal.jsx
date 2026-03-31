@@ -1,4 +1,6 @@
 import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 import PropTypes from 'prop-types'
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -26,7 +28,7 @@ const UserSelectionModal = (props) => {
             setIsLoading(true)
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/users", {
+                    const response = await fetchWithAuth("/users", {
                         method: 'GET',
                         credentials: 'include',
                     })
@@ -38,7 +40,7 @@ const UserSelectionModal = (props) => {
                     }
     
                     const usersData = await response.json()
-                    console.log(usersData)
+                    //console.log(usersData)
                     setAvailableUsers(usersData)
                     toast.success('Users loaded successfully!')
                 } else {
@@ -80,7 +82,7 @@ const UserSelectionModal = (props) => {
 
     const autoSizeStrategy = {
         type: 'fitGridWidth',
-        defaultMinWidth: 90,
+        defaultMinWidth: 105,
         columnLimits: [
             {
                 colId: 'email',
@@ -150,7 +152,7 @@ const UserSelectionModal = (props) => {
                                         }}
                                     >
                                         <div className="d-flex justify-content-between">
-                                            <h5 className='fw-bold text-dark'>Select {personType}(s) from Users</h5>
+                                            <h5 className='fw-bold text-white'>Select {personType}</h5>
                                             <button onClick={onClose} className='btn btn-dark ms-auto me-0 mb-2'>
                                                 <XLg />
                                             </button>

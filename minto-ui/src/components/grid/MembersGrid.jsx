@@ -22,7 +22,7 @@ const MembersGrid = (props) => {
             setIsLoading(true);
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/members/dto", {
+                    const response = await fetchWithAuth("/members/dto", {
                         method: 'GET',
                         credentials: "include",
                     });
@@ -52,7 +52,7 @@ const MembersGrid = (props) => {
 
     const columnDefs = useMemo(() => {
         const deleteMember = async (id) => {
-            await fetchWithAuth(`http://localhost:8080/api/v1/members/${id}`, {
+            await fetchWithAuth(`/members/${id}`, {
                 method: "DELETE",
             });
             //loadMembers();

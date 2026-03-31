@@ -1,6 +1,7 @@
 package com.pjdereva.minto.membership.advice;
 
 import com.pjdereva.minto.membership.exception.CustomExpiredJwtException;
+import com.pjdereva.minto.membership.exception.RecordAlreadyExistsException;
 import com.pjdereva.minto.membership.exception.UserIdNotFoundException;
 import com.pjdereva.minto.membership.payload.response.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -79,5 +80,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(RecordAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleRecordAlreadyExistsException(RecordAlreadyExistsException ex) {
+        ErrorResponse error = ErrorResponse
+                .builder()
+                .message(ex.getMessage())
+                .statusCode(HttpStatus.CONFLICT.value())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }

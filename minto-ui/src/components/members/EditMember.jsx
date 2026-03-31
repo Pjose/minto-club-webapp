@@ -41,7 +41,7 @@ const EditMember = () => {
         setLoading(true)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/members/draft`, {
+            const response = await fetchWithAuth(`/members/draft`, {
                 method: 'PATCH',
                 credentials: "include",
                 headers: { 
@@ -75,11 +75,11 @@ const EditMember = () => {
         {
             isAuthenticated ? (
                 <div className="container my-3 px-0">
-                    <div className="card mb-4 border border-danger shadow-lg">
+                    <div className="card border border-danger shadow-lg">
                         <div className="card-header text-white bg-danger">
                             <div className="d-flex">
                                 <Search size={26} className='text-white me-2' />
-                                <h4 className="card-title">Search Member</h4>
+                                <span className="fs-5" style={{ fontWeight: '700'}}>Search Member</span>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>

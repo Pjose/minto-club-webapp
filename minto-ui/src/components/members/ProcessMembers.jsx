@@ -44,7 +44,7 @@ const ProcessMembers = () => {
         setLoading(true)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/members`, {
+            const response = await fetchWithAuth(`/members`, {
                 method: 'PUT',
                 credentials: "include",
                 headers: { 
@@ -78,14 +78,14 @@ const ProcessMembers = () => {
         {
             isAuthenticated ? (
                 <div className="container my-3 px-0">
-                    <div className="card mb-4 border border-danger shadow-lg">
+                    <div className="card border border-danger shadow-lg">
                         <div className="card-header text-danger">
                             <div className="d-flex">
                                 <Search size={26} className='text-danger me-2' />
-                                <h4 className="card-title">Process Members</h4>
+                                <span className="fs-5" style={{ fontWeight: '700'}}>Process Members</span>
                             </div>
                         </div>
-                        <div className='card-body p-0'>
+                        <div className='card-body p-1'>
                             <div className="d-flex align-items-center">
                                 { message && <span className="text-primary ms-2 h6">{message}</span> }
                             </div>

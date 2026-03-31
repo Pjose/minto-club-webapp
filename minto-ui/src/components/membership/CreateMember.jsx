@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeftCircleFill, ArrowRightCircleFill, EnvelopeAt, EnvelopeFill, GeoAlt, Heart, People, PeopleFill, Person, PersonArmsUp, PersonCheck, PersonCheckFill, PersonCircle, PersonFill, PersonHeart, PersonHearts, PersonLinesFill, Plus, Send, SendCheck, Telephone, Trash, XCircleFill } from 'react-bootstrap-icons';
+import { ArrowLeftCircleFill, ArrowRightCircleFill, EnvelopeAt, EnvelopeFill, GeoAlt, Heart, People, PeopleFill, Person, PersonArmsUp, PersonCheck, PersonCheckFill, PersonCircle, PersonFill, PersonHeart, PersonHearts, PersonLinesFill, PersonVcard, Plus, Send, SendCheck, Telephone, Trash, XCircleFill } from 'react-bootstrap-icons';
 import { ProgressBar } from 'react-bootstrap';
 import countriesData from '../../assets/data/countries.json';
 import { toast } from 'sonner';
@@ -719,7 +719,7 @@ const CreateMember = (props) => {
         
         try {
             if(isAuthenticated()) {
-                const response = await fetchWithAuth('http://localhost:8080/api/v1/applications', {
+                const response = await fetchWithAuth('/applications', {
                     method: 'POST',
                     credentials: "include",
                     headers: { 
@@ -2160,7 +2160,10 @@ const CreateMember = (props) => {
                 <>
                     <div className={`card my-3 border ${cardBorderColor} shadow-lg`}> 
                         <div className={`card-header text-white ${headerBgColor}`}>
-                            <h5 className="card-title">{title}</h5>
+                            <div className='d-flex'>
+                                <PersonVcard size={26} className='text-white me-2' />
+                                <span className="fs-5" style={{ fontWeight: '700'}}>{title}</span>
+                            </div>
                         </div>
                         {/* New Progress Bar */}
                         <div className='card-body px-1 px-sm-3'>

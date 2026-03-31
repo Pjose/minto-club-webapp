@@ -11,9 +11,9 @@ const AdminApplicationsMenu = () => {
                 
                 <Dropdown.Menu id="collapsible-nav-dropdown">
                     <Dropdown.Item as={Link} to="/applications" title="Applications Page">
-                        Applications Page
+                        Main Applications Page
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/add-application" title="New Application">
+                    <Dropdown.Item as={Link} to="/new-application" title="New Application">
                         New Application
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to="/edit-application" title="Search / Edit Application">

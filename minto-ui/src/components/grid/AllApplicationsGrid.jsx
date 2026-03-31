@@ -5,6 +5,7 @@ import LoadingSpinner from "../loading/LoadingSpinner";
 import { toast } from "sonner";
 import useFetch from "../hooks/useFetch";
 import { useAuth } from "../hooks/useAuth";
+import { List } from 'react-bootstrap-icons';
 
 const AllApplicationsGrid = (props) => {
     const { defaultPageSize } = props
@@ -19,7 +20,7 @@ const AllApplicationsGrid = (props) => {
             setIsLoading(true);
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/applications/dto", {
+                    const response = await fetchWithAuth("/applications/dto", {
                         method: 'GET',
                         credentials: 'include',
                     });
@@ -90,7 +91,10 @@ const AllApplicationsGrid = (props) => {
                 isAuthenticated ? (
                     <div className='card mx-auto my-3 border border-primary shadow' style={{height: '100%'}} >
                         <div className='card-header text-white bg-primary'>
-                            <h3>List of All Applications</h3>
+                            <div className="d-flex">
+                                <List size={26} className='text-white me-2' />
+                                <span className="fs-5" style={{ fontWeight: '700'}}>List All Applications</span>
+                            </div>
                         </div> 
                         <div className='card-body'>
                             <h5 className='text-center'>Application Details</h5>

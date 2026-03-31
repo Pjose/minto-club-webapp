@@ -384,7 +384,7 @@ body {
     padding: var(--card-padding);
     border-radius: var(--card-border-radius);
     margin-top: 1.2rem;
-    min-width: 300px;
+    min-width: 200px;
     width: 100%;
     box-shadow: var(--box-shadow);
     transition: all 300ms ease;
@@ -785,5 +785,19 @@ body {
 
     .text-muted {
         color: white;
+    }
+}
+
+/*====================== MEDIA QUERIES ==================*/
+@media screen and (max-width: 1024px) {
+    .activity-panel {
+        padding: 1rem;
+    }
+}
+
+/*====================== MEDIA QUERIES ==================*/
+@media screen and (max-width: 550px) {
+    .activity-panel {
+        padding: 5px;
     }
 }

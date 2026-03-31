@@ -23,7 +23,7 @@ const ViewMember = (props) => {
             setIsLoading(true)
             try {
                 if((formData.id > 0) && user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/members/dto/id/${formData.id}`, {
+                    const response = await fetchWithAuth(`/members/dto/id/${formData.id}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

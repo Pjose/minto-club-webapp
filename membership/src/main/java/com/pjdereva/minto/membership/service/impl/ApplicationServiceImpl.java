@@ -2,6 +2,8 @@ package com.pjdereva.minto.membership.service.impl;
 
 import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
 import com.pjdereva.minto.membership.dto.application.PersonDTO;
+import com.pjdereva.minto.membership.exception.ApplicationIdNotFoundException;
+import com.pjdereva.minto.membership.exception.UserIdNotFoundException;
 import com.pjdereva.minto.membership.mapper.*;
 import com.pjdereva.minto.membership.model.*;
 import com.pjdereva.minto.membership.model.transaction.*;
@@ -40,6 +42,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final RefereeMapper refereeMapper;
     private final RelativeMapper relativeMapper;
     private final BeneficiaryMapper beneficiaryMapper;
+
+    private final DraftApplicationServiceImpl draftApplicationService;
 
     /**
      * User creates a new application
@@ -110,7 +114,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void addPeopleAndOtherInfo(ApplicationDTO request) {
         log.info("Find application with id: {}", request.getId());
         Application application = applicationRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ApplicationIdNotFoundException(request.getId()));
 
         log.info("Verify ownership and editable");
         // Verify ownership and editable
@@ -251,7 +255,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void submitApplication(Long applicationId, Long userId) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ApplicationIdNotFoundException(applicationId));
 
         // Verify ownership
         if (!application.getUser().getId().equals(userId)) {
@@ -278,7 +282,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void setApplicationUnderReview(Long applicationId) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ApplicationIdNotFoundException(applicationId));
 
         if (application.getApplicationStatus() != ApplicationStatus.SUBMITTED) {
             throw new IllegalStateException("Only submitted applications can be reviewed");
@@ -296,7 +300,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void approveApplication(Long applicationId) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ApplicationIdNotFoundException(applicationId));
 
         if (application.getApplicationStatus() != ApplicationStatus.UNDER_REVIEW) {
             throw new IllegalStateException("Application must be under review to approve");
@@ -314,7 +318,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void rejectApplication(Long applicationId, String reason) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ApplicationIdNotFoundException(applicationId));
 
         application.reject(reason);
         applicationRepository.save(application);
@@ -328,7 +332,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void returnApplication(Long applicationId, String notes) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ApplicationIdNotFoundException(applicationId));
 
         if (application.getApplicationStatus() == ApplicationStatus.DRAFT) {
             throw new IllegalStateException("Draft applications cannot be returned");
@@ -351,7 +355,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     public void withdrawApplication(Long applicationId, Long userId) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ApplicationIdNotFoundException(applicationId));
 
         // Verify ownership
         if (!application.getUser().getId().equals(userId)) {
@@ -443,7 +447,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public List<ApplicationDTO> findAllByUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserIdNotFoundException(userId));
 
         List<Application> applications = applicationRepository.findAllByUser(user);
         return applicationMapper.toApplicationDTOs(applications);
@@ -582,4 +586,98 @@ public class ApplicationServiceImpl implements ApplicationService {
         return person;
     }
 
+    /**
+     * Save or update application
+     * This method handles deduplication of all related entities
+     */
+    @Transactional
+    @Override
+    public ApplicationDTO saveDraft(User user, ApplicationDTO draft) {
+        User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserIdNotFoundException(user.getId()));
+        return draftApplicationService.saveDraft(existingUser, draft);
+    }
+
+    /**
+     * Load application for editing
+     */
+    @Transactional
+    @Override
+    public ApplicationDTO loadDraft(Long userId, User principal) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserIdNotFoundException(userId));
+
+        Optional<Application> draftOpt = applicationRepository
+                .findByUserIdAndApplicationStatus(userId, ApplicationStatus.DRAFT);
+
+        if (draftOpt.isEmpty())
+            draftOpt = applicationRepository.findByUserIdAndApplicationStatus(
+                    userId, ApplicationStatus.RETURNED);
+
+        if (draftOpt.isEmpty()) {
+            Application newApp = Application.builder()
+                    .applicationNumber(generateApplicationNumber())
+                    .applicationStatus(ApplicationStatus.DRAFT)
+                    .notes("Created by: " + principal.getEmail())
+                    .build();
+            newApp.setUser(user);
+            newApp.setPerson(user.getPerson());
+            return applicationMapper.toApplicationDTO(newApp);
+        }
+        ApplicationDTO draft = applicationMapper.toApplicationDTO(draftOpt.get());
+
+        log.info("Application loaded: {}", draft.getApplicationNumber());
+        return draft;
+    }
+
+    /**
+     * Submit application
+     * This method handles deduplication of all related entities
+     */
+    @Transactional
+    @Override
+    public ApplicationDTO submitDraft(User user, ApplicationDTO draft, User principal) {
+        Application application;
+
+        // Get existing draft or create new one
+        if (draft.getId() != null) {
+            application = applicationRepository.findById(draft.getId())
+                    .orElseThrow(() -> new ApplicationIdNotFoundException(draft.getId()));
+
+            // Verify ownership
+            if (!application.getUser().getId().equals(user.getId())) {
+                throw new SecurityException("User does not own this application");
+            }
+
+            // Verify it's still editable
+            if (!application.isEditable()) {
+                throw new IllegalStateException("Application cannot be edited");
+            }
+
+            log.info("Updating application: {}", application.getApplicationNumber());
+            application.setNotes(draft.getNotes());
+            application.setAppUpdatedAt(LocalDateTime.now());
+        } else {
+            // Create new application
+            application = applicationRepository.findByUserIdAndApplicationStatus(
+                    user.getId(), ApplicationStatus.DRAFT
+            ).orElseGet(() -> {
+                Application newApp = Application.builder()
+                        .applicationNumber(generateApplicationNumber())
+                        .applicationStatus(ApplicationStatus.DRAFT)
+                        .notes("Created by: " + principal.getEmail())
+                        .build();
+                newApp.setUser(user);
+                newApp.addPerson(user.getPerson());
+                return newApp;
+            });
+
+            log.info("Creating a new application");
+        }
+        application.submit();
+        application = applicationRepository.save(application);
+
+        log.info("Application submitted successfully: {}", application.getApplicationNumber());
+        return applicationMapper.toApplicationDTO(application);
+    }
 }

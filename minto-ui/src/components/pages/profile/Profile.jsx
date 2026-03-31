@@ -40,7 +40,7 @@ const Profile = () => {
             setIsLoading(true)
             try {
                 if(user) {
-                    const response1 = await fetchWithAuth(`http://localhost:8080/api/v1/profile`, {
+                    const response1 = await fetchWithAuth(`/profile`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const Profile = () => {
         }
 
         const fetchApplications = async () => {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/dto/user`, {
+            const response = await fetchWithAuth(`/applications/dto/user`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,14 +91,14 @@ const Profile = () => {
         fetchData()
         
         return () => {
-            console.log("Cleaned up after fetchData in Profile!");
+            console.log("Cleaned up after fetch Profile!");
           }
     }, [user, fetchWithAuth])
 
     const handleSave = async () => {
         setSaving(true);
         try {
-            const response = await fetchWithAuth('http://localhost:8080/api/v1/profile', {
+            const response = await fetchWithAuth('/profile', {
                 method: 'PUT',
                 credentials: "include",
                 headers: { 

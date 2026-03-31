@@ -18,6 +18,7 @@ const EditApplication = () => {
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({ ...defaultApplication })
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     useEffect(() => {
         //console.log('selectedApplication:', selectedApplication)
@@ -43,7 +44,7 @@ const EditApplication = () => {
         //console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/draft`, {
+            const response = await fetchWithAuth(`/applications/draft`, {
                 method: 'PATCH',
                 credentials: "include",
                 headers: { 
@@ -60,6 +61,7 @@ const EditApplication = () => {
 
             const jsonData = await response.json();
             setFormData(jsonData)
+            setIsSubmitted(true)
             //console.log(jsonData);
             setMessage('Update successful')
             toast.success('Update successful')
@@ -81,7 +83,7 @@ const EditApplication = () => {
                         <div className="card-header text-white bg-primary">
                             <div className="d-flex">
                                 <Search size={26} className='text-white me-2' />
-                                <h4 className="card-title">Search Application</h4>
+                                <span className="fs-5" style={{ fontWeight: '700'}}>Search Application</span>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>
@@ -92,7 +94,7 @@ const EditApplication = () => {
                             <ApplicationsGrid 
                                 setSelectedApplication={setSelectedApplication} 
                                 setViewApplication={setViewApplication}  
-                                url={"http://localhost:8080/api/v1/applications/dto"}
+                                url={"/applications/dto"}
                             />
                                 
                         </div>
@@ -111,6 +113,8 @@ const EditApplication = () => {
                                 setFormData={setFormData}
                                 loading={loading}
                                 onSubmit={onSubmit}
+                                setSelectedApplication={setSelectedApplication}
+                                isSubmitted={isSubmitted}
                             />
                             </>
                         )

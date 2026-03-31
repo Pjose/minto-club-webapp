@@ -48,7 +48,7 @@ const ReviewMembers = () => {
         console.log('FormData:', formData)
 
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/api/v1/members/draft`, {
+            const response = await fetchWithAuth(`/members/draft`, {
                 method: 'POST',
                 credentials: "include",
                 headers: { 
@@ -87,7 +87,7 @@ const ReviewMembers = () => {
                         <div className="card-header bg-danger text-white">
                             <div className="d-flex">
                                 <Search size={26} className='text-white me-2' />
-                                <h4 className="card-title">Review Applications</h4>
+                                <span className="fs-5" style={{ fontWeight: '700'}}>Review Prospects</span>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>
@@ -98,9 +98,9 @@ const ReviewMembers = () => {
                             <ApplicationsGrid 
                                 setSelectedApplication={setSelectedApplication} 
                                 setViewApplication={setViewApplication}  
-                                url={"http://localhost:8080/api/v1/members/approved/inactive"}
+                                url={"/members/approved/inactive"}
                             />
-                                {/* "http://localhost:8080/api/v1/applications/status/in/approved,rejected,withdrawn" */}
+                                {/* "/applications/status/in/approved,rejected,withdrawn" */}
                         </div>
                     </div>
                     {

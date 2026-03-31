@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import { useAuth } from "./useAuth"
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const useFetch = () => {
     const { getUser, refreshJwt } = useAuth()
 
@@ -20,6 +22,7 @@ const useFetch = () => {
     };
 
     const fetchWithAuth = useCallback(async (url, options = {}) => {
+        let apiUrl = `${BASE_URL}` + url;
         let user = getUser()
         let accessToken = user?.accessToken
         
@@ -38,11 +41,11 @@ const useFetch = () => {
         }
 
         try {
-            let response = await fetch(url, { ...options, headers })
+            let response = await fetch(apiUrl, { ...options, headers })
             if(response.status === 401 ) { // Unauthorized, try refreshing token
                 accessToken = await refreshJwt()
                 headers.Authorization = `Bearer ${accessToken}`
-                response = await fetch(url, { ...options, headers })
+                response = await fetch(apiUrl, { ...options, headers })
                 return response
             } 
             return response

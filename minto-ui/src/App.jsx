@@ -38,6 +38,7 @@ import { useAuth } from "./components/hooks/useAuth";
 import AuthPage from "./components/pages/AuthPage";
 import DraftApplicationPage from "./components/pages/draft_app_pages/DraftApplicationPages";
 import StaffProfile from "./components/pages/profile/StaffProfile";
+import NewApplicationPage from "./components/pages/application_pages/NewApplicationPage";
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -83,6 +84,7 @@ const App = () => {
             <Route path="/applications" element={<ApplicationsPage />} />
 
             <Route path="/draft-application" element={<DraftApplicationPage />} />
+            <Route path="/new-application" element={<NewApplicationPage />} />
 
             <Route path="/view-all-members" element={<ViewAllMembersPage />} />
             <Route path="/view-member" element={<ViewMember />} />

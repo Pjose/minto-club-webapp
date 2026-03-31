@@ -54,7 +54,7 @@ const ApplicationsGrid = (props) => {
             let confirmation = window.confirm(`Are you sure you want to DELETE application with applicationId: ${id}?`)
             if(confirmation) {
                 try {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/${id}`, {
+                    const response = await fetchWithAuth(`/applications/${id}`, {
                         method: "DELETE",
                         credentials: "include",
                     })

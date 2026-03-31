@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_BASE_URL from "../../apiConfig";
 
 const UserRolesDropdown = () => {
     const [options, setOptions] = useState([]);
@@ -8,7 +9,7 @@ const UserRolesDropdown = () => {
     // Fetch enum values from the Java backend
     const fetchRoles = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/roles'); // Replace with your actual API endpoint
+            const response = await fetch(`${API_BASE_URL}/auth/roles`); // Replace with your actual API endpoint
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

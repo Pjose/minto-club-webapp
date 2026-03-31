@@ -33,7 +33,7 @@ const ViewPerson = (props) => {
             setIsLoading(true)
             try {
                 if((formData.id > 0) && user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/people/${formData.id}`, {
+                    const response = await fetchWithAuth(`/people/${formData.id}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

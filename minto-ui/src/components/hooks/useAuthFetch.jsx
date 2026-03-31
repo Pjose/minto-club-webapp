@@ -2,6 +2,7 @@
 import { useAuth } from './useAuth';
 import { useCallback, useRef } from 'react';
 import { parseJwt } from "../misc/Util"
+import API_BASE_URL from '../../apiConfig';
 
 const useAuthFetch = () => {
     const { getUser, logout } = useAuth();
@@ -22,7 +23,7 @@ const useAuthFetch = () => {
         try {
             isRefreshing.current = true;
             // API call to your refresh token endpoint
-            const response = await fetch('http://localhost:8080/api/v1/auth/refresh-token', {
+            const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,6 +58,7 @@ const useAuthFetch = () => {
     }, [user, logout]);
 
     const authFetch = useCallback(async (url, options = {}) => {
+        let apiUrl = API_BASE_URL + url;
         let accessToken = getUser().accessToken;
         let newToken;
         // 1. Attach the token to the request
@@ -66,7 +68,7 @@ const useAuthFetch = () => {
         };
         console.log('accessToken in authFetch: ' + accessToken)
         
-        let response = await fetch(url, options);
+        let response = await fetch(apiUrl, options);
 
         // 2. Handle token expiry (401 status)
         if (response.status === 401) {
@@ -84,7 +86,7 @@ const useAuthFetch = () => {
             }
             console.log('Retrying original request with new access token:' + newToken);
             options.headers.Authorization = `Bearer ${newToken}`; // Get the updated token
-            response = await fetch(url, options);
+            response = await fetch(apiUrl, options);
         }
 
         return response;

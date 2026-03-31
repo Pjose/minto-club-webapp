@@ -636,7 +636,7 @@ const ClubMembershipForm = () => {
         
         try {
             if(isAuthenticated) {
-                const response = await fetchWithAuth('http://localhost:8080/api/v1/applications', {
+                const response = await fetchWithAuth('/applications', {
                     method: 'POST',
                     credentials: "include",
                     headers: { 

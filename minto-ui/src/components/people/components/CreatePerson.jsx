@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
-import { EnvelopeAt, EnvelopeFill, Floppy, GeoAlt, PersonFill, Plus, Telephone, Trash, XCircleFill } from "react-bootstrap-icons"
+import { EnvelopeAt, EnvelopeFill, Floppy, GeoAlt, Person, PersonFill, Plus, Telephone, Trash, XCircleFill } from "react-bootstrap-icons"
 import countriesData from '../../../assets/data/countries.json';
 import useConfirmation from "../../hooks/useConfirmation";
 import ConfirmationModal from "../../misc/modals/ConfirmationModal";
@@ -51,7 +51,7 @@ const CreatePerson = () => {
         
         try {
             if(isAuthenticated) {
-                const response = await fetchWithAuth('http://localhost:8080/api/v1/people', {
+                const response = await fetchWithAuth('/people', {
                     method: 'POST',
                     credentials: "include",
                     headers: { 
@@ -119,18 +119,18 @@ const CreatePerson = () => {
     }
 
     const cancel = async () => {
-        const confirmation = await showConfirmation('Are you sure you want to cancel "Create New Person"?')
+        const confirmation = await showConfirmation('Are you sure you want to cancel creating a new person?')
         if(confirmation) {
             setFormData(DEFAULT_PERSON)
-            console.log("Create New Person Cancelled! The form is reset.")
-            toast.info('"Create New Person" -> Cancelled!', {
+            console.log("Create new person cancelled! The form is reset.")
+            toast.info('Create new person -> Cancelled!', {
                 description: "The form has been reset."
             })
             navigate('/login')
         } else {
-            console.log("Cancel Aborted! Continue with 'Create New Person'.")
+            console.log("Cancel aborted! Continue creating a new person'.")
             toast.info("Cancel -> Aborted!", {
-                description: 'Continue with "Create New Person" form.'
+                description: 'Continue creating a new person.'
             })
         }
     }
@@ -139,13 +139,13 @@ const CreatePerson = () => {
         <>
             {
                 isAuthenticated ? (
-                    <div className="container my-3 py-2 px-0">
+                    <div className="container my-3 px-0">
                         <form onSubmit={(e) => onSubmit(e)} action="" method="post">
-                            <div className='card mb-4 border border-info shadow'>
+                            <div className='card border border-info shadow'>
                                 <div className="card-header bg-info">
                                     <div className="d-flex">
-                                        <PersonFill size={30} className='me-2' />
-                                        <h3>Create Person</h3>
+                                        <Person size={30} className='me-2' />
+                                        <span className="fs-5" style={{ fontWeight: '700'}}>Create Person</span>
                                     </div>
                                 </div>
                                 <div className="card-body px-1 px-sm-3">

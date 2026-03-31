@@ -24,7 +24,7 @@ LoadingSpinner.propTypes = {
 }
 
 const s = {
-    loadingScreen: { minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'16px', color:'#6b7280' },
+    loadingScreen: { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'16px', color:'#6b7280' },
     spinner: { width:'40px', height:'40px', border:'4px solid #e5e7eb', borderTop:'4px solid #667eea', borderRadius:'50%', animation:'spin 1s linear infinite' },
 }
 

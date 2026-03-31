@@ -7,9 +7,12 @@ import com.pjdereva.minto.membership.dto.UserInfoDTO;
 import com.pjdereva.minto.membership.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 //import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -40,6 +43,14 @@ public interface UserMapper {
     GetUserDTO toGetUserDTO(User user);
 
     List<GetUserDTO> toGetUserDTOs(List<User> users);
+
+    //Page<GetUserDTO> toGetUsersPage(Page<User> usersPage);
+    default Page<GetUserDTO> toGetUserDTOsPage(Page<User> userPage) {
+        List<GetUserDTO> getUserDTOs = userPage.getContent().stream()
+                .map(this::toGetUserDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(getUserDTOs, userPage.getPageable(), userPage.getTotalElements());
+    }
 
     // For AddUserDTO
     @Mapping(target = "password", ignore = true)

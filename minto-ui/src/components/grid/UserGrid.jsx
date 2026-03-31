@@ -23,7 +23,7 @@ const UserGrid = (props) => {
             setIsLoading(true);
             try {
                 if(user) {
-                    const response = await fetchWithAuth("http://localhost:8080/api/v1/users", {
+                    const response = await fetchWithAuth("/users", {
                         method: 'GET',
                         credentials: "include",
                     }); 

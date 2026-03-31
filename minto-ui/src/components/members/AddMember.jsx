@@ -30,7 +30,7 @@ const AddMember = (props) => {
             setIsLoading(true)
             try {
                 if((formData.id > 0) && user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/${formData.id}`, {
+                    const response = await fetchWithAuth(`/applications/${formData.id}`, {
                         method: 'GET',
                         credentials: 'include',
                     })

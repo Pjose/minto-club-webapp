@@ -21,7 +21,7 @@ const ViewApplication = (props) => {
             setIsLoading(true)
             try {
                 if((formData.id > 0) && user) {
-                    const response = await fetchWithAuth(`http://localhost:8080/api/v1/applications/dto/id/${formData.id}`, {
+                    const response = await fetchWithAuth(`/applications/dto/id/${formData.id}`, {
                         method: 'GET',
                         credentials: 'include',
                     })

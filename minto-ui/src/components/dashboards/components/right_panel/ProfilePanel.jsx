@@ -22,7 +22,7 @@ const ProfilePanel = () => {
         setIsLoading(true)
         try {
             if(user) {
-                const response = await fetchWithAuth(`http://localhost:8080/api/v1/profile`, {
+                const response = await fetchWithAuth(`/profile`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

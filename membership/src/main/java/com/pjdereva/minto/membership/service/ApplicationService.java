@@ -1,5 +1,6 @@
 package com.pjdereva.minto.membership.service;
 
+import com.pjdereva.minto.membership.model.User;
 import com.pjdereva.minto.membership.model.transaction.Application;
 import com.pjdereva.minto.membership.model.transaction.ApplicationStatus;
 import com.pjdereva.minto.membership.dto.application.ApplicationDTO;
@@ -27,4 +28,8 @@ public interface ApplicationService {
     boolean existById(Long id);
     Application updateApplication(Application application);
     boolean deleteApplicationById(Long id);
+
+    ApplicationDTO saveDraft(User user, ApplicationDTO draft);
+    ApplicationDTO loadDraft(Long userId, User principal);
+    ApplicationDTO submitDraft(User user, ApplicationDTO draft, User principal);
 }
