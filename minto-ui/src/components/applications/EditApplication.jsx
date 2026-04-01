@@ -24,6 +24,11 @@ const EditApplication = () => {
         //console.log('selectedApplication:', selectedApplication)
         if(selectedApplication) {
             setFormData(selectedApplication)
+        } else {
+            setIsSubmitted(false)
+            setFormData({ ...defaultApplication })
+            setMessage('')
+            setLoading(false)
         }
 
         if(message) {
@@ -65,7 +70,7 @@ const EditApplication = () => {
             //console.log(jsonData);
             setMessage('Update successful')
             toast.success('Update successful')
-            navigate('/login')
+            //navigate('/login')
         } catch (error) {
             console.log(error)
             toast.error('Error updating application. ' + error.message)

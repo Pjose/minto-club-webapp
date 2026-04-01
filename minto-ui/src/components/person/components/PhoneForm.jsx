@@ -3,7 +3,7 @@ import { validators } from '../../validate/validators';
 import { GetCountries } from "react-country-state-city";
 import { useEffect, useState } from 'react';
 
-const PhonesForm = (props) => {
+const PhoneForm = (props) => {
     const { phone, index, updateContact, formErrors, setFormErrors } = props;
     const [countriesList, setCountriesList] = useState([]);
 
@@ -54,7 +54,7 @@ const PhonesForm = (props) => {
                         <span className="font-medium"><strong>Phone {index + 1}</strong></span>
                     </div>
                     <div className="form-group row">
-                        <div className="col-sm-6 mb-3">
+                        <div className="col-sm-5 mb-3">
                             <div className="form-floating">
                                 <select
                                     id={`phone-type-${index}`}
@@ -102,7 +102,7 @@ const PhonesForm = (props) => {
                                 <div className="text-danger mt-1">{formErrors.person.contact.phones[index].countryCode}</div>
                             )}
                         </div>
-                        <div className="col-sm-6 mb-3">
+                        <div className="col-sm-7 mb-3">
                             <div className="form-floating">
                                 <input
                                     id={`phone-number-${index}`}
@@ -127,7 +127,7 @@ const PhonesForm = (props) => {
     )
 }
 
-PhonesForm.propTypes = {
+PhoneForm.propTypes = {
     phone: PropTypes.object,
     index: PropTypes.number,
     updateContact: PropTypes.func,
@@ -135,4 +135,4 @@ PhonesForm.propTypes = {
     setFormErrors: PropTypes.func,
 }
 
-export default PhonesForm
+export default PhoneForm

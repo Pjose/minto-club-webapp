@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { validators } from '../../validate/validators';
 
-const EmailsForm = (props) => {
+const EmailForm = (props) => {
     const { email, index, updateContact, formErrors, setFormErrors } = props;
 
     const handleValidate = (index, field, value) => {   
@@ -57,7 +57,7 @@ const EmailsForm = (props) => {
                                 <div className="text-danger mt-1">{formErrors.person.contact.emails[index].emailType}</div>
                             )}
                         </div>
-                        <div className="col-sm-6 mb-3">
+                        <div className="col-sm-7 mb-3">
                             <div className="form-floating">
                                 <input
                                     id={`email-address-${index}`}
@@ -82,7 +82,7 @@ const EmailsForm = (props) => {
     )
 }
 
-EmailsForm.propTypes = {
+EmailForm.propTypes = {
     email: PropTypes.object,
     index: PropTypes.number,
     updateContact: PropTypes.func,
@@ -90,4 +90,4 @@ EmailsForm.propTypes = {
     setFormErrors: PropTypes.func,
 }
 
-export default EmailsForm
+export default EmailForm

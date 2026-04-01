@@ -11,7 +11,6 @@ import { useAuth } from "../hooks/useAuth"
 import useFetch from "../hooks/useFetch"
 import LoadingSpinner from "../loading/LoadingSpinner"
 import NewApplication from "./NewApplication"
-import ContactsCard from "../person/components/ContactsCard"
 
 const CreateApplication = () => {
     const { fetchWithAuth } = useFetch()
@@ -181,9 +180,6 @@ const CreateApplication = () => {
                                 <span className='d-none d-sm-flex text-white'>&nbsp;User</span>
                             </button>
                         </div>
-                        <ContactsCard 
-                            formData={formData}
-                        />
                         <div className="container">
                             { appExists && (
                                 <div 

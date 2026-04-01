@@ -2,23 +2,25 @@ import { EnvelopeAt, EnvelopeFill, GeoAlt, Plus, Telephone } from "react-bootstr
 import PropTypes from 'prop-types'
 import { useState } from "react";
 import { toast } from "sonner";
-import AddressesForm from "./AddressesForm";
-import EmailsForm from "./EmailsForm";
-import PhonesForm from "./PhonesForm";
+import AddressForm from "./AddressForm";
+import EmailsForm from "./EmailForm";
+import PhonesForm from "./PhoneForm";
 import { defaultApplication } from "../../../model/defaultApplication";
 import { defaultErrors } from "../../../model/defaultErrors";
 import useConfirmation from "../../hooks/useConfirmation";
 import ConfirmationModal from "../../misc/modals/ConfirmationModal";
+import EmailForm from "./EmailForm";
+import PhoneForm from "./PhoneForm";
 
-const ContactsCard = (props) => {
-    //const { formData } = props
+const ContactCard = (props) => {
+    const { formData, updateContact, addContact, removeContact, formErrors, setFormErrors } = props
     //const [addresses, setAddresses] = useState([{}]);
     const [addressActiveTab, setAddressActiveTab] = useState(0);
     const [emailActiveTab, setEmailActiveTab] = useState(0);
     const [phoneActiveTab, setPhoneActiveTab] = useState(0);
-    const [formData, setFormData] = useState({ ...defaultApplication })
-    const [formErrors, setFormErrors] = useState({ ...defaultErrors })
-    const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
+    //const [formData, setFormData] = useState({ ...defaultApplication });
+    //const [formErrors, setFormErrors] = useState({ ...defaultErrors });
+    const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation();
 
     const deleteContact = async (contactType, index) => {
         const typeStr = contactType === 'addresses' ? 'address' 
@@ -64,47 +66,8 @@ const ContactsCard = (props) => {
         setPhoneActiveTab(Math.min(phoneActiveTab, next.length - 1));
     };
 
-    //For testing purposes
-    let testFormData = { ...defaultApplication }
-
-    const addAddress = () => { 
-        setAddresses((p) => [...p, {addressType: '', street: '', city: '', state: '', zipcode: '', country: ''}]); 
-        setActiveTab(formData.person.contact.addresses.length); 
-    };
-
-    const addContact = (contactType) => {
-        //if(validateStep(currentStep)) {
-            const newContact = contactType === 'addresses' 
-            ? { addressType: "", street: "", city: "", state: "", zipcode: "", country: "" }
-            : contactType === 'emails'
-            ? { emailType: "", address: "" }
-            : { phoneType: "", countryCode: "", number: "" };
-
-            setFormData(prev => ({
-                ...prev,
-                person: {
-                    ...prev.person,
-                    contact: {
-                        ...prev.person.contact,
-                        [contactType]: [...prev.person.contact[contactType], newContact]
-                    }
-                }
-            }));
-
-            setFormErrors(prev => ({
-                ...prev,
-                person: {
-                    ...prev.person,
-                    contact: {
-                        ...prev.person.contact,
-                        [contactType]: [...prev.person.contact[contactType], newContact]
-                    }
-                }
-            }));
-        /* } else {
-            console.log('Invalid form! Please correct the errors and try again.')
-            toast.error('Invalid form! Please correct the errors and try again.')
-        } */
+    const addNewContact = (contactType) => {
+        addContact(contactType);
         if(contactType === 'addresses') {
             setAddressActiveTab(formData.person.contact.addresses.length);
         } else if(contactType === 'emails') {
@@ -113,74 +76,6 @@ const ContactsCard = (props) => {
             setPhoneActiveTab(formData.person.contact.phones.length);
         }
     };
-
-    const removeContact = (type, index) => {
-        setFormData(prev => ({
-            ...prev,
-            person: {
-                ...prev.person,
-                contact: {
-                    ...prev.person.contact,
-                    [type]: prev.person.contact[type].filter((_, i) => i !== index)
-                }
-            }
-        }));
-
-        setFormErrors(prev => ({ 
-            ...prev,
-            person: { 
-                ...prev.person,
-                contact: { 
-                    ...prev.person.contact,
-                    [type]: prev.person.contact[type].filter((_, i) => i !== index)
-                }
-            }
-        }));
-    };
-
-    const updateContact = (type, index, field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            person: {
-                ...prev.person,
-                contact: {
-                ...prev.person.contact,
-                [type]: prev.person.contact[type].map((contact, i) => 
-                    i === index ? { ...contact, [field]: value } : contact
-                )
-                }
-            }
-        }))
-
-        setFormErrors(prev => ({ ...prev,
-            person: { ...prev.person,
-                contact: { ...prev.person.contact,
-                    [type]: prev.person.contact[type].map((contact, i) => 
-                        i === index ? { ...contact, [field]: "" } : contact
-                    )
-                }
-            }
-        }));
-    }
-
-    const updateMainPerson = (field, value) => {
-        setFormData(prev => ({ ...prev,
-            person: {
-                ...prev.person, [field]: value
-            }
-        }))
-
-        setFormErrors(prev => ({ ...prev, 
-            person: {
-                ...prev.person, [field]: ""
-            }
-        }))
-    }
-
-    const updateFormData = (field, value) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-        setFormErrors(prev => ({ ...prev, [field]: "" }));
-    }
 
   return (
     <>
@@ -200,9 +95,8 @@ const ContactsCard = (props) => {
                     </div>
                     <button 
                         type="button" 
-                        className="d-flex btn text-center" 
-                        onClick={() => addContact('addresses')}
-                        style={{ backgroundColor: 'black' }}
+                        className="d-flex btn btn-dark text-center" 
+                        onClick={() => addNewContact('addresses')}
                         title={`Add Address`}
                     >
                         <Plus className="mb-1" color="white" size={21} />
@@ -227,7 +121,7 @@ const ContactsCard = (props) => {
 
                 {/* ── Addresses Form area ── */}
                 <div>
-                    <AddressesForm 
+                    <AddressForm 
                         key={addressActiveTab}
                         address={formData.person.contact.addresses[addressActiveTab]}
                         index={addressActiveTab}
@@ -245,9 +139,8 @@ const ContactsCard = (props) => {
                     </div>
                     <button 
                         type="button" 
-                        className="d-flex btn text-center" 
-                        onClick={() => addContact('emails')}
-                        style={{ backgroundColor: 'black' }}
+                        className="d-flex btn btn-dark text-center" 
+                        onClick={() => addNewContact('emails')}
                         title={`Add Email`}
                     >
                         <Plus className="mb-1" color="white" size={21} />
@@ -272,7 +165,7 @@ const ContactsCard = (props) => {
                 
                 {/* ── Emails Form area ── */}
                 <div>
-                    <EmailsForm
+                    <EmailForm
                         key={emailActiveTab}
                         email={formData.person.contact.emails[emailActiveTab]}
                         index={emailActiveTab}
@@ -290,9 +183,8 @@ const ContactsCard = (props) => {
                     </div>
                     <button 
                         type="button" 
-                        className="d-flex btn text-center" 
-                        onClick={() => addContact('phones')}
-                        style={{ backgroundColor: 'black' }}
+                        className="d-flex btn btn-dark text-center" 
+                        onClick={() => addNewContact('phones')}
                         title={`Add Phone`}
                     >
                         <Plus className="mb-1" color="white" size={21} />
@@ -317,7 +209,7 @@ const ContactsCard = (props) => {
                 
                 {/* ── Phones Form area ── */}
                 <div>
-                    <PhonesForm
+                    <PhoneForm
                         key={phoneActiveTab}
                         phone={formData.person.contact.phones[phoneActiveTab]}
                         index={phoneActiveTab}
@@ -339,7 +231,7 @@ const ContactsCard = (props) => {
   )
 }
 
-ContactsCard.propTypes = {
+ContactCard.propTypes = {
     formData: PropTypes.object,
 }
 
@@ -348,6 +240,7 @@ const TOKEN = {
     sand:     "#faf8f5",
     white:    "#ffffff",
     stone:    "#f0ede8",
+    light:    "#f8f9fA",
     border:   "#e2ddd6",
     borderHi: "#c8c0b4",
     ink:      "#1c1917",
@@ -373,7 +266,7 @@ const S = {
         border: `1px solid ${active ? TOKEN.border : "transparent"}`,
         borderBottom: active ? `1px solid ${TOKEN.white}` : "1px solid transparent",
         borderRadius: ".5rem .5rem 0 0",
-        background: active ? TOKEN.white : "transparent",
+        background: active ? TOKEN.light : "transparent",
         marginBottom: -1,
         transition: "all .15s ease",
     }),
@@ -395,7 +288,7 @@ const S = {
     }),
     tabX: {
         background: "none", border: "none",
-        color: TOKEN.ink3, fontSize: 15,
+        color: TOKEN.ink3, fontSize: 15, fontWeight: 700,
         padding: "4px 8px 4px 2px",
         cursor: "pointer", lineHeight: 1,
         transition: "color .15s ease",
@@ -406,4 +299,4 @@ const S = {
     },
 }
 
-export default ContactsCard
+export default ContactCard

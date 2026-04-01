@@ -1,8 +1,8 @@
 import { PersonFill } from "react-bootstrap-icons"
 import PropTypes from 'prop-types'
 import Contact from "./Contact"
-import { useState } from "react";
 import { validators } from "../../validate/validators";
+import ContactCard from "../components/ContactCard";
 
 const PersonalInfoForm = (props) => {
     const { formData, updateFormData, updateMainPerson, updateContact, addContact, 
@@ -179,7 +179,7 @@ const PersonalInfoForm = (props) => {
                 </div>
             </div>
 
-            <Contact 
+            <ContactCard
                 formData={formData} 
                 updateContact={updateContact} 
                 addContact={addContact} 

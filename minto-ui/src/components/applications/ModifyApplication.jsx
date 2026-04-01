@@ -456,6 +456,7 @@ const ModifyApplication = (props) => {
     }
 
     const nextStep = () => {
+        console.log('formErrors:', formErrors);
         if(validateStep(currentStep)) {
             if (currentStep < steps.length) {
                 setCurrentStep(currentStep + 1);
