@@ -2,18 +2,16 @@ import { Suspense, useState } from "react"
 import LoadingSpinner from "../loading/LoadingSpinner"
 import { ButtonGroup, ToggleButton } from "react-bootstrap"
 import EditMember from "./EditMember"
-import CreateMember from "../membership/CreateMember"
-import ReviewMembers from "./ReviewMembers"
 import ProcessMembers from "./ProcessMembers"
+import CreateMember from "./CreateMember"
 
 const MembersMain = () => {
     const [radioValue, setRadioValue] = useState('1')
             
     const memberRadios = [
-        { name: 'Search/Edit', value: '1' },
-        { name: 'Create', value: '2' },
-        { name: 'Review', value: '3' },
-        { name: 'Process', value: '4'},
+        { name: 'Search/ Edit', value: '1' },
+        { name: 'Create Member', value: '2' },
+        { name: 'Process Members', value: '3'},
     ]
 
     const renderComponent = () => {
@@ -27,16 +25,10 @@ const MembersMain = () => {
             case '2':
                 return (
                     <Suspense fallback={<LoadingSpinner caption={'Create Member'} clsTextColor={"text-danger"} />}>
-                        <CreateMember title={'Create Member'} headerBgColor={'bg-danger'} cardBorderColor={'border-danger'} />
+                        <CreateMember />
                     </Suspense>
                 )
             case '3':
-                return (
-                    <Suspense fallback={<LoadingSpinner caption={'Review Member'} clsTextColor={"text-danger"} />}>
-                        <ReviewMembers />
-                    </Suspense>
-                )
-            case '4':
                 return (
                     <Suspense fallback={<LoadingSpinner caption={'Process Members'} clsTextColor={"text-danger"} />}>
                         <ProcessMembers />

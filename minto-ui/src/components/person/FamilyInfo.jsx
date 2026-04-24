@@ -12,7 +12,7 @@ const FamilyInfo = (props) => {
                 <div className="card-header text-white" style={{ backgroundColor: 'crimson'}}>
                     <div className="d-flex">
                         <Heart size={28} className='me-2 text-white' />
-                        <h3 className='text-bold text-white'>Family Information</h3>
+                        <span className='h5 fw-semibold text-white'>Family Information</span>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">

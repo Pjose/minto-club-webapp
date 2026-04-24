@@ -10,7 +10,7 @@ const BeneficiariesForm = (props) => {
                 <div className="card-header text-white" style={{ backgroundColor: 'saddlebrown' }}>
                     <div className="d-flex">
                         <PersonHearts size={28} className='me-2 text-white' />
-                        <h3 className='text-bold text-white'>Beneficiaries</h3>
+                        <span className='h5 fw-semibold text-white'>Beneficiaries</span>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">
@@ -20,12 +20,12 @@ const BeneficiariesForm = (props) => {
                         <div className="d-flex justify-content-between p-2 mt-2 mb-4">
                             <div className="d-flex items-center">
                                 <PersonHearts size={32} className='mt-1 mx-1' style={{ color: 'saddlebrown' }} />
-                                <h3 
-                                    className="text-lg font-semibold"
+                                <span 
+                                    className="h5 ms-1 mt-1"
                                     style={{ color: 'saddlebrown' }}
                                 >
                                     <strong>Beneficiaries</strong>
-                                </h3>
+                                </span>
                             </div>
                             <button 
                                 type="button" 

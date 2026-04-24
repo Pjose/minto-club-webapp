@@ -70,7 +70,7 @@ const ViewMember = (props) => {
                 ) : (
                     isAuthenticated && (
                         <>
-                            <div className='card mb-3'>
+                            <div className='card my-3'>
                                 <div className="card-header bg-danger">
                                     <div className="d-flex text-white">
                                         <PersonLinesFill size={30} className='me-2' />

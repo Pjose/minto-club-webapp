@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react"
-import { Search } from "react-bootstrap-icons"
+import { PersonBadge, PersonGear, Search } from "react-bootstrap-icons"
 import { toast } from "sonner"
 import ViewApplication from "../applications/ViewApplication"
 import ApplicationsGrid from "../grid/ApplicationsGrid"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
 import useFetch from "../hooks/useFetch"
-//import AddMember from "./AddMember"
 import { defaultMember } from "../../model/defaultMember"
 import ActivateMember from "./ActivateMember"
 
-const ReviewMembers = () => {
+const CreateMember = () => {
     const navigate = useNavigate()
     const { fetchWithAuth } = useFetch()
     const { isAuthenticated } = useAuth()
@@ -86,8 +85,8 @@ const ReviewMembers = () => {
                     <div className="card mb-4 border border-danger shadow">
                         <div className="card-header bg-danger text-white">
                             <div className="d-flex">
-                                <Search size={26} className='text-white me-2' />
-                                <span className="fs-5" style={{ fontWeight: '700'}}>Review Prospects</span>
+                                <PersonBadge size={26} className='text-white me-2' />
+                                <span className="fs-5" style={{ fontWeight: '700'}}>Create Member</span>
                             </div>
                         </div>
                         <div className='card-body px-1 px-sm-3'>
@@ -111,25 +110,15 @@ const ReviewMembers = () => {
                     { 
                         selectedApplication && !viewApplication && (
                             <>
-                            {/* console.log('formData:', formData) */}
-                            { <ActivateMember 
-                                formData={formData} 
-                                setFormData={setFormData}
-                                loading={loading}
-                                onSubmit={onSubmit}
-                             /> }
-                            {/* <AddMember 
-                                formData={formData} 
-                                setFormData={setFormData}
-                                loading={loading}
-                                onSubmit={onSubmit}
-                            /> */}
-                            {/*<ModifyApplication
-                                formData={formData}
-                                setFormData={setFormData}
-                                loading={loading}
-                                onSubmit={onSubmit}
-                            />*/}
+                                {/* console.log('formData:', formData) */}
+                                { 
+                                    <ActivateMember 
+                                        formData={formData} 
+                                        setFormData={setFormData}
+                                        loading={loading}
+                                        onSubmit={onSubmit}
+                                    /> 
+                                }
                             </>
                         )
                     }
@@ -144,4 +133,4 @@ const ReviewMembers = () => {
     )
 }
 
-export default ReviewMembers
+export default CreateMember

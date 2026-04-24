@@ -815,8 +815,8 @@ const ModifyApplication = (props) => {
     <>
         <div className='card my-3 border border-primary shadow-lg'>
             <div className='card-header text-white position-sticky bg-primary'  style={{ top: '56px', zIndex: 100 }}>
-                <h5 className="card-title">Edit Application</h5>
-                <span>App No.: {formData.applicationNumber}</span>
+                <p className="card-title h5 fw-semibold text-white">Edit Application</p>
+                <span className='h6'>App No.: {formData.applicationNumber}</span>
             </div>
             <div className='card-body px-1 px-sm-3'>
                 {/* Progress Bar */}

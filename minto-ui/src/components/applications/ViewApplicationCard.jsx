@@ -20,7 +20,7 @@ const ViewApplicationCard = (props) => {
                 <div className="card-header text-white" style={{ backgroundColor: priColor }}>
                     <div className="d-flex text-white">
                         <HeaderIconComponent size={28} className='mt-2 me-2' />
-                        <h3 className='mt-1 text-bold text-white'>{ headerTitle }</h3>
+                        <span className='fs-5 mt-1 fw-semibold text-white'>{ headerTitle }</span>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">
@@ -35,8 +35,8 @@ const ViewApplicationCard = (props) => {
                         </div>
                     </div>
                     {/* Application Details */}
-                    <h5 className="text-primary mb-3"><strong>Application Details</strong></h5>
-                    <div className="form-group row row-cols-auto">
+                    <span className="h5 fw-semibold text-primary">Application Details</span>
+                    <div className="form-group row row-cols-auto mt-2">
                         <div className="col-6 col-xxl-3">
                             <div className="form-floating mb-3">
                                 <input 
@@ -151,7 +151,9 @@ const ViewApplicationCard = (props) => {
                     </div>
                     {
                         showContact && (
-                            <ViewContactCard contact={formData.person.contact} />
+                            <>
+                                <ViewContactCard contact={formData.person.contact} />
+                            </>
                         )
                     }
                 </div>

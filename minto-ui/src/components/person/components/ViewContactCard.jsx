@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { EnvelopeAt, EnvelopeFill, GeoAlt, Telephone } from 'react-bootstrap-icons'
+import ContactCard from './ContactCard'
 
 const DEFAULT_CONTACT = {
     id: 0,
@@ -25,20 +26,20 @@ const ViewContactCard = (props) => {
             <div className="card mb-3">
                 <div className="card-header bg-light">
                     <div className="d-flex text-primary">
-                        <EnvelopeFill size={24} className='me-2'/>
-                        <h5 className='text-bold'>Contact Details</h5>
+                        <EnvelopeFill size={24} className='me-2 mt-1'/>
+                        <span className='fs-5 fw-semibold'>Contact Details</span>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">
                     <div className="container px-1 px-sm-3">
                         <div className="d-flex items-center mb-3">
                             <GeoAlt size={22} className='mt-1 mx-1' />
-                            <h5 className="text-lg font-semibold"><strong>Addresses</strong></h5>
+                            <span className="fs-5 fw-semibold">Addresses</span>
                         </div>
                         { viewContactData.addresses.map((address, index) => (
                             <div key={index} className="px-1 px-md-3 pt-2 mb-3 border bg-light">
                                 <div className="d-flex justify-content-between mb-3">
-                                    <h5 className="text-primary">Address: {index + 1}</h5>
+                                    <span className="fs-6 fw-bold text-primary">Address: {index + 1}</span>
                                 </div>
                                 <div className="form-group row row-cols-auto">
                                     <div className="col-12 col-xxl-3 mb-3">
@@ -130,12 +131,12 @@ const ViewContactCard = (props) => {
                         
                         <div className="d-flex items-center my-3 pt-2">
                             <EnvelopeAt size={22} className='mt-1 mx-1' />
-                            <h5 className="text-lg font-semibold"><strong>Emails</strong></h5>
+                            <span className="fs-5 fw-semibold">Emails</span>
                         </div>
                         { viewContactData.emails.map((email, index) => (
                             <div key={index}  className="px-1 px-md-3 pt-2 mb-3 border bg-light">
                                 <div className="d-flex justify-content-between mb-3">
-                                    <h5 className="text-primary">Email: {index + 1}</h5>
+                                    <span className="fs-6 fw-bold text-primary">Email: {index + 1}</span>
                                 </div>
                                 <div className="form-group row row-cols-auto">
                                     <div className="col-12 col-sm-4 mb-3">
@@ -170,12 +171,12 @@ const ViewContactCard = (props) => {
                         
                         <div className="d-flex items-center my-3 pt-1">
                             <Telephone size={22} className='mt-1 mx-1' />
-                            <h5 className="text-lg font-semibold"><strong>Phones</strong></h5>
+                            <span className="fs-5 fw-semibold">Phones</span>
                         </div>
                         { viewContactData.phones.map((phone, index) => (
                             <div key={index}  className="px-1 px-md-3 pt-2 mb-3 border bg-light">
                                 <div className="d-flex justify-content-between mb-3">
-                                    <h5 className="text-primary">Phone: {index + 1}</h5>
+                                    <span className="fs-6 fw-bold text-primary">Phone: {index + 1}</span>
                                 </div>
                                 <div className="form-group row row-cols-auto">
                                     <div className="col-12 col-sm-6 col-xl-4 mb-3">

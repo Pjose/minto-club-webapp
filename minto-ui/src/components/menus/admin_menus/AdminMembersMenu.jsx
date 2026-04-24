@@ -22,8 +22,8 @@ const AdminMembersMenu = () => {
                     <Dropdown.Item as={Link} to="/edit-member" title="Search / Edit Member">
                         Search / Edit Member
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/edit-member" title="Process Member">
-                        Process Member
+                    <Dropdown.Item as={Link} to="/process-members" title="Process Members">
+                        Process Members
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item as={Link} to="/member-profile" title="Profile">

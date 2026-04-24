@@ -16,7 +16,7 @@ const MemberPersonInfoCard = (props) => {
                 <div className="card-header text-white" style={{ backgroundColor: priColor }}>
                     <div className="d-flex">
                         <HeaderIconComponent size={22} className='mt-2 me-2 text-white' />
-                        <h4 className='mt-1 text-bold text-white'>{ headerTitle }</h4>
+                        <span className='h5 mt-1 fw-semibold text-white'>{ headerTitle }</span>
                         <button type="button"
                             onClick={() => setIsOpen(!isOpen)}
                             className="btn text-white ms-auto"
@@ -43,12 +43,12 @@ const MemberPersonInfoCard = (props) => {
                             <div className="d-flex justify-content-between p-2 mt-2 mb-2">
                                 <div className="d-flex items-center">
                                     <BodyIconComponent size={26} className='mt-1 mx-1' style={{ color: priColor }} />
-                                    <h4 
-                                        className="text-lg font-semibold"
+                                    <span 
+                                        className="h5 font-semibold ms-1 mt-1"
                                         style={{ color: priColor }}
                                     >
                                         <strong>{ personTypeMultiple }</strong>
-                                    </h4>
+                                    </span>
                                 </div>
                             </div>
                         

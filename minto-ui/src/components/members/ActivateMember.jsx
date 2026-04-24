@@ -17,7 +17,7 @@ const ActivateMember = (props) => {
         <>
             { isAuthenticated && (
                 <>
-                    <div className='card mb-3 border border-danger shadow'>
+                    <div className='card my-3 border border-danger shadow'>
                         <div className="card-header bg-danger text-white">
                             <div className="d-flex text-white">
                                 <CardChecklist size={30} className='me-2' />

@@ -49,9 +49,9 @@ const PhoneForm = (props) => {
     return (
         <>
             { phone && (
-                <div key={index} className="border rounded-lg p-1 p-sm-4 mb-4 bg-light">
+                <div key={index} className="border rounded-bottom-3 p-1 p-sm-4 mb-4 bg-light">
                     <div className='mb-2'>
-                        <span className="font-medium"><strong>Phone {index + 1}</strong></span>
+                        <span className="font-medium text-primary"><strong>Phone {index + 1}</strong></span>
                     </div>
                     <div className="form-group row">
                         <div className="col-sm-5 mb-3">
@@ -61,7 +61,7 @@ const PhoneForm = (props) => {
                                     value={phone.phoneType || ''}
                                     onBlur={(e) => handleValidate(index, 'phoneType', e.target.value)}
                                     onChange={(e) => updateContact('phones', index, 'phoneType', e.target.value)}
-                                    className={`form-select ${formErrors.person.contact.phones[index].phoneType ? 'is-invalid' : ''}`}
+                                    className={`form-select ${formErrors.person.contact.phones[index]?.phoneType ? 'is-invalid' : ''}`}
                                     required
                                 >
                                     <option value="">-- Select --</option>
@@ -73,7 +73,7 @@ const PhoneForm = (props) => {
                                 <label htmlFor={`phone-type-${index}`}>Type*</label>
                             </div>
                             { formErrors.person.contact.phones[index]?.phoneType && (
-                                <div className="text-danger mt-1">{formErrors.person.contact.phones[index].phoneType}</div>
+                                <div className="text-danger mt-1">{formErrors.person.contact.phones[index]?.phoneType}</div>
                             )}
                         </div>
                     </div>
@@ -82,7 +82,7 @@ const PhoneForm = (props) => {
                             <div className="form-floating">
                                 <select 
                                     id={`phone-country-code-${index}`}
-                                    className={`form-select ${formErrors.person.contact.phones[index].countryCode ? 'is-invalid' : ''}`}
+                                    className={`form-select ${formErrors.person.contact.phones[index]?.countryCode ? 'is-invalid' : ''}`}
                                     name={`phone-country-code-${index}`}
                                     value={phone.countryCode || ''}
                                     onBlur={(e) => handleValidate(index, 'countryCode', e.target.value)}
@@ -99,7 +99,7 @@ const PhoneForm = (props) => {
                                 <label htmlFor={`phone-country-code-${index}`}>Country Code*</label>
                             </div>
                             { formErrors.person.contact.phones[index]?.countryCode && (
-                                <div className="text-danger mt-1">{formErrors.person.contact.phones[index].countryCode}</div>
+                                <div className="text-danger mt-1">{formErrors.person.contact.phones[index]?.countryCode}</div>
                             )}
                         </div>
                         <div className="col-sm-7 mb-3">
@@ -111,13 +111,13 @@ const PhoneForm = (props) => {
                                     value={phone.number || ''}
                                     onBlur={(e) => handleValidate(index, 'number', e.target.value)}
                                     onChange={(e) => updateContact('phones', index, 'number', e.target.value)}
-                                    className={`form-control ${formErrors.person.contact.phones[index].number ? 'is-invalid' : ''}`}
+                                    className={`form-control ${formErrors.person.contact.phones[index]?.number ? 'is-invalid' : ''}`}
                                     required
                                 />
                                 <label htmlFor={`phone-number-${index}`}>Phone Number*</label>
                             </div>
                             { formErrors.person.contact.phones[index]?.number && (
-                                <div className="text-danger mt-1">{formErrors.person.contact.phones[index].number}</div>
+                                <div className="text-danger mt-1">{formErrors.person.contact.phones[index]?.number}</div>
                             )}
                         </div>
                     </div>

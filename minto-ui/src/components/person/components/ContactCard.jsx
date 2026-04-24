@@ -11,6 +11,9 @@ import useConfirmation from "../../hooks/useConfirmation";
 import ConfirmationModal from "../../misc/modals/ConfirmationModal";
 import EmailForm from "./EmailForm";
 import PhoneForm from "./PhoneForm";
+import { Contact } from "lucide-react";
+import ContactTab from "./ContactTab";
+import ContactBar from "./ContactBar";
 
 const ContactCard = (props) => {
     const { formData, updateContact, addContact, removeContact, formErrors, setFormErrors } = props
@@ -79,145 +82,89 @@ const ContactCard = (props) => {
 
   return (
     <>
+        <style>{KEYFRAMES}</style>
         <div className='card'>
             <div className="card-header bg-light">
                 <div className="d-flex">
                     <EnvelopeFill size={28} className='me-2 text-primary' />
-                    <span className="fs-5 text-primary" style={{ fontWeight: '700'}}>Contact Details</span>
+                    <span className="fs-5 fw-semibold text-primary">Contact Details</span>
                 </div>
             </div>
             <div className="card-body px-1 px-sm-3">
-                {/* ── Section bar: Addresses ── */}
-                <div className="d-flex justify-content-between p-2 mt-2 mb-4">
-                    <div className="d-flex items-center">
-                        <GeoAlt size={22} className='mt-1 mx-1' />
-                        <span className="fs-5" style={{ fontWeight: '600'}}>Addresses</span>
-                    </div>
-                    <button 
-                        type="button" 
-                        className="d-flex btn btn-dark text-center" 
-                        onClick={() => addNewContact('addresses')}
-                        title={`Add Address`}
-                    >
-                        <Plus className="mb-1" color="white" size={21} />
-                        <span className='d-none d-sm-flex text-white'>Address</span>
-                    </button>
-                </div>
+                {/* ── Addresses Section ── */}
+                <ContactBar
+                    title="Addresses"
+                    subTitle="Address"
+                    arrayName="addresses"
+                    icon={GeoAlt}
+                    addNewContact={addNewContact}
+                />
+                <ContactTab
+                    id={`address-tab-${addressActiveTab}`}
+                    title="Address"
+                    arrayName="addresses"
+                    list={formData.person.contact.addresses}
+                    activeTab={addressActiveTab}
+                    setActiveTab={setAddressActiveTab}
+                    deleteContact={deleteContact}
+                />
+                <AddressForm 
+                    address={formData.person.contact.addresses[addressActiveTab]}
+                    index={addressActiveTab}
+                    updateContact={updateContact} 
+                    formErrors={formErrors}
+                    setFormErrors={setFormErrors}
+                />
 
-                {/* ── Tabs ── */}
-                <div style={S.tabsWrap}>
-                    {formData.person.contact.addresses.map((_, i) => (
-                        <div key={i} style={S.tab(addressActiveTab === i)}>
-                            <button type="button" style={S.tabBtn(addressActiveTab === i)} onClick={() => setAddressActiveTab(i)}>
-                                <span style={S.tabDot(addressActiveTab === i)} />
-                                Address {i + 1}
-                            </button>
-                            {formData.person.contact.addresses.length > 0 && (
-                                <button type="button" className="tab-x-hover" style={S.tabX} onClick={() => deleteContact('addresses', i)}>×</button>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                {/* ── Emails Section ── */}
+                <ContactBar
+                    title="Emails"
+                    subTitle="Email"
+                    arrayName="emails"
+                    icon={EnvelopeAt}
+                    addNewContact={addNewContact}
+                />
+                <ContactTab
+                    id={`email-tab-${emailActiveTab}`}
+                    title="Email"
+                    arrayName="emails"
+                    list={formData.person.contact.emails}
+                    activeTab={emailActiveTab}
+                    setActiveTab={setEmailActiveTab}
+                    deleteContact={deleteContact}
+                />
+                <EmailForm
+                    email={formData.person.contact.emails[emailActiveTab]}
+                    index={emailActiveTab}
+                    updateContact={updateContact} 
+                    formErrors={formErrors}
+                    setFormErrors={setFormErrors}
+                />
 
-                {/* ── Addresses Form area ── */}
-                <div>
-                    <AddressForm 
-                        key={addressActiveTab}
-                        address={formData.person.contact.addresses[addressActiveTab]}
-                        index={addressActiveTab}
-                        updateContact={updateContact} 
-                        formErrors={formErrors}
-                        setFormErrors={setFormErrors}
-                    />
-                </div>
-
-                {/* ── Section bar: Emails ── */}
-                <div className="d-flex justify-content-between p-2 mt-2 mb-4">
-                    <div className="d-flex items-center">
-                        <EnvelopeAt size={22} className='mt-1 mx-1' />
-                        <span className="fs-5" style={{ fontWeight: '600'}}>Emails</span>
-                    </div>
-                    <button 
-                        type="button" 
-                        className="d-flex btn btn-dark text-center" 
-                        onClick={() => addNewContact('emails')}
-                        title={`Add Email`}
-                    >
-                        <Plus className="mb-1" color="white" size={21} />
-                        <span className='d-none d-sm-flex text-white'>Email</span>
-                    </button>
-                </div>
-
-                {/* ── Tabs ── */}
-                <div style={S.tabsWrap}>
-                    {formData.person.contact.emails.map((_, i) => (
-                        <div key={i} style={S.tab(emailActiveTab === i)}>
-                            <button type="button" style={S.tabBtn(emailActiveTab === i)} onClick={() => setEmailActiveTab(i)}>
-                                <span style={S.tabDot(emailActiveTab === i)} />
-                                Email {i + 1}
-                            </button>
-                            {formData.person.contact.emails.length > 0 && (
-                                <button type="button" className="tab-x-hover" style={S.tabX} onClick={() => deleteContact('emails', i)}>×</button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-                
-                {/* ── Emails Form area ── */}
-                <div>
-                    <EmailForm
-                        key={emailActiveTab}
-                        email={formData.person.contact.emails[emailActiveTab]}
-                        index={emailActiveTab}
-                        updateContact={updateContact} 
-                        formErrors={formErrors}
-                        setFormErrors={setFormErrors}
-                    />
-                </div>
-
-                {/* ── Section bar: Phones ── */}
-                <div className="d-flex justify-content-between p-2 mt-2 mb-4">
-                    <div className="d-flex items-center">
-                        <Telephone size={22} className='mt-1 mx-1' />
-                        <span className="fs-5" style={{ fontWeight: '600'}}>Phones</span>
-                    </div>
-                    <button 
-                        type="button" 
-                        className="d-flex btn btn-dark text-center" 
-                        onClick={() => addNewContact('phones')}
-                        title={`Add Phone`}
-                    >
-                        <Plus className="mb-1" color="white" size={21} />
-                        <span className='d-none d-sm-flex text-white'>Phone</span>
-                    </button>
-                </div>
-
-                {/* ── Tabs ── */}
-                <div style={S.tabsWrap}>
-                    {formData.person.contact.phones.map((_, i) => (
-                        <div key={i} style={S.tab(phoneActiveTab === i)}>
-                            <button type="button" style={S.tabBtn(phoneActiveTab === i)} onClick={() => setPhoneActiveTab(i)}>
-                                <span style={S.tabDot(phoneActiveTab === i)} />
-                                Phone {i + 1}
-                            </button>
-                            {formData.person.contact.phones.length > 0 && (
-                                <button type="button" className="tab-x-hover" style={S.tabX} onClick={() => deleteContact('phones', i)}>×</button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-                
-                {/* ── Phones Form area ── */}
-                <div>
-                    <PhoneForm
-                        key={phoneActiveTab}
-                        phone={formData.person.contact.phones[phoneActiveTab]}
-                        index={phoneActiveTab}
-                        updateContact={updateContact} 
-                        formErrors={formErrors}
-                        setFormErrors={setFormErrors}
-                    />
-                </div>
+                {/* ── Phones Section ── */}
+                <ContactBar
+                    title="Phones"
+                    subTitle="Phone"
+                    arrayName="phones"
+                    icon={Telephone}
+                    addNewContact={addNewContact}
+                />
+                <ContactTab
+                    id={`phone-tab-${phoneActiveTab}`}
+                    title="Phone"
+                    arrayName="phones"
+                    list={formData.person.contact.phones}
+                    activeTab={phoneActiveTab}
+                    setActiveTab={setPhoneActiveTab}
+                    deleteContact={deleteContact}
+                />
+                <PhoneForm
+                    phone={formData.person.contact.phones[phoneActiveTab]}
+                    index={phoneActiveTab}
+                    updateContact={updateContact} 
+                    formErrors={formErrors}
+                    setFormErrors={setFormErrors}
+                />
 
                 <ConfirmationModal
                     show={show}
@@ -233,6 +180,11 @@ const ContactCard = (props) => {
 
 ContactCard.propTypes = {
     formData: PropTypes.object,
+    updateContact: PropTypes.func,
+    addContact: PropTypes.func,
+    removeContact: PropTypes.func,
+    formErrors: PropTypes.object,
+    setFormErrors: PropTypes.func,
 }
 
 // ─── Design tokens (light palette) ───────────────────────────────────────────
@@ -298,5 +250,11 @@ const S = {
         padding: "24px 28px",
     },
 }
+
+// ─── Global keyframes injected once ──────────────────────────────────────────
+const KEYFRAMES = `
+  .tab-hover:hover { background: #ccfbf1 !important; border: 1px solid ${TOKEN.border} !important; }
+  .tab-x-hover:hover { color: ${TOKEN.danger} !important; }
+`;
 
 export default ContactCard

@@ -10,12 +10,12 @@ const RefereesForm = (props) => {
                 <div className="d-flex justify-content-between p-2 mt-2 mb-4">
                     <div className="d-flex items-center">
                         <PersonCheckFill size={32} className='mt-1 mx-1' style={{ color: 'coral' }} />
-                        <h3 
-                            className="text-lg font-semibold"
+                        <span 
+                            className="h5 ms-1 mt-1"
                             style={{ color: 'coral' }}
                         >
                             <strong>Referees</strong>
-                        </h3>
+                        </span>
                     </div>
                     <button 
                         type="button" 

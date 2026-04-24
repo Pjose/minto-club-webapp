@@ -38,7 +38,7 @@ const DEFAULT_APPLICATION = {
 /**
  * Create member application by admin or staff users with higher permissions and priviledges.
  */
-const CreateMember = (props) => {
+const CreateMembership = (props) => {
     const navigate = useNavigate()
     const { title, headerBgColor, cardBorderColor } = props
     const { show, confirmMsg, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
@@ -2269,10 +2269,10 @@ const CreateMember = (props) => {
   );
 };
 
-CreateMember.propTypes = {
+CreateMembership.propTypes = {
     title: PropTypes.string,
     headerBgColor: PropTypes.string,
     cardBorderColor: PropTypes.string,
 }
 
-export default CreateMember;
+export default CreateMembership;

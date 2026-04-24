@@ -46,7 +46,7 @@ const ViewPersonCard = (props) => {
                 <div className="card-header"  style={{ background: '#a6a9b1'}} >
                     <div className="d-flex">
                         <PersonFill size={24} className='text-primary me-2' />
-                        <h5 className="text-primary"><strong>{ title }</strong></h5>
+                        <span className="fs-6 fw-bold text-primary">{ title }</span>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">

@@ -30,9 +30,9 @@ const EmailForm = (props) => {
     return (
         <>
             { email && (
-                <div key={index} className="border rounded-lg p-1 p-sm-4 mb-4 bg-light">
+                <div key={index} className="border rounded-bottom-3 p-1 p-sm-4 mb-4 bg-light">
                     <div className='mb-2'>
-                        <span className="font-medium"><strong>Email {index + 1}</strong></span>
+                        <span className="font-medium text-primary"><strong>Email {index + 1}</strong></span>
                     </div>
                     <div className="form-group row">
                         <div className="col-sm-5 mb-3">
@@ -42,7 +42,7 @@ const EmailForm = (props) => {
                                     value={email.emailType || ''}
                                     onBlur={(e) => handleValidate(index, 'emailType', e.target.value)}
                                     onChange={(e) => updateContact('emails', index, 'emailType', e.target.value)}
-                                    className={`form-select ${formErrors.person.contact.emails[index].emailType ? 'is-invalid' : ''}`}
+                                    className={`form-select ${formErrors.person.contact.emails[index]?.emailType ? 'is-invalid' : ''}`}
                                     required
                                 >
                                     <option value="">-- Select --</option>
@@ -54,7 +54,7 @@ const EmailForm = (props) => {
                                 <label htmlFor={`email-type-${index}`}>Type*</label>
                             </div>
                             { formErrors.person.contact.emails[index]?.emailType && (
-                                <div className="text-danger mt-1">{formErrors.person.contact.emails[index].emailType}</div>
+                                <div className="text-danger mt-1">{formErrors.person.contact.emails[index]?.emailType}</div>
                             )}
                         </div>
                         <div className="col-sm-7 mb-3">
@@ -66,13 +66,13 @@ const EmailForm = (props) => {
                                     value={email.address || ''}
                                     onBlur={(e) => handleValidate(index, 'address', e.target.value)}
                                     onChange={(e) => updateContact('emails', index, 'address', e.target.value)}
-                                    className={`form-control ${formErrors.person.contact.emails[index].address ? 'is-invalid' : ''}`}
+                                    className={`form-control ${formErrors.person.contact.emails[index]?.address ? 'is-invalid' : ''}`}
                                     required
                                 />
                                 <label htmlFor={`email-address-${index}`}>Email Address*</label>
                             </div>
                             { formErrors.person.contact.emails[index]?.address && (
-                                <div className="text-danger mt-1">{formErrors.person.contact.emails[index].address}</div>
+                                <div className="text-danger mt-1">{formErrors.person.contact.emails[index]?.address}</div>
                             )}
                         </div>
                     </div>

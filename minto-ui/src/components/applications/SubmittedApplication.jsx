@@ -150,7 +150,7 @@ const SubmittedApplication = (props) => {
                                 <div className="card-header bg-primary text-white">
                                     <div className="d-flex text-white">
                                         <CardChecklist size={30} className='me-2' />
-                                        <h3 className='ms-1'>Application Details: [{formData.applicationStatus}]</h3>
+                                        <span className='h5 fw-semibold ms-1 mt-1'>Application Details: [{formData.applicationStatus}]</span>
                                     </div>
                                 </div>
                                 <div className="card-body px-1 px-sm-3">
@@ -165,8 +165,8 @@ const SubmittedApplication = (props) => {
                                         </div>
                                     </div>
                                     {/* Application Details */}
-                                    <h5 className="text-primary mb-3"><strong>Application Details</strong></h5>
-                                    <div className="form-group row row-cols-auto">
+                                    <span className="h5 fw-semibold text-primary">Application Details</span>
+                                    <div className="form-group row row-cols-auto mt-2">
                                         <div className="col-6 col-xxl-3">
                                             <div className="form-floating mb-3">
                                                 <input 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Search } from "react-bootstrap-icons"
+import { ArrowRepeat } from "react-bootstrap-icons"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
@@ -79,13 +79,13 @@ const ProcessMembers = () => {
             isAuthenticated ? (
                 <div className="container my-3 px-0">
                     <div className="card border border-danger shadow-lg">
-                        <div className="card-header text-danger">
+                        <div className="card-header bg-danger text-white">
                             <div className="d-flex">
-                                <Search size={26} className='text-danger me-2' />
+                                <ArrowRepeat size={26} className='text-white me-2' />
                                 <span className="fs-5" style={{ fontWeight: '700'}}>Process Members</span>
                             </div>
                         </div>
-                        <div className='card-body p-1'>
+                        <div className='card-body px-1 px-sm-3'>
                             <div className="d-flex align-items-center">
                                 { message && <span className="text-primary ms-2 h6">{message}</span> }
                             </div>

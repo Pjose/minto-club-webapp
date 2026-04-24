@@ -36,7 +36,7 @@ const PersonalInfoForm = (props) => {
                 <div className="card-header bg-light">
                     <div className="d-flex">
                         <PersonFill size={30} className='text-primary me-2' />
-                        <h3 className="text-primary">Personal Information</h3>
+                        <span className="h4 fw-semibold text-primary">Personal Information</span>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">

@@ -10,12 +10,12 @@ const SpousesForm = (props) => {
                 <div className="d-flex justify-content-between p-2 mt-2 mb-4">
                     <div className="d-flex items-center">
                         <PersonHeart size={32} className='mt-1 mx-1' style={{ color: 'crimson' }} />
-                        <h3 
-                            className="text-lg font-semibold"
+                        <span 
+                            className="h5 ms-1 mt-1"
                             style={{ color: 'crimson' }}
                         >
                             <strong>Spouses</strong>
-                        </h3>
+                        </span>
                     </div>
                     <button 
                         type="button" 

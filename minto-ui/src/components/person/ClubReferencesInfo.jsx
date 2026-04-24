@@ -12,7 +12,7 @@ const ClubReferencesInfo = (props) => {
                 <div className="card-header text-white" style={{ backgroundColor: 'coral'}}>
                     <div className="d-flex">
                         <PersonCheckFill size={28} className='me-2 text-white' />
-                        <h3 className='text-bold text-white'>Club Reference Information</h3>
+                        <span className='h5 fw-semibold text-white'>Club Reference Information</span>
                     </div>
                 </div>
                 <div className="card-body px-1 px-sm-3">
